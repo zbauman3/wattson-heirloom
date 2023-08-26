@@ -1,12 +1,12 @@
 #define DEBUG_ENABLED 1
 
-#include "Z_FeedbackLEDs.h"
-#include "Z_Joystick.h"
-#include "Z_Keypad.h"
-#include "Z_LightRods.h"
-#include "Z_Macros.h"
-#include "Z_Rotary.h"
-#include "Z_Screen.h"
+#include "./FeedbackLEDs.h"
+#include "./Joystick.h"
+#include "./Keypad.h"
+#include "./LightRods.h"
+#include "./Macros.h"
+#include "./Rotary.h"
+#include "./Screen.h"
 #include <Adafruit_MCP23X17.h>
 
 #define TFT_DC 20

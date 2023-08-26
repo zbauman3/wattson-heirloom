@@ -1,4 +1,4 @@
-#include "Z_Joystick.h"
+#include "./Joystick.h"
 #include <Arduino.h>
 
 // this expects the analogReadResolution to be `8`

@@ -1,6 +1,6 @@
-#include "Z_Rotary.h"
+#include "./Rotary.h"
+#include "./Macros.h"
 #include "Adafruit_seesaw.h"
-#include "Z_Macros.h"
 #include <Arduino.h>
 
 Z_Rotary::Z_Rotary(unsigned int addr) : ss(Adafruit_seesaw()) {

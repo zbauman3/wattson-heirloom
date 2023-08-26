@@ -1,7 +1,7 @@
-#include "Z_Screen.h"
+#include "./Screen.h"
+#include "./Macros.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
-#include "Z_Macros.h"
 #include <Arduino.h>
 
 Z_Screen::Z_Screen(signed char cs, signed char dc)
