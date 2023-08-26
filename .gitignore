@@ -33,3 +33,9 @@
 
 # macOS
 .DS_Store
+
+# other
+KiCad/*
+!KiCad/*.kicad_prl
+!KiCad/*.kicad_pro
+!KiCad/*.kicad_sch
