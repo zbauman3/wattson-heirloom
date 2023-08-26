@@ -1,8 +1,8 @@
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
-#ifndef Z_Keypad_H
-#define Z_Keypad_H
+#ifndef Keypad_H
+#define Keypad_H
 
 #define KEYPAD_MENU 0x0
 #define KEYPAD_UP 0x1
@@ -13,7 +13,7 @@
 #define KEYPAD_ONE 0x6
 #define KEYPAD_TWO 0x7
 
-class Z_Keypad {
+class Keypad {
 private:
   Adafruit_MCP23X17 *mcp;
   unsigned char menu;
@@ -28,10 +28,9 @@ private:
   unsigned char keyCodeToPin(unsigned char keyCode);
 
 public:
-  Z_Keypad(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin,
-           unsigned char upPin, unsigned char recordPin, unsigned char leftPin,
-           unsigned char downPin, unsigned char rightPin, unsigned char onePin,
-           unsigned char twoPin);
+  Keypad(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin, unsigned char upPin,
+         unsigned char recordPin, unsigned char leftPin, unsigned char downPin,
+         unsigned char rightPin, unsigned char onePin, unsigned char twoPin);
 
   void begin();
   bool isPressed(unsigned char keyCode);

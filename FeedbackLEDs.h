@@ -1,8 +1,8 @@
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
-#ifndef Z_FeedbackLEDs_H
-#define Z_FeedbackLEDs_H
+#ifndef FeedbackLEDs_H
+#define FeedbackLEDs_H
 
 #define FEEDBACK_RED 0x0
 #define FEEDBACK_GREEN 0x1
@@ -12,7 +12,7 @@ typedef struct {
   unsigned char state;
 } feedbackLed;
 
-class Z_FeedbackLEDs {
+class FeedbackLEDs {
 private:
   Adafruit_MCP23X17 *mcp;
   feedbackLed red;
@@ -22,7 +22,7 @@ private:
   void set(feedbackLed *led, unsigned char state);
 
 public:
-  Z_FeedbackLEDs(Adafruit_MCP23X17 *mcpPtr, unsigned char redPin,
+  FeedbackLEDs(Adafruit_MCP23X17 *mcpPtr, unsigned char redPin,
                  unsigned char greenPin);
   void begin();
 

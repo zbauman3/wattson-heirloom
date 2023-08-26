@@ -3,15 +3,15 @@
 #include "Adafruit_ILI9341.h"
 #include <Arduino.h>
 
-#ifndef Z_Screen_H
-#define Z_Screen_H
+#ifndef Screen_H
+#define Screen_H
 
-class Z_Screen {
+class Screen {
 private:
   Adafruit_ILI9341 tft;
 
 public:
-  Z_Screen(signed char cs, signed char dc);
+  Screen(signed char cs, signed char dc);
   void begin();
   void tmp_display(unsigned char joystickLr, unsigned char joystickUd,
                    signed long rotary_pos, bool btn_0_pressed,

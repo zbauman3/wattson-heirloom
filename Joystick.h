@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
-#ifndef Z_Joystick_H
-#define Z_Joystick_H
+#ifndef Joystick_H
+#define Joystick_H
 
 typedef struct {
   unsigned char lr;
@@ -9,13 +9,13 @@ typedef struct {
 } joystickValues;
 
 // this expects the analogReadResolution to be `8`
-class Z_Joystick {
+class Joystick {
 private:
   unsigned char lr;
   unsigned char ud;
 
 public:
-  Z_Joystick(unsigned char lrPin, unsigned char udPin);
+  Joystick(unsigned char lrPin, unsigned char udPin);
 
   joystickValues sample();
   void begin();

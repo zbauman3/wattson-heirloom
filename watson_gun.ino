@@ -30,13 +30,13 @@
 #define ROTARY_ADDR 0x36
 
 Adafruit_MCP23X17 mcp;
-Z_LightRods lightRods = Z_LightRods(NEOPIXEL_COUNT, NEOPIXEL_PIN);
-Z_Joystick joystick = Z_Joystick(JOY_LR, JOY_UD);
-Z_FeedbackLEDs feedbackLEDs = Z_FeedbackLEDs(&mcp, EXP_RED_LED, EXP_GRN_LED);
-Z_Rotary rotary = Z_Rotary(ROTARY_ADDR);
-Z_Screen screen = Z_Screen(TFT_CS, TFT_DC);
-Z_Keypad keypad = Z_Keypad(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3,
-                           EXP_BTN_4, EXP_BTN_5, EXP_BTN_6, EXP_BTN_7);
+LightRods lightRods = LightRods(NEOPIXEL_COUNT, NEOPIXEL_PIN);
+Joystick joystick = Joystick(JOY_LR, JOY_UD);
+FeedbackLEDs feedbackLEDs = FeedbackLEDs(&mcp, EXP_RED_LED, EXP_GRN_LED);
+Rotary rotary = Rotary(ROTARY_ADDR);
+Screen screen = Screen(TFT_CS, TFT_DC);
+Keypad keypad = Keypad(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3,
+                       EXP_BTN_4, EXP_BTN_5, EXP_BTN_6, EXP_BTN_7);
 
 void setup() {
   DEBUG_INIT(9600);

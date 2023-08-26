@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
-#ifndef Z_Macros_H
-#define Z_Macros_H
+#ifndef Macros_H
+#define Macros_H
 
 #if (defined(DEBUG_ENABLED) && DEBUG_ENABLED == 1)
 #define DEBUG_INIT(rate) Serial.begin(rate)

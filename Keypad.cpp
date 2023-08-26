@@ -2,11 +2,11 @@
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
-Z_Keypad::Z_Keypad(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin,
-                   unsigned char upPin, unsigned char recordPin,
-                   unsigned char leftPin, unsigned char downPin,
-                   unsigned char rightPin, unsigned char onePin,
-                   unsigned char twoPin) {
+Keypad::Keypad(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin,
+               unsigned char upPin, unsigned char recordPin,
+               unsigned char leftPin, unsigned char downPin,
+               unsigned char rightPin, unsigned char onePin,
+               unsigned char twoPin) {
   this->mcp = mcpPtr;
   this->menu = menuPin;
   this->up = upPin;
@@ -18,7 +18,7 @@ Z_Keypad::Z_Keypad(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin,
   this->two = twoPin;
 }
 
-void Z_Keypad::begin() {
+void Keypad::begin() {
   this->mcp->pinMode(this->menu, INPUT_PULLUP);
   this->mcp->pinMode(this->up, INPUT_PULLUP);
   this->mcp->pinMode(this->record, INPUT_PULLUP);
@@ -29,7 +29,7 @@ void Z_Keypad::begin() {
   this->mcp->pinMode(this->two, INPUT_PULLUP);
 }
 
-unsigned char Z_Keypad::keyCodeToPin(unsigned char keyCode) {
+unsigned char Keypad::keyCodeToPin(unsigned char keyCode) {
   switch (keyCode) {
   case KEYPAD_MENU:
     return this->menu;
@@ -51,7 +51,7 @@ unsigned char Z_Keypad::keyCodeToPin(unsigned char keyCode) {
   }
 }
 
-bool Z_Keypad::isPressed(unsigned char keyCode) {
+bool Keypad::isPressed(unsigned char keyCode) {
   if (!this->mcp->digitalRead(this->keyCodeToPin(keyCode))) {
     return true;
   } else {

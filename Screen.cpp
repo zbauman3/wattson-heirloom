@@ -4,10 +4,10 @@
 #include "Adafruit_ILI9341.h"
 #include <Arduino.h>
 
-Z_Screen::Z_Screen(signed char cs, signed char dc)
+Screen::Screen(signed char cs, signed char dc)
     : tft(Adafruit_ILI9341(cs, dc)) {}
 
-void Z_Screen::begin() {
+void Screen::begin() {
   // give TFT time to boot
   delay(500);
   this->tft.begin();
@@ -34,12 +34,12 @@ void Z_Screen::begin() {
   });
 }
 
-void Z_Screen::tmp_display(unsigned char joystickLr, unsigned char joystickUd,
-                           signed long rotary_pos, bool btn_0_pressed,
-                           bool btn_1_pressed, bool btn_2_pressed,
-                           bool btn_3_pressed, bool btn_4_pressed,
-                           bool btn_5_pressed, bool btn_6_pressed,
-                           bool btn_7_pressed, bool power_plug_grounded) {
+void Screen::tmp_display(unsigned char joystickLr, unsigned char joystickUd,
+                         signed long rotary_pos, bool btn_0_pressed,
+                         bool btn_1_pressed, bool btn_2_pressed,
+                         bool btn_3_pressed, bool btn_4_pressed,
+                         bool btn_5_pressed, bool btn_6_pressed,
+                         bool btn_7_pressed, bool power_plug_grounded) {
   tft.setCursor(0, 0);
   tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
   tft.setTextSize(2);

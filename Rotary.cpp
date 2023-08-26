@@ -3,11 +3,9 @@
 #include "Adafruit_seesaw.h"
 #include <Arduino.h>
 
-Z_Rotary::Z_Rotary(unsigned int addr) : ss(Adafruit_seesaw()) {
-  this->addr = addr;
-}
+Rotary::Rotary(unsigned int addr) : ss(Adafruit_seesaw()) { this->addr = addr; }
 
-bool Z_Rotary::begin() {
+bool Rotary::begin() {
   if (!this->ss.begin(this->addr)) {
     DEBUG_LN("Couldn't find seesaw on default address.");
     return false;
@@ -22,4 +20,4 @@ bool Z_Rotary::begin() {
   return true;
 }
 
-signed long Z_Rotary::getValue() { return this->ss.getEncoderPosition(); }
+signed long Rotary::getValue() { return this->ss.getEncoderPosition(); }

@@ -1,16 +1,16 @@
 #include <Adafruit_NeoPixel.h>
 #include <Arduino.h>
 
-#ifndef Z_LightRods_h
-#define Z_LightRods_h
+#ifndef LightRods_h
+#define LightRods_h
 
-class Z_LightRods {
+class LightRods {
 private:
   Adafruit_NeoPixel neopixels;
   unsigned int count;
 
 public:
-  Z_LightRods(unsigned int count, signed int pin);
+  LightRods(unsigned int count, signed int pin);
   void begin();
   void off();
 

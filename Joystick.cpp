@@ -2,12 +2,12 @@
 #include <Arduino.h>
 
 // this expects the analogReadResolution to be `8`
-Z_Joystick::Z_Joystick(unsigned char lrPin, unsigned char udPin) {
+Joystick::Joystick(unsigned char lrPin, unsigned char udPin) {
   this->lr = lrPin;
   this->ud = udPin;
 }
 
-joystickValues Z_Joystick::sample() {
+joystickValues Joystick::sample() {
   int lr = 0;
   int ud = 0;
 
@@ -19,7 +19,7 @@ joystickValues Z_Joystick::sample() {
   return {.lr = (unsigned char)(lr / 255), .ud = (unsigned char)(ud / 255)};
 }
 
-void Z_Joystick::begin() {
+void Joystick::begin() {
   pinMode(this->lr, INPUT);
   pinMode(this->ud, INPUT);
 }
