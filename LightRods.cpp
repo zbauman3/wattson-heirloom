@@ -9,6 +9,7 @@ LightRods::LightRods(unsigned int count, signed int pin)
 
 void LightRods::begin() {
   this->neopixels.begin();
+  this->neopixels.setBrightness(10);
   this->off();
 }
 

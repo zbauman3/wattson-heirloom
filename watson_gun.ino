@@ -13,7 +13,7 @@
 #define TFT_CS 21
 // #define INTERRUPT      4
 #define NEOPIXEL_PIN 3
-#define NEOPIXEL_COUNT 1
+#define NEOPIXEL_COUNT 144
 #define JOY_UD 1
 #define JOY_LR 0
 #define EXP_BTN_0 0
@@ -27,6 +27,7 @@
 #define EXP_GRN_LED 8
 #define EXP_RED_LED 9
 #define EXP_POWER_PLUG 10
+#define EXP_TRIGGER 11
 #define ROTARY_ADDR 0x36
 
 Adafruit_MCP23X17 mcp;
@@ -57,6 +58,7 @@ void setup() {
   feedbackLEDs.begin();
   keypad.begin();
   mcp.pinMode(EXP_POWER_PLUG, INPUT_PULLUP);
+  mcp.pinMode(EXP_TRIGGER, INPUT_PULLUP);
 }
 
 void loop(void) {
@@ -72,17 +74,18 @@ void loop(void) {
   bool btn_6_pressed = keypad.isPressed(KEYPAD_ONE);
   bool btn_7_pressed = keypad.isPressed(KEYPAD_TWO);
   bool power_plug_grounded = !mcp.digitalRead(EXP_POWER_PLUG);
+  bool trigger_pressed = !mcp.digitalRead(EXP_TRIGGER);
 
   screen.tmp_display(joystickPos.lr, joystickPos.ud, rotary_pos, btn_0_pressed,
                      btn_1_pressed, btn_2_pressed, btn_3_pressed, btn_4_pressed,
                      btn_5_pressed, btn_6_pressed, btn_7_pressed,
-                     power_plug_grounded);
+                     power_plug_grounded, trigger_pressed);
 
   if (btn_0_pressed) {
     if (power_plug_grounded) {
       lightRods.tmp_fill(255, 0, 255);
     } else {
-      lightRods.tmp_fill(10, 0, 10);
+      lightRods.tmp_fill(122, 0, 122);
     }
   } else {
     lightRods.off();
