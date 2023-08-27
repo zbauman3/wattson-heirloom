@@ -28,6 +28,7 @@
 #define EXP_RED_LED 9
 #define EXP_POWER_PLUG 10
 #define EXP_TRIGGER 11
+#define EXP_DIMMER 12
 #define ROTARY_ADDR 0x36
 
 Adafruit_MCP23X17 mcp;
@@ -35,7 +36,7 @@ LightRods lightRods = LightRods(NEOPIXEL_COUNT, NEOPIXEL_PIN);
 Joystick joystick = Joystick(JOY_LR, JOY_UD);
 FeedbackLEDs feedbackLEDs = FeedbackLEDs(&mcp, EXP_RED_LED, EXP_GRN_LED);
 Rotary rotary = Rotary(ROTARY_ADDR);
-Screen screen = Screen(TFT_CS, TFT_DC);
+Screen screen = Screen(TFT_CS, TFT_DC, &mcp, EXP_DIMMER);
 Keypad keypad = Keypad(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3,
                        EXP_BTN_4, EXP_BTN_5, EXP_BTN_6, EXP_BTN_7);
 
@@ -101,6 +102,10 @@ void loop(void) {
     feedbackLEDs.on(FEEDBACK_RED);
   } else {
     feedbackLEDs.off(FEEDBACK_RED);
+  }
+
+  if (btn_3_pressed) {
+    screen.toggleBrightness();
   }
 
   delay(10);

@@ -2,14 +2,22 @@
 #include "./Macros.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
+#include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
-Screen::Screen(signed char cs, signed char dc)
-    : tft(Adafruit_ILI9341(cs, dc)) {}
+Screen::Screen(signed char cs, signed char dc, Adafruit_MCP23X17 *mcpPtr,
+               unsigned char dimmerPin)
+    : tft(Adafruit_ILI9341(cs, dc)) {
+  this->mcp = mcpPtr;
+  this->dimmer = dimmerPin;
+}
 
 void Screen::begin() {
+  this->mcp->pinMode(this->dimmer, OUTPUT);
+  this->setBrightness(SCREEN_BRIGHTNESS_LOW);
+
   // give TFT time to boot
-  delay(500);
+  delay(250);
   this->tft.begin();
   this->tft.setRotation(3);
   this->tft.fillScreen(ILI9341_BLACK);
@@ -32,6 +40,31 @@ void Screen::begin() {
     DEBUG("Self Diagnostic: 0x");
     DEBUG_LN(x, HEX);
   });
+}
+
+void Screen::setBrightness(unsigned char brightness) {
+  switch (brightness) {
+  case SCREEN_BRIGHTNESS_LOW:
+    this->mcp->digitalWrite(this->dimmer, LOW);
+    break;
+  case SCREEN_BRIGHTNESS_HIGH:
+  default:
+    this->mcp->digitalWrite(this->dimmer, HIGH);
+    break;
+  }
+}
+
+void Screen::toggleBrightness() {
+  unsigned char currentBrightness = this->mcp->digitalRead(this->dimmer);
+  switch (currentBrightness) {
+  case LOW:
+    this->setBrightness(SCREEN_BRIGHTNESS_HIGH);
+    break;
+  case HIGH:
+  default:
+    this->setBrightness(SCREEN_BRIGHTNESS_LOW);
+    break;
+  }
 }
 
 void Screen::tmp_display(unsigned char joystickLr, unsigned char joystickUd,
