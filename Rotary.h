@@ -15,6 +15,7 @@ public:
   Rotary(unsigned int addr);
   bool begin();
   signed long getValue();
+  unsigned char getButton();
 };
 
 #endif

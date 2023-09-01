@@ -1,3 +1,5 @@
+#define DEBUG_ENABLED 1
+
 #include <Arduino.h>
 
 #ifndef Macros_H

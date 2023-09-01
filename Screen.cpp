@@ -75,7 +75,7 @@ void Screen::tmp_display(unsigned char joystickLr, unsigned char joystickUd,
                          bool btn_7_pressed, bool power_plug_grounded,
                          bool trigger_pressed) {
   tft.setCursor(0, 0);
-  tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
+  tft.setTextColor(ILI9341_DARKGREEN, ILI9341_BLACK);
   tft.setTextSize(2);
   tft.setTextWrap(false);
 

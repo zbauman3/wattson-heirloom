@@ -1,19 +1,19 @@
-#define DEBUG_ENABLED 1
-
 #include "./FeedbackLEDs.h"
+#include "./Interrupts.h"
 #include "./Joystick.h"
 #include "./Keypad.h"
 #include "./LightRods.h"
 #include "./Macros.h"
 #include "./Rotary.h"
 #include "./Screen.h"
+#include "./State.h"
 #include <Adafruit_MCP23X17.h>
 
 #define TFT_DC 20
 #define TFT_CS 21
-// #define INTERRUPT      4
+#define INTERRUPT_PIN 4
 #define NEOPIXEL_PIN 3
-#define NEOPIXEL_COUNT 144
+#define NEOPIXEL_COUNT 1 // 144
 #define JOY_UD 1
 #define JOY_LR 0
 #define EXP_BTN_0 0
@@ -39,6 +39,11 @@ Rotary rotary = Rotary(ROTARY_ADDR);
 Screen screen = Screen(TFT_CS, TFT_DC, &mcp, EXP_DIMMER);
 Keypad keypad = Keypad(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3,
                        EXP_BTN_4, EXP_BTN_5, EXP_BTN_6, EXP_BTN_7);
+State state = State();
+Interrupts interrupts = Interrupts(&state, &mcp, &rotary);
+
+// TODO - find a better way to pass this
+void isr() { interrupts.handleInterrupt(); }
 
 void setup() {
   DEBUG_INIT(9600);
@@ -58,11 +63,25 @@ void setup() {
   joystick.begin();
   feedbackLEDs.begin();
   keypad.begin();
+
+  // TODO - better way to pass these
+  char tmpArr[10] = {EXP_BTN_0,      EXP_BTN_1,  EXP_BTN_2, EXP_BTN_3,
+                     EXP_BTN_4,      EXP_BTN_5,  EXP_BTN_6, EXP_BTN_7,
+                     EXP_POWER_PLUG, EXP_TRIGGER};
+
+  interrupts.begin(tmpArr);
+
+  pinMode(INTERRUPT_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), isr, FALLING);
+
+  // TODO - abstract?
   mcp.pinMode(EXP_POWER_PLUG, INPUT_PULLUP);
   mcp.pinMode(EXP_TRIGGER, INPUT_PULLUP);
 }
 
 void loop(void) {
+
+  interrupts.loop();
 
   joystickValues joystickPos = joystick.sample();
   signed long rotary_pos = rotary.getValue();
@@ -94,13 +113,13 @@ void loop(void) {
 
   if (btn_1_pressed) {
     feedbackLEDs.on(FEEDBACK_GREEN);
-  } else {
+    delay(150);
     feedbackLEDs.off(FEEDBACK_GREEN);
   }
 
   if (btn_2_pressed) {
     feedbackLEDs.on(FEEDBACK_RED);
-  } else {
+    delay(150);
     feedbackLEDs.off(FEEDBACK_RED);
   }
 

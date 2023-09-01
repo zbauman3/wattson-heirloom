@@ -3,6 +3,8 @@
 #include "Adafruit_seesaw.h"
 #include <Arduino.h>
 
+#define ROTARY_SWITCH 24
+
 Rotary::Rotary(unsigned int addr) : ss(Adafruit_seesaw()) { this->addr = addr; }
 
 bool Rotary::begin() {
@@ -17,7 +19,13 @@ bool Rotary::begin() {
     return false;
   }
 
+  ss.setGPIOInterrupts((uint32_t)1 << ROTARY_SWITCH, 1);
+  ss.enableEncoderInterrupt();
+
   return true;
 }
 
 signed long Rotary::getValue() { return this->ss.getEncoderPosition(); }
+unsigned char Rotary::getButton() {
+  return this->ss.digitalRead(ROTARY_SWITCH);
+}
