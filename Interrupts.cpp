@@ -6,20 +6,24 @@
 #include <Arduino.h>
 
 Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
-                       Rotary *rotaryPtr) {
+                       Rotary *rotaryPtr, MiscIO *miscIOPtr) {
   this->state = statePtr;
   this->mcp = mcpPtr;
   this->rotary = rotaryPtr;
+  this->miscIO = miscIOPtr;
   this->interrupted = false;
   this->lastInterruptTime = 0;
 };
 
-void Interrupts::begin(char mcpPins[10]) {
+void Interrupts::begin() {
   this->lastRotaryValue = this->rotary->getValue();
   this->mcp->setupInterrupts(true, false, LOW);
+  this->rotary->enableInterrupts();
 
-  for (char i = 0; i < 10; i++) {
-    this->mcp->setupInterruptPin(mcpPins[i], CHANGE);
+  micsIOPins allMiscIOPins = this->miscIO->getAllPins();
+
+  for (char i = 0; i < allMiscIOPins.length; i++) {
+    this->mcp->setupInterruptPin(allMiscIOPins.pins[i], CHANGE);
   }
 }
 

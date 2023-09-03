@@ -14,6 +14,7 @@ private:
 public:
   Rotary(unsigned int addr);
   bool begin();
+  void enableInterrupts();
   signed long getValue();
   unsigned char getButton();
 };

@@ -19,10 +19,12 @@ bool Rotary::begin() {
     return false;
   }
 
-  ss.setGPIOInterrupts((uint32_t)1 << ROTARY_SWITCH, 1);
-  ss.enableEncoderInterrupt();
-
   return true;
+}
+
+void Rotary::enableInterrupts() {
+  this->ss.setGPIOInterrupts((uint32_t)1 << ROTARY_SWITCH, 1);
+  this->ss.enableEncoderInterrupt();
 }
 
 signed long Rotary::getValue() { return this->ss.getEncoderPosition(); }

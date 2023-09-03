@@ -1,9 +1,9 @@
 #include "./FeedbackLEDs.h"
 #include "./Interrupts.h"
 #include "./Joystick.h"
-#include "./Keypad.h"
 #include "./LightRods.h"
 #include "./Macros.h"
+#include "./MiscIO.h"
 #include "./Rotary.h"
 #include "./Screen.h"
 #include "./State.h"
@@ -37,10 +37,11 @@ Joystick joystick = Joystick(JOY_LR, JOY_UD);
 FeedbackLEDs feedbackLEDs = FeedbackLEDs(&mcp, EXP_RED_LED, EXP_GRN_LED);
 Rotary rotary = Rotary(ROTARY_ADDR);
 Screen screen = Screen(TFT_CS, TFT_DC, &mcp, EXP_DIMMER);
-Keypad keypad = Keypad(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3,
-                       EXP_BTN_4, EXP_BTN_5, EXP_BTN_6, EXP_BTN_7);
+MiscIO miscIO =
+    MiscIO(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3, EXP_BTN_4,
+           EXP_BTN_5, EXP_BTN_6, EXP_BTN_7, EXP_POWER_PLUG, EXP_TRIGGER);
 State state = State();
-Interrupts interrupts = Interrupts(&state, &mcp, &rotary);
+Interrupts interrupts = Interrupts(&state, &mcp, &rotary, &miscIO);
 
 // TODO - find a better way to pass this
 void isr() { interrupts.handleInterrupt(); }
@@ -62,21 +63,11 @@ void setup() {
   screen.begin();
   joystick.begin();
   feedbackLEDs.begin();
-  keypad.begin();
-
-  // TODO - better way to pass these
-  char tmpArr[10] = {EXP_BTN_0,      EXP_BTN_1,  EXP_BTN_2, EXP_BTN_3,
-                     EXP_BTN_4,      EXP_BTN_5,  EXP_BTN_6, EXP_BTN_7,
-                     EXP_POWER_PLUG, EXP_TRIGGER};
-
-  interrupts.begin(tmpArr);
+  miscIO.begin();
+  interrupts.begin();
 
   pinMode(INTERRUPT_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), isr, FALLING);
-
-  // TODO - abstract?
-  mcp.pinMode(EXP_POWER_PLUG, INPUT_PULLUP);
-  mcp.pinMode(EXP_TRIGGER, INPUT_PULLUP);
 }
 
 void loop(void) {
@@ -85,16 +76,16 @@ void loop(void) {
 
   joystickValues joystickPos = joystick.sample();
   signed long rotary_pos = rotary.getValue();
-  bool btn_0_pressed = keypad.isPressed(KEYPAD_MENU);
-  bool btn_1_pressed = keypad.isPressed(KEYPAD_UP);
-  bool btn_2_pressed = keypad.isPressed(KEYPAD_RECORD);
-  bool btn_3_pressed = keypad.isPressed(KEYPAD_LEFT);
-  bool btn_4_pressed = keypad.isPressed(KEYPAD_DOWN);
-  bool btn_5_pressed = keypad.isPressed(KEYPAD_RIGHT);
-  bool btn_6_pressed = keypad.isPressed(KEYPAD_ONE);
-  bool btn_7_pressed = keypad.isPressed(KEYPAD_TWO);
-  bool power_plug_grounded = !mcp.digitalRead(EXP_POWER_PLUG);
-  bool trigger_pressed = !mcp.digitalRead(EXP_TRIGGER);
+  bool btn_0_pressed = miscIO.isPressed(MIO_MENU);
+  bool btn_1_pressed = miscIO.isPressed(MIO_UP);
+  bool btn_2_pressed = miscIO.isPressed(MIO_RECORD);
+  bool btn_3_pressed = miscIO.isPressed(MIO_LEFT);
+  bool btn_4_pressed = miscIO.isPressed(MIO_DOWN);
+  bool btn_5_pressed = miscIO.isPressed(MIO_RIGHT);
+  bool btn_6_pressed = miscIO.isPressed(MIO_ONE);
+  bool btn_7_pressed = miscIO.isPressed(MIO_TWO);
+  bool trigger_pressed = miscIO.isPressed(MIO_TRIGGER);
+  bool power_plug_grounded = miscIO.isPressed(MIO_POWER);
 
   screen.tmp_display(joystickPos.lr, joystickPos.ud, rotary_pos, btn_0_pressed,
                      btn_1_pressed, btn_2_pressed, btn_3_pressed, btn_4_pressed,

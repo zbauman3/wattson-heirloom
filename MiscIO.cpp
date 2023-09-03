@@ -1,12 +1,13 @@
-#include "./Keypad.h"
+#include "./MiscIO.h"
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
-Keypad::Keypad(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin,
+MiscIO::MiscIO(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin,
                unsigned char upPin, unsigned char recordPin,
                unsigned char leftPin, unsigned char downPin,
                unsigned char rightPin, unsigned char onePin,
-               unsigned char twoPin) {
+               unsigned char twoPin, unsigned char triggerPin,
+               unsigned char powerPin) {
   this->mcp = mcpPtr;
   this->menu = menuPin;
   this->up = upPin;
@@ -16,9 +17,11 @@ Keypad::Keypad(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin,
   this->right = rightPin;
   this->one = onePin;
   this->two = twoPin;
+  this->trigger = triggerPin;
+  this->power = powerPin;
 }
 
-void Keypad::begin() {
+void MiscIO::begin() {
   this->mcp->pinMode(this->menu, INPUT_PULLUP);
   this->mcp->pinMode(this->up, INPUT_PULLUP);
   this->mcp->pinMode(this->record, INPUT_PULLUP);
@@ -27,34 +30,48 @@ void Keypad::begin() {
   this->mcp->pinMode(this->right, INPUT_PULLUP);
   this->mcp->pinMode(this->one, INPUT_PULLUP);
   this->mcp->pinMode(this->two, INPUT_PULLUP);
+  this->mcp->pinMode(this->trigger, INPUT_PULLUP);
+  this->mcp->pinMode(this->power, INPUT_PULLUP);
 }
 
-unsigned char Keypad::keyCodeToPin(unsigned char keyCode) {
+unsigned char MiscIO::keyCodeToPin(unsigned char keyCode) {
   switch (keyCode) {
-  case KEYPAD_MENU:
+  case MIO_MENU:
     return this->menu;
-  case KEYPAD_UP:
+  case MIO_UP:
     return this->up;
-  case KEYPAD_RECORD:
+  case MIO_RECORD:
     return this->record;
-  case KEYPAD_LEFT:
+  case MIO_LEFT:
     return this->left;
-  case KEYPAD_DOWN:
+  case MIO_DOWN:
     return this->down;
-  case KEYPAD_RIGHT:
+  case MIO_RIGHT:
     return this->right;
-  case KEYPAD_ONE:
+  case MIO_ONE:
     return this->one;
-  case KEYPAD_TWO:
-  default:
+  case MIO_TWO:
     return this->two;
+  case MIO_TRIGGER:
+    return this->trigger;
+  case MIO_POWER:
+  default:
+    return this->power;
   }
 }
 
-bool Keypad::isPressed(unsigned char keyCode) {
+bool MiscIO::isPressed(unsigned char keyCode) {
   if (!this->mcp->digitalRead(this->keyCodeToPin(keyCode))) {
     return true;
   } else {
     return false;
   }
+}
+
+micsIOPins MiscIO::getAllPins() {
+  char allPins[] = {this->menu,    this->up,    this->record, this->left,
+                    this->down,    this->right, this->one,    this->two,
+                    this->trigger, this->power};
+
+  return (micsIOPins){.pins = allPins, .length = 10};
 }
