@@ -41,10 +41,8 @@ MiscIO miscIO =
     MiscIO(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3, EXP_BTN_4,
            EXP_BTN_5, EXP_BTN_6, EXP_BTN_7, EXP_POWER_PLUG, EXP_TRIGGER);
 State state = State();
-Interrupts interrupts = Interrupts(&state, &mcp, &rotary, &miscIO);
-
-// TODO - find a better way to pass this
-void isr() { interrupts.handleInterrupt(); }
+Interrupts interrupts =
+    Interrupts(&state, &mcp, &rotary, &miscIO, INTERRUPT_PIN);
 
 void setup() {
   DEBUG_INIT(9600);
@@ -59,15 +57,13 @@ void setup() {
   if (!rotary.begin()) {
     INFINITE_LOOP;
   }
+
   lightRods.begin();
   screen.begin();
   joystick.begin();
   feedbackLEDs.begin();
   miscIO.begin();
   interrupts.begin();
-
-  pinMode(INTERRUPT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), isr, FALLING);
 }
 
 void loop(void) {

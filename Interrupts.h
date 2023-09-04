@@ -11,6 +11,7 @@
 
 class Interrupts {
 private:
+  char interruptPin;
   bool interrupted;
   unsigned int lastInterruptTime;
   signed long lastRotaryValue;
@@ -21,7 +22,7 @@ private:
 
 public:
   Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr, Rotary *rotaryPtr,
-             MiscIO *miscIOPtr);
+             MiscIO *miscIOPtr, char interruptPin);
 
   void begin();
   void loop();

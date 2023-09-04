@@ -5,17 +5,27 @@
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
+// can't pass in a class method, need to wrap with this hack.
+Interrupts *mainInterruptHandler;
+void isr() { mainInterruptHandler->handleInterrupt(); }
+
 Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
-                       Rotary *rotaryPtr, MiscIO *miscIOPtr) {
+                       Rotary *rotaryPtr, MiscIO *miscIOPtr,
+                       char interruptPin) {
+  mainInterruptHandler = this;
   this->state = statePtr;
   this->mcp = mcpPtr;
   this->rotary = rotaryPtr;
   this->miscIO = miscIOPtr;
   this->interrupted = false;
   this->lastInterruptTime = 0;
+  this->interruptPin = interruptPin;
 };
 
 void Interrupts::begin() {
+  pinMode(this->interruptPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(this->interruptPin), isr, FALLING);
+
   this->lastRotaryValue = this->rotary->getValue();
   this->mcp->setupInterrupts(true, false, LOW);
   this->rotary->enableInterrupts();
