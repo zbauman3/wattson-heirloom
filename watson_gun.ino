@@ -7,6 +7,7 @@
 #include "./Rotary.h"
 #include "./Screen.h"
 #include "./State.h"
+#include "./Vibration.h"
 #include <Adafruit_MCP23X17.h>
 
 #define TFT_DC 20
@@ -29,6 +30,8 @@
 #define EXP_POWER_PLUG 10
 #define EXP_TRIGGER 11
 #define EXP_DIMMER 12
+#define EXP_VIBE_LEFT 13
+#define EXP_VIBE_RIGHT 14
 #define ROTARY_ADDR 0x36
 
 Adafruit_MCP23X17 mcp;
@@ -40,6 +43,7 @@ Screen screen = Screen(TFT_CS, TFT_DC, &mcp, EXP_DIMMER);
 MiscIO miscIO =
     MiscIO(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3, EXP_BTN_4,
            EXP_BTN_5, EXP_BTN_6, EXP_BTN_7, EXP_POWER_PLUG, EXP_TRIGGER);
+Vibration vibe = Vibration(&mcp, EXP_VIBE_LEFT, EXP_VIBE_RIGHT);
 State state = State();
 Interrupts interrupts =
     Interrupts(&state, &mcp, &rotary, &miscIO, INTERRUPT_PIN);
@@ -63,6 +67,7 @@ void setup() {
   joystick.begin();
   feedbackLEDs.begin();
   miscIO.begin();
+  vibe.begin();
   interrupts.begin();
 }
 
@@ -94,7 +99,7 @@ void loop(void) {
     } else {
       lightRods.tmp_fill(122, 0, 122);
     }
-  } else {
+    delay(150);
     lightRods.off();
   }
 
@@ -112,6 +117,10 @@ void loop(void) {
 
   if (btn_3_pressed) {
     screen.toggleBrightness();
+  }
+
+  if (btn_4_pressed) {
+    vibe.tmp_vibrate();
   }
 
   delay(10);
