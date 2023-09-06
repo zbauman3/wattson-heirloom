@@ -26,7 +26,8 @@ public:
 
   void begin();
   void loop();
-  void handleInterrupt();
+
+  void _handleInterrupt();
 };
 
 #endif

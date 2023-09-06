@@ -7,7 +7,7 @@
 
 // can't pass in a class method, need to wrap with this hack.
 Interrupts *mainInterruptHandler;
-void isr() { mainInterruptHandler->handleInterrupt(); }
+void isr() { mainInterruptHandler->_handleInterrupt(); }
 
 Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
                        Rotary *rotaryPtr, MiscIO *miscIOPtr,
@@ -74,6 +74,8 @@ void Interrupts::loop() {
     this->state->interrupt.type = STATE_INTR_ROTARY_BTN;
     this->state->interrupt.rotary = rotaryBtnValue;
   } else {
+    // TODO this should likely just be the rotary. Do that?
+    //
     // could be rotary button up, could be mcp and something read / wrote to it
     // before we could read `getLastInterruptPin`
     this->state->interrupt.type = STATE_INTR_EMPTY;
@@ -86,4 +88,4 @@ void Interrupts::loop() {
   this->mcp->clearInterrupts();
 }
 
-void Interrupts::handleInterrupt() { this->interrupted = true; }
+void Interrupts::_handleInterrupt() { this->interrupted = true; }
