@@ -22,6 +22,8 @@ public:
   State();
 
   interruptState interrupt;
+
+  bool hasInterrupt();
 };
 
 #endif

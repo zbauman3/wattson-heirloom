@@ -39,6 +39,11 @@ void Interrupts::begin() {
 
 void Interrupts::loop() {
   if (!this->interrupted) {
+    // if this is not an interrupt cycle, reset the state
+    if (this->state->hasInterrupt()) {
+      this->state->interrupt.type = STATE_INTR_EMPTY;
+    }
+
     return;
   }
 
