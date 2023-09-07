@@ -11,12 +11,13 @@ joystickValues Joystick::sample() {
   int lr = 0;
   int ud = 0;
 
-  for (int i = 0; i < 255; i++) {
+  for (int i = 0; i < NUM_SAMPLES; i++) {
     lr += analogRead(this->lr);
     ud += analogRead(this->ud);
   }
 
-  return {.lr = (unsigned char)(lr / 255), .ud = (unsigned char)(ud / 255)};
+  return {.lr = (unsigned char)(lr / NUM_SAMPLES),
+          .ud = (unsigned char)(ud / NUM_SAMPLES)};
 }
 
 void Joystick::begin() {
