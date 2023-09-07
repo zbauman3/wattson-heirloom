@@ -13,7 +13,6 @@ class Interrupts {
 private:
   char interruptPin;
   bool interrupted;
-  unsigned int lastInterruptTime;
   signed long lastRotaryValue;
   State *state;
   Adafruit_MCP23X17 *mcp;

@@ -18,7 +18,6 @@ Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
   this->rotary = rotaryPtr;
   this->miscIO = miscIOPtr;
   this->interrupted = false;
-  this->lastInterruptTime = 0;
   this->interruptPin = interruptPin;
 };
 
@@ -46,50 +45,44 @@ void Interrupts::loop() {
 
     return;
   }
+  this->interrupted = false;
 
-  // read rotary to clear interrupt. We may debounce, so these must be cleared
-  signed long rotaryValue = this->rotary->getValue();
-  bool rotaryPressed = this->rotary->isPressed();
-  unsigned int now = millis();
+  DEBUG_LN("---Interrupt---");
 
-  if (now - this->lastInterruptTime <= 300) {
-    // debouncing, clear the interrupt still
+  unsigned char mcpPin = this->mcp->getLastInterruptPin();
+  if (mcpPin < 255) {
+    DEBUG_F("MCP: %d\n", mcpPin);
+    DEBUG("Captured interrupt: ");
+    DEBUG_LN(this->mcp->getCapturedInterrupt(), BIN);
+    this->state->interrupt.type = STATE_INTR_MCP;
+    this->state->interrupt.mcp = mcpPin;
     this->mcp->clearInterrupts();
     return;
   }
 
-  unsigned char mcpPin = this->mcp->getLastInterruptPin();
-
-  DEBUG_BLOCK({
-    DEBUG_LN("---Interrupt---");
-    DEBUG_F("MCP: %d\n", mcpPin);
+  signed long rotaryValue = this->rotary->getValue();
+  if (rotaryValue != this->lastRotaryValue) {
     DEBUG_F("Rotary: %d\n", rotaryValue);
-    DEBUG_F("Rotary Btn %d\n", rotaryPressed);
-    DEBUG("Captured interrupt: ");
-    DEBUG_LN(this->mcp->getCapturedInterrupt(), BIN);
-  });
-
-  if (mcpPin < 255) {
-    this->state->interrupt.type = STATE_INTR_MCP;
-    this->state->interrupt.mcp = mcpPin;
-  } else if (rotaryValue != this->lastRotaryValue) {
     this->state->interrupt.type = STATE_INTR_ROTARY;
     this->state->interrupt.rotary = rotaryValue;
-  } else if (rotaryPressed) {
-    this->state->interrupt.type = STATE_INTR_ROTARY_BTN;
-    this->state->interrupt.rotaryPressed = rotaryPressed;
-  } else {
-    // TODO this should likely just be the rotary. Do that?
-    //
-    // could be rotary button up, could be mcp and something read / wrote to it
-    // before we could read `getLastInterruptPin`
-    this->state->interrupt.type = STATE_INTR_EMPTY;
-    this->state->interrupt.mcp = 0;
+    this->lastRotaryValue = rotaryValue;
+    return;
   }
 
-  this->lastInterruptTime = now;
-  this->lastRotaryValue = rotaryValue;
-  this->interrupted = false;
+  bool rotaryPressed = this->rotary->isPressed();
+  if (rotaryPressed) {
+    DEBUG_F("Rotary Btn %d\n", rotaryPressed);
+    this->state->interrupt.type = STATE_INTR_ROTARY_BTN;
+    this->state->interrupt.rotaryPressed = rotaryPressed;
+    return;
+  }
+
+  // TODO this should likely just be the rotary. Do that?
+  //
+  // could be rotary button up, could be mcp and something read / wrote to it
+  // before we could read `getLastInterruptPin`
+  this->state->interrupt.type = STATE_INTR_EMPTY;
+  this->state->interrupt.mcp = 0;
   this->mcp->clearInterrupts();
 }
 
