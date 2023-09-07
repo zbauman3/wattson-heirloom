@@ -15,8 +15,10 @@
 #define MIO_TRIGGER 0x8
 #define MIO_POWER 0x9
 
+#define MIO_PIN_COUNT 10
+
 typedef struct {
-  char *pins;
+  char pins[MIO_PIN_COUNT];
   char length;
 } micsIOPins;
 

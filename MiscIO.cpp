@@ -69,9 +69,18 @@ bool MiscIO::isPressed(unsigned char keyCode) {
 }
 
 micsIOPins MiscIO::getAllPins() {
-  char allPins[] = {this->menu,    this->up,    this->record, this->left,
-                    this->down,    this->right, this->one,    this->two,
-                    this->trigger, this->power};
+  micsIOPins retVal;
+  retVal.pins[0] = this->menu;
+  retVal.pins[1] = this->up;
+  retVal.pins[2] = this->record;
+  retVal.pins[3] = this->left;
+  retVal.pins[4] = this->down;
+  retVal.pins[5] = this->right;
+  retVal.pins[6] = this->one;
+  retVal.pins[7] = this->two;
+  retVal.pins[8] = this->trigger;
+  retVal.pins[9] = this->power;
+  retVal.length = MIO_PIN_COUNT;
 
-  return (micsIOPins){.pins = allPins, .length = 10};
+  return retVal;
 }
