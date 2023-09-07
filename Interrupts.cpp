@@ -49,7 +49,7 @@ void Interrupts::loop() {
 
   // read rotary to clear interrupt. We may debounce, so these must be cleared
   signed long rotaryValue = this->rotary->getValue();
-  unsigned char rotaryBtnValue = this->rotary->getButton();
+  bool rotaryPressed = this->rotary->isPressed();
   unsigned int now = millis();
 
   if (now - this->lastInterruptTime <= 300) {
@@ -64,7 +64,7 @@ void Interrupts::loop() {
     DEBUG_LN("---Interrupt---");
     DEBUG_F("MCP: %d\n", mcpPin);
     DEBUG_F("Rotary: %d\n", rotaryValue);
-    DEBUG_F("Rotary Btn %d\n", rotaryBtnValue);
+    DEBUG_F("Rotary Btn %d\n", rotaryPressed);
     DEBUG("Captured interrupt: ");
     DEBUG_LN(this->mcp->getCapturedInterrupt(), BIN);
   });
@@ -75,9 +75,9 @@ void Interrupts::loop() {
   } else if (rotaryValue != this->lastRotaryValue) {
     this->state->interrupt.type = STATE_INTR_ROTARY;
     this->state->interrupt.rotary = rotaryValue;
-  } else if (!rotaryBtnValue) {
+  } else if (rotaryPressed) {
     this->state->interrupt.type = STATE_INTR_ROTARY_BTN;
-    this->state->interrupt.rotary = rotaryBtnValue;
+    this->state->interrupt.rotaryPressed = rotaryPressed;
   } else {
     // TODO this should likely just be the rotary. Do that?
     //

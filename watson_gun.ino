@@ -71,12 +71,24 @@ void setup() {
   interrupts.begin();
 }
 
+// TODO move this to the screen
+bool firstDraw = true;
+
 void loop(void) {
 
   interrupts.loop();
 
+  if (!firstDraw && !state.hasInterrupt()) {
+    return;
+  }
+
+  DEBUG_LN("--Acting--");
+
+  firstDraw = false;
+
   joystickValues joystickPos = joystick.sample();
   signed long rotary_pos = rotary.getValue();
+  signed long rotary_isPressed = rotary.isPressed();
   bool btn_0_pressed = miscIO.isPressed(MIO_MENU);
   bool btn_1_pressed = miscIO.isPressed(MIO_UP);
   bool btn_2_pressed = miscIO.isPressed(MIO_RECORD);
@@ -88,10 +100,11 @@ void loop(void) {
   bool trigger_pressed = miscIO.isPressed(MIO_TRIGGER);
   bool power_plug_grounded = miscIO.isPressed(MIO_POWER);
 
-  screen.tmp_display(joystickPos.lr, joystickPos.ud, rotary_pos, btn_0_pressed,
-                     btn_1_pressed, btn_2_pressed, btn_3_pressed, btn_4_pressed,
-                     btn_5_pressed, btn_6_pressed, btn_7_pressed,
-                     power_plug_grounded, trigger_pressed);
+  screen.tmp_display(joystickPos.lr, joystickPos.ud, rotary_pos,
+                     rotary_isPressed, btn_0_pressed, btn_1_pressed,
+                     btn_2_pressed, btn_3_pressed, btn_4_pressed, btn_5_pressed,
+                     btn_6_pressed, btn_7_pressed, power_plug_grounded,
+                     trigger_pressed);
 
   if (btn_0_pressed) {
     if (power_plug_grounded) {
@@ -122,6 +135,4 @@ void loop(void) {
   if (btn_4_pressed) {
     vibe.tmp_vibrate();
   }
-
-  delay(10);
 }

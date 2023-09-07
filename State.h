@@ -13,7 +13,7 @@ typedef struct {
   union {
     unsigned char mcp;
     signed long rotary;
-    unsigned char rotaryBtn;
+    bool rotaryPressed;
   };
 } interruptState;
 

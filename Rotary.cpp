@@ -28,6 +28,4 @@ void Rotary::enableInterrupts() {
 }
 
 signed long Rotary::getValue() { return this->ss.getEncoderPosition(); }
-unsigned char Rotary::getButton() {
-  return this->ss.digitalRead(ROTARY_SWITCH);
-}
+bool Rotary::isPressed() { return this->ss.digitalRead(ROTARY_SWITCH) == LOW; }

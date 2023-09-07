@@ -16,7 +16,7 @@ public:
   bool begin();
   void enableInterrupts();
   signed long getValue();
-  unsigned char getButton();
+  bool isPressed();
 };
 
 #endif
