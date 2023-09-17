@@ -32,7 +32,11 @@ void Interrupts::begin() {
   micsIOPins allMiscIOPins = this->miscIO->getAllPins();
 
   for (char i = 0; i < allMiscIOPins.length; i++) {
-    this->mcp->setupInterruptPin(allMiscIOPins.pins[i], CHANGE);
+    if (this->miscIO->rotaryInt == allMiscIOPins.pins[i]) {
+      this->mcp->setupInterruptPin(allMiscIOPins.pins[i], LOW);
+    } else {
+      this->mcp->setupInterruptPin(allMiscIOPins.pins[i], CHANGE);
+    }
   }
 }
 
@@ -57,7 +61,10 @@ void Interrupts::loop() {
     this->state->interrupt.type = STATE_INTR_MCP;
     this->state->interrupt.mcp = mcpPin;
     this->mcp->clearInterrupts();
-    return;
+
+    if (mcpPin != this->miscIO->rotaryInt) {
+      return;
+    }
   }
 
   signed long rotaryValue = this->rotary->getValue();
@@ -76,6 +83,14 @@ void Interrupts::loop() {
     this->state->interrupt.rotaryPressed = rotaryPressed;
     return;
   }
+
+  DEBUG_BLOCK({
+    DEBUG_F("MCP: %d\n", mcpPin);
+    DEBUG_F("Rotary: %d\n", rotaryValue);
+    DEBUG_F("Rotary Btn %d\n", rotaryPressed);
+    DEBUG("Captured interrupt: ");
+    DEBUG_LN(this->mcp->getCapturedInterrupt(), BIN);
+  });
 
   // TODO this should likely just be the rotary. Do that?
   //

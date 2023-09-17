@@ -7,7 +7,7 @@ MiscIO::MiscIO(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin,
                unsigned char leftPin, unsigned char downPin,
                unsigned char rightPin, unsigned char onePin,
                unsigned char twoPin, unsigned char triggerPin,
-               unsigned char powerPin) {
+               unsigned char powerPin, unsigned char rotaryIntPin) {
   this->mcp = mcpPtr;
   this->menu = menuPin;
   this->up = upPin;
@@ -19,6 +19,7 @@ MiscIO::MiscIO(Adafruit_MCP23X17 *mcpPtr, unsigned char menuPin,
   this->two = twoPin;
   this->trigger = triggerPin;
   this->power = powerPin;
+  this->rotaryInt = rotaryIntPin;
 }
 
 void MiscIO::begin() {
@@ -32,36 +33,11 @@ void MiscIO::begin() {
   this->mcp->pinMode(this->two, INPUT_PULLUP);
   this->mcp->pinMode(this->trigger, INPUT_PULLUP);
   this->mcp->pinMode(this->power, INPUT_PULLUP);
+  this->mcp->pinMode(this->rotaryInt, INPUT_PULLUP);
 }
 
-unsigned char MiscIO::keyCodeToPin(unsigned char keyCode) {
-  switch (keyCode) {
-  case MIO_MENU:
-    return this->menu;
-  case MIO_UP:
-    return this->up;
-  case MIO_RECORD:
-    return this->record;
-  case MIO_LEFT:
-    return this->left;
-  case MIO_DOWN:
-    return this->down;
-  case MIO_RIGHT:
-    return this->right;
-  case MIO_ONE:
-    return this->one;
-  case MIO_TWO:
-    return this->two;
-  case MIO_TRIGGER:
-    return this->trigger;
-  case MIO_POWER:
-  default:
-    return this->power;
-  }
-}
-
-bool MiscIO::isPressed(unsigned char keyCode) {
-  if (!this->mcp->digitalRead(this->keyCodeToPin(keyCode))) {
+bool MiscIO::isPressed(unsigned char mcpPin) {
+  if (!this->mcp->digitalRead(mcpPin)) {
     return true;
   } else {
     return false;
@@ -80,6 +56,7 @@ micsIOPins MiscIO::getAllPins() {
   retVal.pins[7] = this->two;
   retVal.pins[8] = this->trigger;
   retVal.pins[9] = this->power;
+  retVal.pins[10] = this->rotaryInt;
   retVal.length = MIO_PIN_COUNT;
 
   return retVal;

@@ -32,6 +32,7 @@
 #define EXP_DIMMER 12
 #define EXP_VIBE_LEFT 13
 #define EXP_VIBE_RIGHT 14
+#define EXP_ROTARY_INT 15
 #define ROTARY_ADDR 0x36
 
 Adafruit_MCP23X17 mcp;
@@ -40,9 +41,9 @@ Joystick joystick = Joystick(JOY_LR, JOY_UD);
 FeedbackLEDs feedbackLEDs = FeedbackLEDs(&mcp, EXP_RED_LED, EXP_GRN_LED);
 Rotary rotary = Rotary(ROTARY_ADDR);
 Screen screen = Screen(TFT_CS, TFT_DC, &mcp, EXP_DIMMER);
-MiscIO miscIO =
-    MiscIO(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3, EXP_BTN_4,
-           EXP_BTN_5, EXP_BTN_6, EXP_BTN_7, EXP_POWER_PLUG, EXP_TRIGGER);
+MiscIO miscIO = MiscIO(&mcp, EXP_BTN_0, EXP_BTN_1, EXP_BTN_2, EXP_BTN_3,
+                       EXP_BTN_4, EXP_BTN_5, EXP_BTN_6, EXP_BTN_7, EXP_TRIGGER,
+                       EXP_POWER_PLUG, EXP_ROTARY_INT);
 Vibration vibe = Vibration(&mcp, EXP_VIBE_LEFT, EXP_VIBE_RIGHT);
 State state = State();
 Interrupts interrupts =
@@ -89,16 +90,16 @@ void loop(void) {
   joystickValues joystickPos = joystick.sample();
   signed long rotary_pos = rotary.getValue();
   signed long rotary_isPressed = rotary.isPressed();
-  bool btn_0_pressed = miscIO.isPressed(MIO_MENU);
-  bool btn_1_pressed = miscIO.isPressed(MIO_UP);
-  bool btn_2_pressed = miscIO.isPressed(MIO_RECORD);
-  bool btn_3_pressed = miscIO.isPressed(MIO_LEFT);
-  bool btn_4_pressed = miscIO.isPressed(MIO_DOWN);
-  bool btn_5_pressed = miscIO.isPressed(MIO_RIGHT);
-  bool btn_6_pressed = miscIO.isPressed(MIO_ONE);
-  bool btn_7_pressed = miscIO.isPressed(MIO_TWO);
-  bool trigger_pressed = miscIO.isPressed(MIO_TRIGGER);
-  bool power_plug_grounded = miscIO.isPressed(MIO_POWER);
+  bool btn_0_pressed = miscIO.isPressed(miscIO.menu);
+  bool btn_1_pressed = miscIO.isPressed(miscIO.up);
+  bool btn_2_pressed = miscIO.isPressed(miscIO.record);
+  bool btn_3_pressed = miscIO.isPressed(miscIO.left);
+  bool btn_4_pressed = miscIO.isPressed(miscIO.down);
+  bool btn_5_pressed = miscIO.isPressed(miscIO.right);
+  bool btn_6_pressed = miscIO.isPressed(miscIO.one);
+  bool btn_7_pressed = miscIO.isPressed(miscIO.two);
+  bool trigger_pressed = miscIO.isPressed(miscIO.trigger);
+  bool power_plug_grounded = miscIO.isPressed(miscIO.power);
 
   screen.tmp_display(joystickPos.lr, joystickPos.ud, rotary_pos,
                      rotary_isPressed, btn_0_pressed, btn_1_pressed,
