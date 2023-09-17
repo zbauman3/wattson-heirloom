@@ -1,40 +1,26 @@
 #include "./FeedbackLEDs.h"
+#include "./PinDefs.h"
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
-FeedbackLEDs::FeedbackLEDs(Adafruit_MCP23X17 *mcpPtr, unsigned char redPin,
-                           unsigned char greenPin) {
-  this->mcp = mcpPtr;
-  this->red = {.pin = redPin, .state = LOW};
-  this->green = {.pin = greenPin, .state = LOW};
-}
+FeedbackLEDs::FeedbackLEDs(Adafruit_MCP23X17 *mcpPtr) { this->mcp = mcpPtr; }
 
 void FeedbackLEDs::begin() {
-  this->mcp->pinMode(this->red.pin, OUTPUT);
-  this->mcp->pinMode(this->green.pin, OUTPUT);
+  this->mcp->pinMode(PinDefs::mcp_ledRed, OUTPUT);
+  this->mcp->pinMode(PinDefs::mcp_ledGreen, OUTPUT);
 
-  this->off(FEEDBACK_RED);
-  this->off(FEEDBACK_GREEN);
+  this->set(PinDefs::mcp_ledRed, LOW);
+  this->set(PinDefs::mcp_ledGreen, LOW);
 }
 
-feedbackLed *FeedbackLEDs::colorCodeToFeedbackLed(unsigned char colorCode) {
-  switch (colorCode) {
-  case FEEDBACK_RED:
-    return &(this->red);
-  case FEEDBACK_GREEN:
-  default:
-    return &(this->green);
-  }
+void FeedbackLEDs::set(unsigned char which, unsigned char state) {
+  this->mcp->digitalWrite(which, state);
 }
 
-void FeedbackLEDs::set(feedbackLed *led, unsigned char state) {
-  led->state = state;
-  this->mcp->digitalWrite(led->pin, led->state);
+void FeedbackLEDs::setRed(unsigned char state) {
+  this->set(PinDefs::mcp_ledRed, state);
 }
 
-void FeedbackLEDs::on(unsigned char colorCode) {
-  this->set(this->colorCodeToFeedbackLed(colorCode), HIGH);
-}
-void FeedbackLEDs::off(unsigned char colorCode) {
-  this->set(this->colorCodeToFeedbackLed(colorCode), LOW);
+void FeedbackLEDs::setGreen(unsigned char state) {
+  this->set(PinDefs::mcp_ledGreen, state);
 }

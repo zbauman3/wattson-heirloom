@@ -1,3 +1,4 @@
+#include "./PinDefs.h"
 #include <Arduino.h>
 
 #ifndef Joystick_H
@@ -12,13 +13,7 @@ typedef struct {
 
 // this expects the analogReadResolution to be `8`
 class Joystick {
-private:
-  unsigned char lr;
-  unsigned char ud;
-
 public:
-  Joystick(unsigned char lrPin, unsigned char udPin);
-
   joystickValues sample();
   void begin();
 };

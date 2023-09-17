@@ -1,3 +1,5 @@
+#include "./Macros.h"
+#include "./PinDefs.h"
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
@@ -7,12 +9,9 @@
 class Vibration {
 private:
   Adafruit_MCP23X17 *mcp;
-  unsigned char vibeLeft;
-  unsigned char vibeRight;
 
 public:
-  Vibration(Adafruit_MCP23X17 *mcpPtr, unsigned char vibeLeftPin,
-            unsigned char vibeRightPin);
+  Vibration(Adafruit_MCP23X17 *mcpPtr);
 
   void begin();
   void tmp_vibrate();

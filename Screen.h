@@ -1,4 +1,5 @@
 #include "./Macros.h"
+#include "./PinDefs.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 #include <Adafruit_MCP23X17.h>
@@ -14,11 +15,9 @@ class Screen {
 private:
   Adafruit_ILI9341 tft;
   Adafruit_MCP23X17 *mcp;
-  unsigned char dimmer;
 
 public:
-  Screen(signed char cs, signed char dc, Adafruit_MCP23X17 *mcpPtr,
-         unsigned char dimmerPin);
+  Screen(Adafruit_MCP23X17 *mcpPtr);
   void begin();
   void setBrightness(unsigned char brightness);
   void toggleBrightness();

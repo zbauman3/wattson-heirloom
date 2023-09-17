@@ -1,6 +1,6 @@
 
 #include "./Macros.h"
-#include "./MiscIO.h"
+#include "./PinDefs.h"
 #include "./Rotary.h"
 #include "./State.h"
 #include <Adafruit_MCP23X17.h>
@@ -11,17 +11,14 @@
 
 class Interrupts {
 private:
-  char interruptPin;
   bool interrupted;
   signed long lastRotaryValue;
   State *state;
   Adafruit_MCP23X17 *mcp;
   Rotary *rotary;
-  MiscIO *miscIO;
 
 public:
-  Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr, Rotary *rotaryPtr,
-             MiscIO *miscIOPtr, char interruptPin);
+  Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr, Rotary *rotaryPtr);
 
   void begin();
   void loop();

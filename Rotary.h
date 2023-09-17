@@ -1,4 +1,3 @@
-
 #include "./Macros.h"
 #include "Adafruit_seesaw.h"
 #include <Arduino.h>
@@ -8,11 +7,10 @@
 
 class Rotary {
 private:
-  unsigned int addr;
   Adafruit_seesaw ss;
 
 public:
-  Rotary(unsigned int addr);
+  Rotary();
   bool begin();
   void enableInterrupts();
   signed long getValue();

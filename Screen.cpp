@@ -1,19 +1,18 @@
 #include "./Screen.h"
 #include "./Macros.h"
+#include "./PinDefs.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
-Screen::Screen(signed char cs, signed char dc, Adafruit_MCP23X17 *mcpPtr,
-               unsigned char dimmerPin)
-    : tft(Adafruit_ILI9341(cs, dc)) {
+Screen::Screen(Adafruit_MCP23X17 *mcpPtr)
+    : tft(Adafruit_ILI9341(PinDefs::screenCS, PinDefs::screenDC)) {
   this->mcp = mcpPtr;
-  this->dimmer = dimmerPin;
 }
 
 void Screen::begin() {
-  this->mcp->pinMode(this->dimmer, OUTPUT);
+  this->mcp->pinMode(PinDefs::mcp_screenDimmer, OUTPUT);
   this->setBrightness(SCREEN_BRIGHTNESS_LOW);
 
   // give TFT time to boot
@@ -45,17 +44,18 @@ void Screen::begin() {
 void Screen::setBrightness(unsigned char brightness) {
   switch (brightness) {
   case SCREEN_BRIGHTNESS_LOW:
-    this->mcp->digitalWrite(this->dimmer, LOW);
+    this->mcp->digitalWrite(PinDefs::mcp_screenDimmer, LOW);
     break;
   case SCREEN_BRIGHTNESS_HIGH:
   default:
-    this->mcp->digitalWrite(this->dimmer, HIGH);
+    this->mcp->digitalWrite(PinDefs::mcp_screenDimmer, HIGH);
     break;
   }
 }
 
 void Screen::toggleBrightness() {
-  unsigned char currentBrightness = this->mcp->digitalRead(this->dimmer);
+  unsigned char currentBrightness =
+      this->mcp->digitalRead(PinDefs::mcp_screenDimmer);
   switch (currentBrightness) {
   case LOW:
     this->setBrightness(SCREEN_BRIGHTNESS_HIGH);

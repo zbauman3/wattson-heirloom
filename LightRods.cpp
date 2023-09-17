@@ -1,11 +1,13 @@
 #include "./LightRods.h"
+#include "./PinDefs.h"
 #include <Adafruit_NeoPixel.h>
 #include <Arduino.h>
 
-LightRods::LightRods(unsigned int count, signed int pin)
-    : neopixels(Adafruit_NeoPixel(count, pin, NEO_RGB + NEO_KHZ800)) {
-  this->count = count;
-}
+#define NEOPIXEL_COUNT 1 // 144
+
+LightRods::LightRods()
+    : neopixels(Adafruit_NeoPixel(NEOPIXEL_COUNT, PinDefs::neopixels,
+                                  NEO_RGB + NEO_KHZ800)) {}
 
 void LightRods::begin() {
   this->neopixels.begin();

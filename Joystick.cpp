@@ -1,19 +1,14 @@
 #include "./Joystick.h"
+#include "./PinDefs.h"
 #include <Arduino.h>
-
-// this expects the analogReadResolution to be `8`
-Joystick::Joystick(unsigned char lrPin, unsigned char udPin) {
-  this->lr = lrPin;
-  this->ud = udPin;
-}
 
 joystickValues Joystick::sample() {
   int lr = 0;
   int ud = 0;
 
   for (int i = 0; i < NUM_SAMPLES; i++) {
-    lr += analogRead(this->lr);
-    ud += analogRead(this->ud);
+    lr += analogRead(PinDefs::joystickLR);
+    ud += analogRead(PinDefs::joystickUD);
   }
 
   return {.lr = (unsigned char)(lr / NUM_SAMPLES),
@@ -21,6 +16,6 @@ joystickValues Joystick::sample() {
 }
 
 void Joystick::begin() {
-  pinMode(this->lr, INPUT);
-  pinMode(this->ud, INPUT);
+  pinMode(PinDefs::joystickLR, INPUT);
+  pinMode(PinDefs::joystickUD, INPUT);
 }

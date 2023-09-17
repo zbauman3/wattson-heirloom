@@ -1,5 +1,6 @@
 #include "./Interrupts.h"
 #include "./Macros.h"
+#include "./PinDefs.h"
 #include "./Rotary.h"
 #include "./State.h"
 #include <Adafruit_MCP23X17.h>
@@ -10,34 +11,46 @@ Interrupts *mainInterruptHandler;
 void isr() { mainInterruptHandler->_handleInterrupt(); }
 
 Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
-                       Rotary *rotaryPtr, MiscIO *miscIOPtr,
-                       char interruptPin) {
+                       Rotary *rotaryPtr) {
   mainInterruptHandler = this;
   this->state = statePtr;
   this->mcp = mcpPtr;
   this->rotary = rotaryPtr;
-  this->miscIO = miscIOPtr;
   this->interrupted = false;
-  this->interruptPin = interruptPin;
 };
 
 void Interrupts::begin() {
-  pinMode(this->interruptPin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(this->interruptPin), isr, FALLING);
+  pinMode(PinDefs::interrupts, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(PinDefs::interrupts), isr, FALLING);
+
+  this->mcp->pinMode(PinDefs::mcp_menu, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_up, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_record, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_left, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_down, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_right, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_one, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_two, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_trigger, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_power, INPUT_PULLUP);
+  this->mcp->pinMode(PinDefs::mcp_rotaryInt, INPUT_PULLUP);
 
   this->lastRotaryValue = this->rotary->getValue();
-  this->mcp->setupInterrupts(true, false, LOW);
   this->rotary->enableInterrupts();
 
-  micsIOPins allMiscIOPins = this->miscIO->getAllPins();
+  this->mcp->setupInterrupts(true, false, LOW);
 
-  for (char i = 0; i < allMiscIOPins.length; i++) {
-    if (this->miscIO->rotaryInt == allMiscIOPins.pins[i]) {
-      this->mcp->setupInterruptPin(allMiscIOPins.pins[i], LOW);
-    } else {
-      this->mcp->setupInterruptPin(allMiscIOPins.pins[i], CHANGE);
-    }
-  }
+  this->mcp->setupInterruptPin(PinDefs::mcp_menu, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_up, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_record, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_left, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_down, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_right, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_one, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_two, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_trigger, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_power, CHANGE);
+  this->mcp->setupInterruptPin(PinDefs::mcp_rotaryInt, LOW);
 }
 
 void Interrupts::loop() {
@@ -62,7 +75,7 @@ void Interrupts::loop() {
     this->state->interrupt.mcp = mcpPin;
     this->mcp->clearInterrupts();
 
-    if (mcpPin != this->miscIO->rotaryInt) {
+    if (mcpPin != PinDefs::mcp_rotaryInt) {
       return;
     }
   }

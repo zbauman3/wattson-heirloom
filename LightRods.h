@@ -1,3 +1,4 @@
+#include "./PinDefs.h"
 #include <Adafruit_NeoPixel.h>
 #include <Arduino.h>
 
@@ -7,10 +8,9 @@
 class LightRods {
 private:
   Adafruit_NeoPixel neopixels;
-  unsigned int count;
 
 public:
-  LightRods(unsigned int count, signed int pin);
+  LightRods();
   void begin();
   void off();
 

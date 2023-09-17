@@ -4,11 +4,12 @@
 #include <Arduino.h>
 
 #define ROTARY_SWITCH 24
+#define ROTARY_ADDR 0x36
 
-Rotary::Rotary(unsigned int addr) : ss(Adafruit_seesaw()) { this->addr = addr; }
+Rotary::Rotary() : ss(Adafruit_seesaw()) {}
 
 bool Rotary::begin() {
-  if (!this->ss.begin(this->addr)) {
+  if (!this->ss.begin(ROTARY_ADDR)) {
     DEBUG_LN("Couldn't find seesaw on default address.");
     return false;
   }
