@@ -1,6 +1,8 @@
 #ifndef PinDefs_H
 #define PinDefs_H
 
+#define PD_MCP_INPUT_PINS_LEN 10
+
 class PinDefs {
 
 public:
@@ -27,6 +29,9 @@ public:
   static unsigned char mcp_power;
   static unsigned char mcp_trigger;
   static unsigned char mcp_rotaryInt;
+
+  static unsigned char mcpInputPinsLength;
+  static unsigned char mcpInputPins[PD_MCP_INPUT_PINS_LEN];
 };
 
 #endif

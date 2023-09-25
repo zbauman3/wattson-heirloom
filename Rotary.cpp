@@ -6,7 +6,9 @@
 #define ROTARY_SWITCH 24
 #define ROTARY_ADDR 0x36
 
-Rotary::Rotary() : ss(Adafruit_seesaw()) {}
+Rotary::Rotary(State *statePtr) : ss(Adafruit_seesaw()) {
+  this->state = statePtr;
+}
 
 bool Rotary::begin() {
   if (!this->ss.begin(ROTARY_ADDR)) {
@@ -20,6 +22,10 @@ bool Rotary::begin() {
     return false;
   }
 
+  // trigger state updates
+  this->getValue();
+  this->isPressed();
+
   return true;
 }
 
@@ -28,5 +34,14 @@ void Rotary::enableInterrupts() {
   this->ss.enableEncoderInterrupt();
 }
 
-signed long Rotary::getValue() { return this->ss.getEncoderPosition(); }
-bool Rotary::isPressed() { return this->ss.digitalRead(ROTARY_SWITCH) == LOW; }
+signed long Rotary::getValue() {
+  signed long pos = this->ss.getEncoderPosition();
+  this->state->rotary_position = pos;
+  return this->state->rotary_position;
+}
+
+bool Rotary::isPressed() {
+  bool btn = this->ss.digitalRead(ROTARY_SWITCH);
+  this->state->rotary_btn = !btn;
+  return this->state->rotary_btn;
+}

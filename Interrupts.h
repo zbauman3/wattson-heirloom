@@ -9,21 +9,21 @@
 #ifndef Interrupts_H
 #define Interrupts_H
 
+#define INTERRUPTS_MAX_CLEAR_MS 2000
+
 class Interrupts {
 private:
-  bool interrupted;
-  signed long lastRotaryValue;
+  unsigned long clearTime;
   State *state;
   Adafruit_MCP23X17 *mcp;
   Rotary *rotary;
 
 public:
+  volatile bool _interrupted;
   Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr, Rotary *rotaryPtr);
 
   void begin();
   void loop();
-
-  void _handleInterrupt();
 };
 
 #endif

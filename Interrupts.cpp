@@ -8,7 +8,7 @@
 
 // can't pass in a class method, need to wrap with this hack.
 Interrupts *mainInterruptHandler;
-void isr() { mainInterruptHandler->_handleInterrupt(); }
+void isr() { mainInterruptHandler->_interrupted = true; }
 
 Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
                        Rotary *rotaryPtr) {
@@ -16,102 +16,112 @@ Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
   this->state = statePtr;
   this->mcp = mcpPtr;
   this->rotary = rotaryPtr;
-  this->interrupted = false;
+  this->_interrupted = false;
 };
 
 void Interrupts::begin() {
+  this->clearTime = millis();
+
+  for (unsigned char i = 0; i < PinDefs::mcpInputPinsLength; i++) {
+    unsigned char pin = PinDefs::mcpInputPins[i];
+    // set all to input
+    this->mcp->pinMode(pin, INPUT_PULLUP);
+    // set init states for all inputs
+    this->state->setMcpValueByPin(pin, false);
+  }
+
+  // enable waterfall interrupts
+  this->mcp->pinMode(PinDefs::mcp_rotaryInt, INPUT_PULLUP);
+
   pinMode(PinDefs::interrupts, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PinDefs::interrupts), isr, FALLING);
 
-  this->mcp->pinMode(PinDefs::mcp_menu, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_up, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_record, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_left, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_down, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_right, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_one, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_two, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_trigger, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_power, INPUT_PULLUP);
-  this->mcp->pinMode(PinDefs::mcp_rotaryInt, INPUT_PULLUP);
-
-  this->lastRotaryValue = this->rotary->getValue();
+  this->mcp->setupInterrupts(true, false, LOW);
+  // enable interrupts
   this->rotary->enableInterrupts();
 
-  this->mcp->setupInterrupts(true, false, LOW);
+  for (unsigned char i = 0; i < PinDefs::mcpInputPinsLength; i++) {
+    // enable/set all pin interrupt modes
+    this->mcp->setupInterruptPin(PinDefs::mcpInputPins[i], CHANGE);
+  }
 
-  this->mcp->setupInterruptPin(PinDefs::mcp_menu, CHANGE);
-  this->mcp->setupInterruptPin(PinDefs::mcp_up, CHANGE);
-  this->mcp->setupInterruptPin(PinDefs::mcp_record, CHANGE);
-  this->mcp->setupInterruptPin(PinDefs::mcp_left, CHANGE);
-  this->mcp->setupInterruptPin(PinDefs::mcp_down, CHANGE);
-  this->mcp->setupInterruptPin(PinDefs::mcp_right, CHANGE);
-  this->mcp->setupInterruptPin(PinDefs::mcp_one, CHANGE);
-  this->mcp->setupInterruptPin(PinDefs::mcp_two, CHANGE);
-  this->mcp->setupInterruptPin(PinDefs::mcp_trigger, CHANGE);
-  this->mcp->setupInterruptPin(PinDefs::mcp_power, CHANGE);
+  // waterfall interrupts only matter on their initial transition
   this->mcp->setupInterruptPin(PinDefs::mcp_rotaryInt, LOW);
 }
 
 void Interrupts::loop() {
-  if (!this->interrupted) {
+  unsigned long nowTime = millis();
+
+  if (!this->_interrupted) {
     // if this is not an interrupt cycle, reset the state
     if (this->state->hasInterrupt()) {
       this->state->interrupt.type = STATE_INTR_EMPTY;
     }
 
+    // TODO this is a hack for when interrupts hang. Seems to be that the
+    // `_interrupted` flag get changed between check and reset
+    if (nowTime - this->clearTime > INTERRUPTS_MAX_CLEAR_MS) {
+      // DEBUG_F("Clearing interrupts: %d\n", nowTime);
+      this->clearTime = nowTime;
+      this->rotary->getValue();
+      this->rotary->isPressed();
+      this->mcp->clearInterrupts();
+    }
+
     return;
   }
-  this->interrupted = false;
-
-  DEBUG_LN("---Interrupt---");
+  this->_interrupted = false;
+  this->clearTime = nowTime;
 
   unsigned char mcpPin = this->mcp->getLastInterruptPin();
-  if (mcpPin < 255) {
-    DEBUG_F("MCP: %d\n", mcpPin);
-    DEBUG("Captured interrupt: ");
-    DEBUG_LN(this->mcp->getCapturedInterrupt(), BIN);
+
+  DEBUG_LN("---Interrupt---");
+  DEBUG_F("MCP: %d\n", mcpPin);
+
+  if (mcpPin != PinDefs::mcp_rotaryInt) {
     this->state->interrupt.type = STATE_INTR_MCP;
     this->state->interrupt.mcp = mcpPin;
-    this->mcp->clearInterrupts();
 
-    if (mcpPin != PinDefs::mcp_rotaryInt) {
-      return;
+    unsigned int capturedInterrupt = this->mcp->getCapturedInterrupt();
+    DEBUG("Captured interrupt: ");
+    DEBUG_LN(capturedInterrupt, BIN);
+
+    for (unsigned char i = 0; i < PinDefs::mcpInputPinsLength; i++) {
+      unsigned char pin = PinDefs::mcpInputPins[i];
+      // set value by bitmap
+      this->state->setMcpValueByPin(pin,
+                                    !((capturedInterrupt & (1 << pin)) >> pin));
     }
+
+    this->mcp->clearInterrupts();
+    return;
   }
 
+  // capture this value now, since it will change when read
+  signed long lastRotaryValue = this->state->rotary_position;
+  bool lastRotaryButton = this->state->rotary_btn;
   signed long rotaryValue = this->rotary->getValue();
-  if (rotaryValue != this->lastRotaryValue) {
+  bool rotaryPressed = this->rotary->isPressed();
+
+  if (rotaryValue != lastRotaryValue) {
     DEBUG_F("Rotary: %d\n", rotaryValue);
     this->state->interrupt.type = STATE_INTR_ROTARY;
     this->state->interrupt.rotary = rotaryValue;
-    this->lastRotaryValue = rotaryValue;
-    return;
-  }
-
-  bool rotaryPressed = this->rotary->isPressed();
-  if (rotaryPressed) {
+  } else if (rotaryPressed != lastRotaryButton) {
     DEBUG_F("Rotary Btn %d\n", rotaryPressed);
     this->state->interrupt.type = STATE_INTR_ROTARY_BTN;
     this->state->interrupt.rotaryPressed = rotaryPressed;
-    return;
-  }
-
-  DEBUG_BLOCK({
-    DEBUG_F("MCP: %d\n", mcpPin);
+  } else {
+    DEBUG_LN("MISS");
     DEBUG_F("Rotary: %d\n", rotaryValue);
     DEBUG_F("Rotary Btn %d\n", rotaryPressed);
-    DEBUG("Captured interrupt: ");
-    DEBUG_LN(this->mcp->getCapturedInterrupt(), BIN);
-  });
 
-  // TODO this should likely just be the rotary. Do that?
-  //
-  // could be rotary button up, could be mcp and something read / wrote to it
-  // before we could read `getLastInterruptPin`
-  this->state->interrupt.type = STATE_INTR_EMPTY;
-  this->state->interrupt.mcp = 0;
+    // TODO this should likely just be the rotary. Do that?
+    //
+    // could be rotary button up, could be mcp and something read / wrote to it
+    // before we could read `getLastInterruptPin`
+    this->state->interrupt.type = STATE_INTR_EMPTY;
+  }
+
   this->mcp->clearInterrupts();
 }
-
-void Interrupts::_handleInterrupt() { this->interrupted = true; }

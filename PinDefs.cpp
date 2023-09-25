@@ -23,3 +23,10 @@ unsigned char PinDefs::mcp_screenDimmer = 12;
 unsigned char PinDefs::mcp_vibeLeft = 13;
 unsigned char PinDefs::mcp_vibeRight = 14;
 unsigned char PinDefs::mcp_rotaryInt = 15;
+
+unsigned char PinDefs::mcpInputPinsLength = PD_MCP_INPUT_PINS_LEN;
+unsigned char PinDefs::mcpInputPins[PD_MCP_INPUT_PINS_LEN] = {
+    PinDefs::mcp_menu,   PinDefs::mcp_up,   PinDefs::mcp_record,
+    PinDefs::mcp_left,   PinDefs::mcp_down, PinDefs::mcp_right,
+    PinDefs::mcp_one,    PinDefs::mcp_two,  PinDefs::mcp_power,
+    PinDefs::mcp_trigger};

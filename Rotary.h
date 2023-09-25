@@ -1,4 +1,5 @@
 #include "./Macros.h"
+#include "./State.h"
 #include "Adafruit_seesaw.h"
 #include <Arduino.h>
 
@@ -8,9 +9,10 @@
 class Rotary {
 private:
   Adafruit_seesaw ss;
+  State *state;
 
 public:
-  Rotary();
+  Rotary(State *statePtr);
   bool begin();
   void enableInterrupts();
   signed long getValue();

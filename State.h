@@ -1,3 +1,4 @@
+#include "./PinDefs.h"
 #include <Arduino.h>
 
 #ifndef State_H
@@ -19,11 +20,25 @@ typedef struct {
 
 class State {
 public:
-  State();
+  bool mcp_menu;
+  bool mcp_up;
+  bool mcp_record;
+  bool mcp_left;
+  bool mcp_down;
+  bool mcp_right;
+  bool mcp_one;
+  bool mcp_two;
+  bool mcp_power;
+  bool mcp_trigger;
+
+  bool rotary_btn;
+  signed long rotary_position;
 
   interruptState interrupt;
 
+  State();
   bool hasInterrupt();
+  void setMcpValueByPin(unsigned char pin, bool value);
 };
 
 #endif
