@@ -4,8 +4,6 @@
 #ifndef Joystick_H
 #define Joystick_H
 
-#define NUM_SAMPLES 255
-
 typedef struct {
   unsigned char lr;
   unsigned char ud;

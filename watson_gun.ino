@@ -22,7 +22,6 @@ Interrupts interrupts = Interrupts(&state, &mcp, &rotary);
 void setup() {
   DEBUG_INIT(9600);
   DEBUG_LN("Started!");
-  analogReadResolution(8);
 
   if (!mcp.begin_I2C()) {
     DEBUG_LN("Error beginning MCP23017.");
