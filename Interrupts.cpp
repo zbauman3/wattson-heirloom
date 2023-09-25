@@ -52,33 +52,31 @@ void Interrupts::begin() {
 void Interrupts::loop() {
   unsigned long nowTime = millis();
 
-  if (!this->_interrupted) {
+  // TODO this `clearTime` check is a hack for when interrupts hang. Seems to be
+  // that the `_interrupted` flag get changed between check and reset
+  if (!this->_interrupted &&
+      nowTime - this->clearTime < INTERRUPTS_MAX_CLEAR_MS) {
     // if this is not an interrupt cycle, reset the state
     if (this->state->hasInterrupt()) {
       this->state->interrupt.type = STATE_INTR_EMPTY;
     }
 
-    // TODO this is a hack for when interrupts hang. Seems to be that the
-    // `_interrupted` flag get changed between check and reset
-    if (nowTime - this->clearTime > INTERRUPTS_MAX_CLEAR_MS) {
-      // DEBUG_F("Clearing interrupts: %d\n", nowTime);
-      this->clearTime = nowTime;
-      this->rotary->getValue();
-      this->rotary->isPressed();
-      this->mcp->clearInterrupts();
-    }
-
     return;
   }
+
   this->_interrupted = false;
   this->clearTime = nowTime;
 
   unsigned char mcpPin = this->mcp->getLastInterruptPin();
 
-  DEBUG_LN("---Interrupt---");
-  DEBUG_F("MCP: %d\n", mcpPin);
+  DEBUG_BLOCK({
+    if (mcpPin != 255) {
+      DEBUG_F("Interrupt - MCP: %d\n", mcpPin);
+    }
+  });
 
-  if (mcpPin != PinDefs::mcp_rotaryInt) {
+  // TODO this `mcpPin != 255` check can be removed after the `clearTime` hack
+  if (mcpPin != PinDefs::mcp_rotaryInt && mcpPin != 255) {
     this->state->interrupt.type = STATE_INTR_MCP;
     this->state->interrupt.mcp = mcpPin;
 
@@ -112,14 +110,9 @@ void Interrupts::loop() {
     this->state->interrupt.type = STATE_INTR_ROTARY_BTN;
     this->state->interrupt.rotaryPressed = rotaryPressed;
   } else {
-    DEBUG_LN("MISS");
-    DEBUG_F("Rotary: %d\n", rotaryValue);
-    DEBUG_F("Rotary Btn %d\n", rotaryPressed);
-
-    // TODO this should likely just be the rotary. Do that?
-    //
-    // could be rotary button up, could be mcp and something read / wrote to it
-    // before we could read `getLastInterruptPin`
+    // DEBUG_LN("MISS");
+    // DEBUG_F("Rotary: %d\n", rotaryValue);
+    // DEBUG_F("Rotary Btn %d\n", rotaryPressed);
     this->state->interrupt.type = STATE_INTR_EMPTY;
   }
 
