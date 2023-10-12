@@ -34,6 +34,11 @@ public:
   bool rotary_btn;
   signed long rotary_position;
 
+  unsigned char screenBrightness;
+
+  unsigned char joystick_ud;
+  unsigned char joystick_lr;
+
   interruptState interrupt;
 
   State();

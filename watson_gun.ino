@@ -7,16 +7,17 @@
 #include "./Screen.h"
 #include "./State.h"
 #include "./Vibration.h"
+#include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
 
 Adafruit_MCP23X17 mcp;
-State state = State();
-LightRods lightRods = LightRods();
-Joystick joystick;
+State state;
+LightRods lightRods;
+Joystick joystick(&state);
 FeedbackLEDs feedbackLEDs = FeedbackLEDs(&mcp);
 Rotary rotary = Rotary(&state);
-Screen screen = Screen(&mcp);
-Vibration vibe = Vibration(&mcp);
+Screen screen(&state, &mcp, &joystick);
+Vibration vibe(&mcp);
 Interrupts interrupts = Interrupts(&state, &mcp, &rotary);
 
 void setup() {
@@ -38,12 +39,15 @@ void setup() {
   feedbackLEDs.begin();
   vibe.begin();
   interrupts.begin();
+
+  ace_routine::CoroutineScheduler::setup();
 }
 
 // TODO move this to the screen
 bool firstDraw = true;
 
 void loop(void) {
+  ace_routine::CoroutineScheduler::loop();
 
   interrupts.loop();
 
@@ -55,34 +59,18 @@ void loop(void) {
 
   firstDraw = false;
 
-  joystickValues joystickPos = joystick.sample();
-
-  screen.tmp_display(joystickPos.lr, joystickPos.ud, state.rotary_position,
-                     state.rotary_btn, state.mcp_menu, state.mcp_up,
-                     state.mcp_record, state.mcp_left, state.mcp_down,
-                     state.mcp_right, state.mcp_one, state.mcp_two,
-                     state.mcp_power, state.mcp_trigger);
+  screen.tmp_display();
 
   if (state.mcp_menu) {
-    if (state.mcp_power) {
-      lightRods.tmp_fill(255, 0, 255);
-    } else {
-      lightRods.tmp_fill(122, 0, 122);
-    }
-    delay(150);
-    lightRods.off();
+    lightRods.tmp_flash();
   }
 
   if (state.mcp_up) {
-    feedbackLEDs.setGreen(HIGH);
-    delay(150);
-    feedbackLEDs.setGreen(LOW);
+    feedbackLEDs.flashGreen();
   }
 
   if (state.mcp_record) {
-    feedbackLEDs.setRed(HIGH);
-    delay(150);
-    feedbackLEDs.setRed(LOW);
+    feedbackLEDs.flashRed();
   }
 
   if (state.mcp_left) {

@@ -1,26 +1,59 @@
 #include "./FeedbackLEDs.h"
 #include "./PinDefs.h"
+#include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
+using namespace ace_routine;
 
-FeedbackLEDs::FeedbackLEDs(Adafruit_MCP23X17 *mcpPtr) { this->mcp = mcpPtr; }
+//--------FeedbackLEDRoutine
+
+FeedbackLEDRoutine::FeedbackLEDRoutine(Adafruit_MCP23X17 *mcpPtr,
+                                       unsigned char pin) {
+  this->mcp = mcpPtr;
+  this->pin = pin;
+  this->routine = 0;
+}
+
+void FeedbackLEDRoutine::begin() {
+  this->mcp->pinMode(this->pin, OUTPUT);
+  this->set(LOW);
+}
+
+void FeedbackLEDRoutine::set(unsigned char state) {
+  this->mcp->digitalWrite(this->pin, state);
+}
+
+int FeedbackLEDRoutine::runCoroutine() {
+  COROUTINE_BEGIN();
+
+  if (this->routine == 1) {
+    this->set(HIGH);
+    COROUTINE_DELAY(150);
+    this->set(LOW);
+  }
+
+  this->routine = 0;
+
+  COROUTINE_END();
+}
+
+void FeedbackLEDRoutine::flash() {
+  this->routine = 1;
+  this->reset();
+}
+
+//--------FeedbackLEDs
+
+FeedbackLEDs::FeedbackLEDs(Adafruit_MCP23X17 *mcpPtr) {
+  this->greenRoutine = new FeedbackLEDRoutine(mcpPtr, PinDefs::mcp_ledGreen);
+  this->redRoutine = new FeedbackLEDRoutine(mcpPtr, PinDefs::mcp_ledRed);
+}
 
 void FeedbackLEDs::begin() {
-  this->mcp->pinMode(PinDefs::mcp_ledRed, OUTPUT);
-  this->mcp->pinMode(PinDefs::mcp_ledGreen, OUTPUT);
-
-  this->set(PinDefs::mcp_ledRed, LOW);
-  this->set(PinDefs::mcp_ledGreen, LOW);
+  this->greenRoutine->begin();
+  this->redRoutine->begin();
 }
 
-void FeedbackLEDs::set(unsigned char which, unsigned char state) {
-  this->mcp->digitalWrite(which, state);
-}
+void FeedbackLEDs::flashGreen() { this->greenRoutine->flash(); }
 
-void FeedbackLEDs::setRed(unsigned char state) {
-  this->set(PinDefs::mcp_ledRed, state);
-}
-
-void FeedbackLEDs::setGreen(unsigned char state) {
-  this->set(PinDefs::mcp_ledGreen, state);
-}
+void FeedbackLEDs::flashRed() { this->redRoutine->flash(); }

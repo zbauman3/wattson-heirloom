@@ -1,18 +1,24 @@
 #include "./Macros.h"
 #include "./PinDefs.h"
+#include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
 #ifndef Vibration_H
 #define Vibration_H
 
-class Vibration {
+class Vibration : public ace_routine::Coroutine {
 private:
   Adafruit_MCP23X17 *mcp;
+
+  // 0: off
+  // 1: quick vibration
+  unsigned char routine;
 
 public:
   Vibration(Adafruit_MCP23X17 *mcpPtr);
 
+  int runCoroutine() override;
   void begin();
   void tmp_vibrate();
 };

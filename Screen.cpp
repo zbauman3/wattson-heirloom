@@ -1,19 +1,25 @@
 #include "./Screen.h"
 #include "./Macros.h"
 #include "./PinDefs.h"
+#include "./State.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
+#include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
+using namespace ace_routine;
 
-Screen::Screen(Adafruit_MCP23X17 *mcpPtr)
+Screen::Screen(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
+               Joystick *joystickPtr)
     : tft(Adafruit_ILI9341(PinDefs::screenCS, PinDefs::screenDC)) {
   this->mcp = mcpPtr;
+  this->joystick = joystickPtr;
+  this->state = statePtr;
 }
 
 void Screen::begin() {
   this->mcp->pinMode(PinDefs::mcp_screenDimmer, OUTPUT);
-  this->setBrightness(SCREEN_BRIGHTNESS_LOW);
+  this->setBrightness(LOW);
 
   // give TFT time to boot
   delay(250);
@@ -41,56 +47,59 @@ void Screen::begin() {
   });
 }
 
-void Screen::setBrightness(unsigned char brightness) {
-  switch (brightness) {
-  case SCREEN_BRIGHTNESS_LOW:
-    this->mcp->digitalWrite(PinDefs::mcp_screenDimmer, LOW);
-    break;
-  case SCREEN_BRIGHTNESS_HIGH:
-  default:
-    this->mcp->digitalWrite(PinDefs::mcp_screenDimmer, HIGH);
-    break;
+int Screen::runCoroutine() {
+  COROUTINE_BEGIN();
+
+  if (this->routine == 1) {
+    this->joystick->sample();
+
+    COROUTINE_YIELD();
+
+    tft.setCursor(0, 0);
+    tft.setTextColor(ILI9341_DARKGREEN, ILI9341_BLACK);
+    tft.setTextSize(2);
+    tft.setTextWrap(false);
+
+    COROUTINE_YIELD();
+
+    tft.printf("joystick lr:      %d         \n", this->state->joystick_lr);
+    tft.printf("joystick ud:      %d         \n", this->state->joystick_ud);
+    tft.printf("rotary_pos:       %d         \n", this->state->rotary_position);
+    tft.printf("rotary_isPressed: %d         \n", this->state->rotary_btn);
+    tft.printf("btn_0_pressed:    %d         \n", this->state->mcp_menu);
+    tft.printf("btn_1_pressed:    %d         \n", this->state->mcp_up);
+    tft.printf("btn_2_pressed:    %d         \n", this->state->mcp_record);
+
+    COROUTINE_YIELD();
+
+    tft.printf("btn_3_pressed:    %d         \n", this->state->mcp_left);
+    tft.printf("btn_4_pressed:    %d         \n", this->state->mcp_down);
+    tft.printf("btn_5_pressed:    %d         \n", this->state->mcp_right);
+    tft.printf("btn_6_pressed:    %d         \n", this->state->mcp_one);
+    tft.printf("btn_7_pressed:    %d         \n", this->state->mcp_two);
+    tft.printf("power_plug_gnd:   %d         \n", this->state->mcp_power);
+    tft.printf("trigger_pressed:  %d         \n", this->state->mcp_trigger);
   }
+
+  this->routine = 0;
+
+  COROUTINE_END();
+}
+
+void Screen::setBrightness(unsigned char brightness) {
+  this->mcp->digitalWrite(PinDefs::mcp_screenDimmer, brightness);
+  this->state->screenBrightness = brightness;
 }
 
 void Screen::toggleBrightness() {
-  unsigned char currentBrightness =
-      this->mcp->digitalRead(PinDefs::mcp_screenDimmer);
-  switch (currentBrightness) {
-  case LOW:
-    this->setBrightness(SCREEN_BRIGHTNESS_HIGH);
-    break;
-  case HIGH:
-  default:
-    this->setBrightness(SCREEN_BRIGHTNESS_LOW);
-    break;
+  if (this->state->screenBrightness == LOW) {
+    this->setBrightness(HIGH);
+  } else {
+    this->setBrightness(LOW);
   }
 }
 
-void Screen::tmp_display(unsigned char joystickLr, unsigned char joystickUd,
-                         signed long rotary_pos, bool rotary_isPressed,
-                         bool btn_0_pressed, bool btn_1_pressed,
-                         bool btn_2_pressed, bool btn_3_pressed,
-                         bool btn_4_pressed, bool btn_5_pressed,
-                         bool btn_6_pressed, bool btn_7_pressed,
-                         bool power_plug_grounded, bool trigger_pressed) {
-  tft.setCursor(0, 0);
-  tft.setTextColor(ILI9341_DARKGREEN, ILI9341_BLACK);
-  tft.setTextSize(2);
-  tft.setTextWrap(false);
-
-  tft.printf("joystick lr:      %d         \n", joystickLr);
-  tft.printf("joystick ud:      %d         \n", joystickUd);
-  tft.printf("rotary_pos:       %d         \n", rotary_pos);
-  tft.printf("rotary_isPressed: %d         \n", rotary_isPressed);
-  tft.printf("btn_0_pressed:    %d         \n", btn_0_pressed);
-  tft.printf("btn_1_pressed:    %d         \n", btn_1_pressed);
-  tft.printf("btn_2_pressed:    %d         \n", btn_2_pressed);
-  tft.printf("btn_3_pressed:    %d         \n", btn_3_pressed);
-  tft.printf("btn_4_pressed:    %d         \n", btn_4_pressed);
-  tft.printf("btn_5_pressed:    %d         \n", btn_5_pressed);
-  tft.printf("btn_6_pressed:    %d         \n", btn_6_pressed);
-  tft.printf("btn_7_pressed:    %d         \n", btn_7_pressed);
-  tft.printf("power_plug_gnd:   %d         \n", power_plug_grounded);
-  tft.printf("trigger_pressed:  %d         \n", trigger_pressed);
+void Screen::tmp_display() {
+  this->routine = 1;
+  this->reset();
 }

@@ -1,18 +1,19 @@
 #include "./PinDefs.h"
+#include "./State.h"
 #include <Arduino.h>
 
 #ifndef Joystick_H
 #define Joystick_H
 
-typedef struct {
-  unsigned char lr;
-  unsigned char ud;
-} joystickValues;
-
 // this expects the analogReadResolution to be `8`
 class Joystick {
+private:
+  State *state;
+
 public:
-  joystickValues sample();
+  Joystick(State *statePtr);
+
+  void sample();
   void begin();
 };
 

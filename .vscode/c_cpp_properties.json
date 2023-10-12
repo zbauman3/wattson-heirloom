@@ -216,6 +216,8 @@
                 "/Users/zanebauman/Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/tools/sdk/esp32c3/qio_qspi/include",
                 "/Users/zanebauman/Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/cores/esp32",
                 "/Users/zanebauman/Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/variants/adafruit_qtpy_esp32c3",
+                "/Users/zanebauman/Documents/Arduino/libraries/AceRoutine/src",
+                "/Users/zanebauman/Documents/Arduino/libraries/AceCommon/src",
                 "/Users/zanebauman/Documents/Arduino/libraries/Adafruit_MCP23017_Arduino_Library/src",
                 "/Users/zanebauman/Documents/Arduino/libraries/Adafruit_BusIO",
                 "/Users/zanebauman/Library/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/Wire/src",

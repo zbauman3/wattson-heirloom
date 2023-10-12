@@ -1,20 +1,28 @@
 #include "./PinDefs.h"
+#include <AceRoutine.h>
 #include <Adafruit_NeoPixel.h>
 #include <Arduino.h>
 
 #ifndef LightRods_h
 #define LightRods_h
 
-class LightRods {
+class LightRods : public ace_routine::Coroutine {
 private:
   Adafruit_NeoPixel neopixels;
 
-public:
-  LightRods();
-  void begin();
+  // 0: off
+  // 1: 1 quick flash
+  unsigned char routine;
+
   void off();
 
-  void tmp_fill(unsigned char r, unsigned char g, unsigned char b);
+public:
+  LightRods();
+
+  void begin();
+  int runCoroutine() override;
+
+  void tmp_flash();
 };
 
 #endif
