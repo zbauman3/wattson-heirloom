@@ -11,8 +11,9 @@ private:
   Adafruit_NeoPixel neopixels;
 
   // 0: off
-  // 1: 1 quick flash
+  // 1: trigger - quick
   unsigned char routine;
+  unsigned short int routineLoop;
 
   void off();
 
@@ -22,7 +23,7 @@ public:
   void begin();
   int runCoroutine() override;
 
-  void tmp_flash();
+  void startPattern(unsigned char routine);
 };
 
 #endif

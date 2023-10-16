@@ -21,6 +21,7 @@ private:
   // 0: off
   // 1: tmp display
   unsigned char routine;
+  unsigned short int routineLoop;
 
 public:
   Screen(State *statePtr, Adafruit_MCP23X17 *mcpPtr, Joystick *joystickPtr);

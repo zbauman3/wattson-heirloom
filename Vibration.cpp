@@ -18,11 +18,26 @@ void Vibration::begin() {
 
 int Vibration::runCoroutine() {
   COROUTINE_BEGIN();
-
   if (this->routine == 1) {
+    this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, LOW);
+    this->mcp->digitalWrite(PinDefs::mcp_vibeRight, LOW);
+
+    for (this->routineLoop = 1; this->routineLoop <= 20; this->routineLoop++) {
+      if (this->routineLoop % 2 == 0) {
+        this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, HIGH);
+        this->mcp->digitalWrite(PinDefs::mcp_vibeRight, LOW);
+      } else {
+        this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, LOW);
+        this->mcp->digitalWrite(PinDefs::mcp_vibeRight, HIGH);
+      }
+
+      float percent = this->routineLoop / float(20);
+      COROUTINE_DELAY(char(325 - (250 / percent)));
+    }
+
     this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, HIGH);
     this->mcp->digitalWrite(PinDefs::mcp_vibeRight, HIGH);
-    COROUTINE_DELAY(150);
+    COROUTINE_DELAY(500);
     this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, LOW);
     this->mcp->digitalWrite(PinDefs::mcp_vibeRight, LOW);
   }
@@ -32,7 +47,11 @@ int Vibration::runCoroutine() {
   COROUTINE_END();
 }
 
-void Vibration::tmp_vibrate() {
-  this->routine = 1;
+void Vibration::startPattern(unsigned char which) {
+  if (which <= 0 || which > 1) {
+    return;
+  }
+
+  this->routine = which;
   this->reset();
 }

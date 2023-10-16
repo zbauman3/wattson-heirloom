@@ -61,10 +61,6 @@ void loop(void) {
 
   screen.tmp_display();
 
-  if (state.mcp_menu) {
-    lightRods.tmp_flash();
-  }
-
   if (state.mcp_up) {
     feedbackLEDs.flashGreen();
   }
@@ -77,7 +73,8 @@ void loop(void) {
     screen.toggleBrightness();
   }
 
-  if (state.mcp_down) {
-    vibe.tmp_vibrate();
+  if (state.mcp_trigger) {
+    lightRods.startPattern(1);
+    vibe.startPattern(1);
   }
 }

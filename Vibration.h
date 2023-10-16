@@ -12,15 +12,17 @@ private:
   Adafruit_MCP23X17 *mcp;
 
   // 0: off
-  // 1: quick vibration
+  // 1: trigger - quick
   unsigned char routine;
+  unsigned short int routineLoop;
 
 public:
   Vibration(Adafruit_MCP23X17 *mcpPtr);
 
   int runCoroutine() override;
   void begin();
-  void tmp_vibrate();
+
+  void startPattern(unsigned char which);
 };
 
 #endif
