@@ -22,7 +22,7 @@ int Vibration::runCoroutine() {
     this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, LOW);
     this->mcp->digitalWrite(PinDefs::mcp_vibeRight, LOW);
 
-    for (this->routineLoop = 1; this->routineLoop <= 20; this->routineLoop++) {
+    for (this->routineLoop = 1; this->routineLoop <= 10; this->routineLoop++) {
       if (this->routineLoop % 2 == 0) {
         this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, HIGH);
         this->mcp->digitalWrite(PinDefs::mcp_vibeRight, LOW);
@@ -31,8 +31,8 @@ int Vibration::runCoroutine() {
         this->mcp->digitalWrite(PinDefs::mcp_vibeRight, HIGH);
       }
 
-      float percent = this->routineLoop / float(20);
-      COROUTINE_DELAY(char(325 - (250 / percent)));
+      float percent = this->routineLoop / float(10);
+      COROUTINE_DELAY(char(650 - (500 / percent)));
     }
 
     this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, HIGH);

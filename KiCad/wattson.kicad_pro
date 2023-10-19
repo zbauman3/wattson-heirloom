@@ -275,10 +275,10 @@
     },
     "net_colors": null,
     "netclass_assignments": {
-      "/SCL": "SCL",
-      "/SDA": "SDA",
       "3.3V": "VIN",
       "GND": "GND",
+      "Net-(U2-SCK)": "SCL",
+      "Net-(U2-SDA)": "SDA",
       "unconnected-(BT1---Pad2)": "GND",
       "unconnected-(SW11-B-Pad2)": "BAT",
       "unconnected-(U2-GPB0-Pad1)": "INT"

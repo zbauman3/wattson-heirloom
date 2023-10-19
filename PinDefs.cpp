@@ -1,11 +1,15 @@
 #include "./PinDefs.h"
 
-unsigned char PinDefs::joystickLR = 0;
-unsigned char PinDefs::joystickUD = 1;
-unsigned char PinDefs::neopixels = 3;
-unsigned char PinDefs::interrupts = 4;
-unsigned char PinDefs::screenDC = 20;
-unsigned char PinDefs::screenCS = 21;
+unsigned char PinDefs::joystickLR = 8;  // 0 - 8
+unsigned char PinDefs::joystickUD = 9;  // 1 - 9
+unsigned char PinDefs::neopixels = 17;  // 3 - 17
+unsigned char PinDefs::interrupts = 18; // 4 - 18
+
+unsigned char PinDefs::screenDC = 16; // 20 - 16
+unsigned char PinDefs::screenCS = 5;  // 21 - 5
+
+unsigned char PinDefs::i2cSda = 41;
+unsigned char PinDefs::i2cScl = 40;
 
 unsigned char PinDefs::mcp_menu = 0;
 unsigned char PinDefs::mcp_up = 1;

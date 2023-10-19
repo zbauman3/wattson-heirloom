@@ -30,6 +30,8 @@ void Screen::begin() {
   this->routineLoop = 0;
 
   DEBUG_BLOCK({
+    // give TFT time to init
+    delay(250);
     // read diagnostics
     uint8_t x = this->tft.readcommand8(ILI9341_RDMODE);
     DEBUG("Display Power Mode: 0x");

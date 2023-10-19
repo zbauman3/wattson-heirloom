@@ -21,10 +21,14 @@ Vibration vibe(&mcp);
 Interrupts interrupts = Interrupts(&state, &mcp, &rotary);
 
 void setup() {
+  // ESP32-s2 has different pins for the i2c headers/stemmaQT.
+  // We want to use stemmaQT, so we need to set the pins here.
+  Wire.setPins(PinDefs::i2cSda, PinDefs::i2cScl);
+
   DEBUG_INIT(9600);
   DEBUG_LN("Started!");
 
-  if (!mcp.begin_I2C()) {
+  if (!mcp.begin_I2C(MCP23XXX_ADDR, &Wire)) {
     DEBUG_LN("Error beginning MCP23017.");
     INFINITE_LOOP;
   }

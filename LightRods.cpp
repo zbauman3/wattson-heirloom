@@ -5,7 +5,8 @@
 #include <Arduino.h>
 using namespace ace_routine;
 
-#define NEOPIXEL_COUNT 1 // 144
+#define NEOPIXEL_COUNT 1
+// #define NEOPIXEL_COUNT 144
 
 LightRods::LightRods()
     : neopixels(Adafruit_NeoPixel(NEOPIXEL_COUNT, PinDefs::neopixels,

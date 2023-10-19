@@ -6,7 +6,11 @@
 #define Macros_H
 
 #if (defined(DEBUG_ENABLED) && DEBUG_ENABLED == 1)
-#define DEBUG_INIT(rate) Serial.begin(rate)
+#define DEBUG_INIT(rate)                                                       \
+  Serial.begin(rate);                                                          \
+  while (!Serial) {                                                            \
+    ;                                                                          \
+  }
 #define DEBUG_LN(...) Serial.println(__VA_ARGS__)
 #define DEBUG_F(...) Serial.printf(__VA_ARGS__)
 #define DEBUG(...) Serial.print(__VA_ARGS__)

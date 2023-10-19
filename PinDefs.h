@@ -10,8 +10,12 @@ public:
   static unsigned char joystickUD;
   static unsigned char neopixels;
   static unsigned char interrupts;
+
   static unsigned char screenDC;
   static unsigned char screenCS;
+
+  static unsigned char i2cSda;
+  static unsigned char i2cScl;
 
   static unsigned char mcp_menu;
   static unsigned char mcp_up;
