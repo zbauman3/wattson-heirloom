@@ -11,35 +11,27 @@ Vibration::Vibration(Adafruit_MCP23X17 *mcpPtr) {
   this->routine = 0;
 }
 
-void Vibration::begin() {
-  this->mcp->pinMode(PinDefs::mcp_vibeLeft, OUTPUT);
-  this->mcp->pinMode(PinDefs::mcp_vibeRight, OUTPUT);
-}
+void Vibration::begin() { this->mcp->pinMode(PinDefs::mcp_vibe, OUTPUT); }
 
 int Vibration::runCoroutine() {
   COROUTINE_BEGIN();
   if (this->routine == 1) {
-    this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, LOW);
-    this->mcp->digitalWrite(PinDefs::mcp_vibeRight, LOW);
+    this->mcp->digitalWrite(PinDefs::mcp_vibe, LOW);
 
     for (this->routineLoop = 1; this->routineLoop <= 10; this->routineLoop++) {
       if (this->routineLoop % 2 == 0) {
-        this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, HIGH);
-        this->mcp->digitalWrite(PinDefs::mcp_vibeRight, LOW);
+        this->mcp->digitalWrite(PinDefs::mcp_vibe, HIGH);
       } else {
-        this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, LOW);
-        this->mcp->digitalWrite(PinDefs::mcp_vibeRight, HIGH);
+        this->mcp->digitalWrite(PinDefs::mcp_vibe, LOW);
       }
 
       float percent = this->routineLoop / float(10);
       COROUTINE_DELAY(char(650 - (500 / percent)));
     }
 
-    this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, HIGH);
-    this->mcp->digitalWrite(PinDefs::mcp_vibeRight, HIGH);
+    this->mcp->digitalWrite(PinDefs::mcp_vibe, HIGH);
     COROUTINE_DELAY(500);
-    this->mcp->digitalWrite(PinDefs::mcp_vibeLeft, LOW);
-    this->mcp->digitalWrite(PinDefs::mcp_vibeRight, LOW);
+    this->mcp->digitalWrite(PinDefs::mcp_vibe, LOW);
   }
 
   this->routine = 0;

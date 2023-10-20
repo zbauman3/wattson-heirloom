@@ -9,7 +9,9 @@ public:
   static unsigned char joystickLR;
   static unsigned char joystickUD;
   static unsigned char neopixels;
-  static unsigned char interrupts;
+
+  static unsigned char mcp_interrupts;
+  static unsigned char rotary_interrupts;
 
   static unsigned char screenDC;
   static unsigned char screenCS;
@@ -28,11 +30,9 @@ public:
   static unsigned char mcp_ledGreen;
   static unsigned char mcp_ledRed;
   static unsigned char mcp_screenDimmer;
-  static unsigned char mcp_vibeLeft;
-  static unsigned char mcp_vibeRight;
+  static unsigned char mcp_vibe;
   static unsigned char mcp_power;
   static unsigned char mcp_trigger;
-  static unsigned char mcp_rotaryInt;
 
   static unsigned char mcpInputPinsLength;
   static unsigned char mcpInputPins[PD_MCP_INPUT_PINS_LEN];

@@ -19,7 +19,8 @@ private:
   Rotary *rotary;
 
 public:
-  volatile bool _interrupted;
+  volatile bool _mcp_interrupted;
+  volatile bool _rotary_interrupted;
   Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr, Rotary *rotaryPtr);
 
   void begin();

@@ -8,7 +8,8 @@
 
 // can't pass in a class method, need to wrap with this hack.
 Interrupts *mainInterruptHandler;
-void isr() { mainInterruptHandler->_interrupted = true; }
+void mcp_isr() { mainInterruptHandler->_mcp_interrupted = true; }
+void rotary_isr() { mainInterruptHandler->_rotary_interrupted = true; }
 
 Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
                        Rotary *rotaryPtr) {
@@ -16,7 +17,8 @@ Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
   this->state = statePtr;
   this->mcp = mcpPtr;
   this->rotary = rotaryPtr;
-  this->_interrupted = false;
+  this->_mcp_interrupted = false;
+  this->_rotary_interrupted = false;
 };
 
 void Interrupts::begin() {
@@ -30,11 +32,12 @@ void Interrupts::begin() {
     this->state->setMcpValueByPin(pin, false);
   }
 
-  // enable waterfall interrupts
-  this->mcp->pinMode(PinDefs::mcp_rotaryInt, INPUT_PULLUP);
-
-  pinMode(PinDefs::interrupts, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(PinDefs::interrupts), isr, FALLING);
+  pinMode(PinDefs::mcp_interrupts, INPUT_PULLUP);
+  pinMode(PinDefs::rotary_interrupts, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(PinDefs::mcp_interrupts), mcp_isr,
+                  FALLING);
+  attachInterrupt(digitalPinToInterrupt(PinDefs::rotary_interrupts), rotary_isr,
+                  FALLING);
 
   this->mcp->setupInterrupts(true, false, LOW);
   // enable interrupts
@@ -44,43 +47,26 @@ void Interrupts::begin() {
     // enable/set all pin interrupt modes
     this->mcp->setupInterruptPin(PinDefs::mcpInputPins[i], CHANGE);
   }
-
-  // waterfall interrupts only matter on their initial transition
-  this->mcp->setupInterruptPin(PinDefs::mcp_rotaryInt, LOW);
 }
 
 void Interrupts::loop() {
   unsigned long nowTime = millis();
 
-  // TODO this `clearTime` check is a hack for when interrupts hang. Seems to be
-  // that the `_interrupted` flag get changed between check and reset
-  if (!this->_interrupted &&
-      nowTime - this->clearTime < INTERRUPTS_MAX_CLEAR_MS) {
+  if (!this->_mcp_interrupted && !this->_rotary_interrupted) {
     // if this is not an interrupt cycle, reset the state
-    if (this->state->hasInterrupt()) {
-      this->state->interrupt.type = STATE_INTR_EMPTY;
-    }
-
+    this->state->interrupt.type = STATE_INTR_EMPTY;
     return;
   }
 
-  this->_interrupted = false;
-  this->clearTime = nowTime;
+  if (this->_mcp_interrupted) {
+    this->_mcp_interrupted = false;
+    unsigned char mcpPin = this->mcp->getLastInterruptPin();
+    unsigned int capturedInterrupt = this->mcp->getCapturedInterrupt();
 
-  unsigned char mcpPin = this->mcp->getLastInterruptPin();
-
-  DEBUG_BLOCK({
-    if (mcpPin != 255) {
-      DEBUG_F("Interrupt - MCP: %d\n", mcpPin);
-    }
-  });
-
-  // TODO this `mcpPin != 255` check can be removed after the `clearTime` hack
-  if (mcpPin != PinDefs::mcp_rotaryInt && mcpPin != 255) {
     this->state->interrupt.type = STATE_INTR_MCP;
     this->state->interrupt.mcp = mcpPin;
 
-    unsigned int capturedInterrupt = this->mcp->getCapturedInterrupt();
+    DEBUG_F("Interrupt - MCP: %d\n", mcpPin);
     DEBUG("Captured interrupt: ");
     DEBUG_LN(capturedInterrupt, BIN);
 
@@ -92,29 +78,29 @@ void Interrupts::loop() {
     }
 
     this->mcp->clearInterrupts();
-    return;
   }
 
-  // capture this value now, since it will change when read
-  signed long lastRotaryValue = this->state->rotary_position;
-  bool lastRotaryButton = this->state->rotary_btn;
-  signed long rotaryValue = this->rotary->getValue();
-  bool rotaryPressed = this->rotary->isPressed();
+  if (this->_rotary_interrupted) {
+    this->_rotary_interrupted = false;
+    // capture this value now, since it will change when read
+    signed long lastRotaryValue = this->state->rotary_position;
+    bool lastRotaryButton = this->state->rotary_btn;
+    signed long rotaryValue = this->rotary->getValue();
+    bool rotaryPressed = this->rotary->isPressed();
 
-  if (rotaryValue != lastRotaryValue) {
-    DEBUG_F("Rotary: %d\n", rotaryValue);
-    this->state->interrupt.type = STATE_INTR_ROTARY;
-    this->state->interrupt.rotary = rotaryValue;
-  } else if (rotaryPressed != lastRotaryButton) {
-    DEBUG_F("Rotary Btn %d\n", rotaryPressed);
-    this->state->interrupt.type = STATE_INTR_ROTARY_BTN;
-    this->state->interrupt.rotaryPressed = rotaryPressed;
-  } else {
-    // DEBUG_LN("MISS");
-    // DEBUG_F("Rotary: %d\n", rotaryValue);
-    // DEBUG_F("Rotary Btn %d\n", rotaryPressed);
-    this->state->interrupt.type = STATE_INTR_EMPTY;
+    if (rotaryValue != lastRotaryValue) {
+      DEBUG_F("Rotary: %d\n", rotaryValue);
+      this->state->interrupt.type = STATE_INTR_ROTARY;
+      this->state->interrupt.rotary = rotaryValue;
+    } else if (rotaryPressed != lastRotaryButton) {
+      DEBUG_F("Rotary Btn %d\n", rotaryPressed);
+      this->state->interrupt.type = STATE_INTR_ROTARY_BTN;
+      this->state->interrupt.rotaryPressed = rotaryPressed;
+    } else {
+      // DEBUG_LN("MISS");
+      // DEBUG_F("Rotary: %d\n", rotaryValue);
+      // DEBUG_F("Rotary Btn %d\n", rotaryPressed);
+      this->state->interrupt.type = STATE_INTR_EMPTY;
+    }
   }
-
-  this->mcp->clearInterrupts();
 }
