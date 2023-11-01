@@ -19,6 +19,8 @@ public:
   static unsigned char i2cSda;
   static unsigned char i2cScl;
 
+  static unsigned char vibe;
+
   static unsigned char mcp_menu;
   static unsigned char mcp_up;
   static unsigned char mcp_record;
@@ -30,7 +32,6 @@ public:
   static unsigned char mcp_ledGreen;
   static unsigned char mcp_ledRed;
   static unsigned char mcp_screenDimmer;
-  static unsigned char mcp_vibe;
   static unsigned char mcp_power;
   static unsigned char mcp_trigger;
 

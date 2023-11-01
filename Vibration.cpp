@@ -6,32 +6,35 @@
 #include <Arduino.h>
 using namespace ace_routine;
 
-Vibration::Vibration(Adafruit_MCP23X17 *mcpPtr) {
-  this->mcp = mcpPtr;
-  this->routine = 0;
+Vibration::Vibration() { this->routine = 0; }
+
+void Vibration::begin() {
+  pinMode(PinDefs::vibe, OUTPUT);
+  analogWriteResolution(8);
+  this->set(0);
 }
 
-void Vibration::begin() { this->mcp->pinMode(PinDefs::mcp_vibe, OUTPUT); }
+void Vibration::set(unsigned char value) { analogWrite(PinDefs::vibe, value); }
 
 int Vibration::runCoroutine() {
   COROUTINE_BEGIN();
   if (this->routine == 1) {
-    this->mcp->digitalWrite(PinDefs::mcp_vibe, LOW);
+    this->set(0);
 
     for (this->routineLoop = 1; this->routineLoop <= 10; this->routineLoop++) {
       if (this->routineLoop % 2 == 0) {
-        this->mcp->digitalWrite(PinDefs::mcp_vibe, HIGH);
+        this->set(255);
       } else {
-        this->mcp->digitalWrite(PinDefs::mcp_vibe, LOW);
+        this->set(0);
       }
 
       float percent = this->routineLoop / float(10);
       COROUTINE_DELAY(char(650 - (500 / percent)));
     }
 
-    this->mcp->digitalWrite(PinDefs::mcp_vibe, HIGH);
+    this->set(255);
     COROUTINE_DELAY(500);
-    this->mcp->digitalWrite(PinDefs::mcp_vibe, LOW);
+    this->set(0);
   }
 
   this->routine = 0;

@@ -9,15 +9,15 @@
 
 class Vibration : public ace_routine::Coroutine {
 private:
-  Adafruit_MCP23X17 *mcp;
-
   // 0: off
   // 1: trigger - quick
   unsigned char routine;
   unsigned short int routineLoop;
 
+  void set(unsigned char value);
+
 public:
-  Vibration(Adafruit_MCP23X17 *mcpPtr);
+  Vibration();
 
   int runCoroutine() override;
   void begin();

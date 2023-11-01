@@ -17,10 +17,13 @@ Joystick joystick(&state);
 FeedbackLEDs feedbackLEDs = FeedbackLEDs(&mcp);
 Rotary rotary = Rotary(&state);
 Screen screen(&state, &mcp, &joystick);
-Vibration vibe(&mcp);
+Vibration vibe;
 Interrupts interrupts = Interrupts(&state, &mcp, &rotary);
 
 void setup() {
+
+  vibe.begin();
+
   // ESP32-s2 has different pins for the i2c headers/stemmaQT.
   // We want to use stemmaQT, so we need to set the pins here.
   Wire.setPins(PinDefs::i2cSda, PinDefs::i2cScl);
@@ -41,7 +44,6 @@ void setup() {
   screen.begin();
   joystick.begin();
   feedbackLEDs.begin();
-  vibe.begin();
   interrupts.begin();
 
   ace_routine::CoroutineScheduler::setup();
