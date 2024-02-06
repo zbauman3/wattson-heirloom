@@ -1,9 +1,4 @@
 #include "./Vibration.h"
-#include "./Macros.h"
-#include "./PinDefs.h"
-#include <AceRoutine.h>
-#include <Adafruit_MCP23X17.h>
-#include <Arduino.h>
 using namespace ace_routine;
 
 Vibration::Vibration() { this->routine = 0; }

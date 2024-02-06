@@ -1,8 +1,4 @@
 #include "./LightRods.h"
-#include "./PinDefs.h"
-#include <AceRoutine.h>
-#include <Adafruit_NeoPixel.h>
-#include <Arduino.h>
 using namespace ace_routine;
 
 #define NEOPIXEL_COUNT 1

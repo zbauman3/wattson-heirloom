@@ -22,6 +22,8 @@ Interrupts interrupts = Interrupts(&state, &mcp, &rotary);
 
 void setup() {
 
+  // call immediately to prevent initial Vibration
+  // still needed after pulldown resistor?
   vibe.begin();
 
   // ESP32-s2 has different pins for the i2c headers/stemmaQT.
@@ -45,17 +47,18 @@ void setup() {
   joystick.begin();
   feedbackLEDs.begin();
   interrupts.begin();
-
-  ace_routine::CoroutineScheduler::setup();
 }
 
 // TODO move this to the screen
 bool firstDraw = true;
 
 void loop(void) {
-  ace_routine::CoroutineScheduler::loop();
-
   interrupts.loop();
+
+  feedbackLEDs.loop();
+  lightRods.runCoroutine();
+  screen.loop();
+  vibe.runCoroutine();
 
   if (!firstDraw && !state.hasInterrupt()) {
     return;
@@ -64,8 +67,6 @@ void loop(void) {
   DEBUG_LN("--Acting--");
 
   firstDraw = false;
-
-  screen.tmp_display();
 
   if (state.mcp_up) {
     feedbackLEDs.flashGreen();

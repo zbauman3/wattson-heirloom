@@ -1,7 +1,4 @@
 #include "./Joystick.h"
-#include "./PinDefs.h"
-#include "./State.h"
-#include <Arduino.h>
 
 Joystick::Joystick(State *statePtr) { this->state = statePtr; }
 

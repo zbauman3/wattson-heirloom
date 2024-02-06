@@ -1,5 +1,4 @@
-#include "./Macros.h"
-#include "./PinDefs.h"
+#include "../../PinDefs.h"
 #include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>

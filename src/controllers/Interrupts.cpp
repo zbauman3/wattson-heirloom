@@ -1,10 +1,4 @@
 #include "./Interrupts.h"
-#include "./Macros.h"
-#include "./PinDefs.h"
-#include "./Rotary.h"
-#include "./State.h"
-#include <Adafruit_MCP23X17.h>
-#include <Arduino.h>
 
 // can't pass in a class method, need to wrap with this hack.
 Interrupts *mainInterruptHandler;

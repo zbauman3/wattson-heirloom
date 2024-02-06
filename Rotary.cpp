@@ -1,7 +1,4 @@
 #include "./Rotary.h"
-#include "./Macros.h"
-#include "Adafruit_seesaw.h"
-#include <Arduino.h>
 
 #define ROTARY_SWITCH 24
 #define ROTARY_ADDR 0x36

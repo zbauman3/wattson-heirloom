@@ -1,12 +1,12 @@
-#include "./PinDefs.h"
+#include "../../PinDefs.h"
 #include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
-#ifndef FeedbackLEDs_H
-#define FeedbackLEDs_H
+#ifndef Leds_H
+#define Leds_H
 
-class FeedbackLEDRoutine : public ace_routine::Coroutine {
+class LedRoutine : public ace_routine::Coroutine {
 private:
   Adafruit_MCP23X17 *mcp;
   unsigned char pin;
@@ -18,22 +18,22 @@ private:
   void set(unsigned char state);
 
 public:
-  FeedbackLEDRoutine(Adafruit_MCP23X17 *mcpPtr, unsigned char pin);
+  LedRoutine(Adafruit_MCP23X17 *mcpPtr, unsigned char pin);
 
   int runCoroutine() override;
   void flash();
   void begin();
 };
 
-class FeedbackLEDs {
+class Leds {
 private:
-  FeedbackLEDRoutine *greenRoutine;
-  FeedbackLEDRoutine *redRoutine;
+  LedRoutine *greenRoutine;
+  LedRoutine *redRoutine;
 
 public:
-  FeedbackLEDs(Adafruit_MCP23X17 *mcpPtr);
+  Leds(Adafruit_MCP23X17 *mcpPtr);
   void begin();
-
+  void loop();
   void flashGreen();
   void flashRed();
 };
