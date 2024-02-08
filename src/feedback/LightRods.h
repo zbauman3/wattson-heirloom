@@ -1,4 +1,4 @@
-#include "../../PinDefs.h"
+#include "../config/PinDefs.h"
 #include <AceRoutine.h>
 #include <Adafruit_NeoPixel.h>
 #include <Arduino.h>

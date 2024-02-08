@@ -1,4 +1,4 @@
-#include "../../PinDefs.h"
+#include "../config/PinDefs.h"
 #include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>

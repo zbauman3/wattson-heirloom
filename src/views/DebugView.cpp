@@ -3,7 +3,7 @@ using namespace ace_routine;
 
 DebugView::DebugView(State *statePtr, Adafruit_ILI9341 *tftPtr,
                      Joystick *joystickPtr)
-    : View(statePtr, tftPtr) {
+    : BaseView(statePtr, tftPtr) {
   this->joystick = joystickPtr;
 }
 

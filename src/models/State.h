@@ -1,4 +1,4 @@
-#include "./PinDefs.h"
+#include "../config/PinDefs.h"
 #include <Arduino.h>
 
 #ifndef State_H

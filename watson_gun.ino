@@ -1,12 +1,12 @@
-#include "./FeedbackLEDs.h"
-#include "./Interrupts.h"
-#include "./Joystick.h"
-#include "./LightRods.h"
-#include "./Macros.h"
-#include "./Rotary.h"
-#include "./Screen.h"
-#include "./State.h"
-#include "./Vibration.h"
+#include "./src/config/Macros.h"
+#include "./src/controllers/Interrupts.h"
+#include "./src/controllers/Joystick.h"
+#include "./src/controllers/Rotary.h"
+#include "./src/feedback/Leds.h"
+#include "./src/feedback/LightRods.h"
+#include "./src/feedback/Screen.h"
+#include "./src/feedback/Vibration.h"
+#include "./src/models/State.h"
 #include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
 
@@ -14,7 +14,7 @@ Adafruit_MCP23X17 mcp;
 State state;
 LightRods lightRods;
 Joystick joystick(&state);
-FeedbackLEDs feedbackLEDs = FeedbackLEDs(&mcp);
+Leds feedbackLEDs = Leds(&mcp);
 Rotary rotary = Rotary(&state);
 Screen screen(&state, &mcp, &joystick);
 Vibration vibe;

@@ -1,8 +1,8 @@
 
-#include "../../Macros.h"
-#include "../../PinDefs.h"
-#include "../../Rotary.h"
-#include "../../State.h"
+#include "../config/Macros.h"
+#include "../config/PinDefs.h"
+#include "../models/State.h"
+#include "./Rotary.h"
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 

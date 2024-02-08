@@ -1,8 +1,8 @@
-#include "./Joystick.h"
-#include "./Macros.h"
-#include "./PinDefs.h"
-#include "./State.h"
-#include "./src/views/DebugView.h"
+#include "../config/Macros.h"
+#include "../config/PinDefs.h"
+#include "../controllers/Joystick.h"
+#include "../models/State.h"
+#include "../views/DebugView.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 #include <Adafruit_MCP23X17.h>

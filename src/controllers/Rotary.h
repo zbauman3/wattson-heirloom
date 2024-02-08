@@ -1,5 +1,5 @@
-#include "./Macros.h"
-#include "./State.h"
+#include "../config/Macros.h"
+#include "../models/State.h"
 #include "Adafruit_seesaw.h"
 #include <Arduino.h>
 

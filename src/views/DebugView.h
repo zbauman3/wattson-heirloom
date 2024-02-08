@@ -1,5 +1,5 @@
-#include "../../Joystick.h"
-#include "../../State.h"
+#include "../controllers/Joystick.h"
+#include "../models/State.h"
 #include "./BaseView.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"

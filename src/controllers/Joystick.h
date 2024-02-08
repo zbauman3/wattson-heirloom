@@ -1,5 +1,5 @@
-#include "../../PinDefs.h"
-#include "../../State.h"
+#include "../config/PinDefs.h"
+#include "../models/State.h"
 #include <Arduino.h>
 
 #ifndef Joystick_H
