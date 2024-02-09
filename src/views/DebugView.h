@@ -12,6 +12,8 @@
 class DebugView : public BaseView {
 private:
   Joystick *joystick;
+  uint8_t lastJoystickUd;
+  uint8_t lastJoystickLr;
 
 public:
   DebugView(State *statePtr, Adafruit_ILI9341 *tftPtr, Joystick *joystickPtr);

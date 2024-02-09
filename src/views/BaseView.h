@@ -12,6 +12,9 @@ class BaseView : public ace_routine::Coroutine {
 protected:
   State *state;
   Adafruit_ILI9341 *tft;
+  GFXcanvas16 canvas;
+
+  void sendCanvas();
 
 public:
   BaseView(State *statePtr, Adafruit_ILI9341 *tftPtr);
