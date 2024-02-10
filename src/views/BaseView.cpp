@@ -24,7 +24,6 @@ void BaseView::loop(bool _isInitialRender) {
   if (_isInitialRender) {
     this->reset();
     this->canvas->fillScreen(ILI9341_BLACK);
-    this->sendCanvas();
     this->setup();
   }
 

@@ -9,6 +9,9 @@
 #define STATE_INTR_ROTARY 0x02
 #define STATE_INTR_ROTARY_BTN 0x03
 
+#define STATE_VIEW_DEBUG 0x00
+#define STATE_VIEW_RADAR 0x01
+
 typedef struct {
   unsigned char type;
   union {
@@ -40,6 +43,9 @@ public:
   unsigned char joystick_ud_prev;
   unsigned char joystick_lr;
   unsigned char joystick_ud;
+
+  uint8_t activeView;
+  bool viewChanged;
 
   interruptState interrupt;
 

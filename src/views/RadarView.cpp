@@ -18,7 +18,7 @@ int RadarView::runCoroutine() {
     this->joystick->runCoroutine();
 
     if (this->state->hasInterrupt() && this->state->mcp_menu) {
-      this->setActiveView(VIEW_DEBUG);
+      this->setActiveView(STATE_VIEW_DEBUG);
       COROUTINE_YIELD();
     }
 

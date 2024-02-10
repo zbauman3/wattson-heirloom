@@ -6,6 +6,9 @@ State::State() {
   this->joystick_ud = 0;
   this->joystick_lr_prev = 0;
   this->joystick_ud_prev = 0;
+
+  this->activeView = STATE_VIEW_RADAR;
+  this->viewChanged = true;
 };
 
 bool State::hasInterrupt() { return this->interrupt.type != STATE_INTR_EMPTY; };

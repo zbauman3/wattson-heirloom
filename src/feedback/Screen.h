@@ -18,8 +18,6 @@ private:
   Adafruit_MCP23X17 *mcp;
   State *state;
   Joystick *joystick;
-  uint8_t activeView;
-  bool switchedView;
 
   DebugView debugView;
   RadarView radarView;

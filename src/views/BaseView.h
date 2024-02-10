@@ -9,9 +9,6 @@
 #ifndef BaseView_H
 #define BaseView_H
 
-#define VIEW_DEBUG 0x00
-#define VIEW_RADAR 0x01
-
 #define SetActiveViewPtr(name) void (*name)(uint8_t)
 
 class BaseView : public ace_routine::Coroutine {
