@@ -6,15 +6,15 @@
 #include <AceRoutine.h>
 #include <Arduino.h>
 
-#ifndef DebugView_H
-#define DebugView_H
+#ifndef RadarView_H
+#define RadarView_H
 
-class DebugView : public BaseView {
+class RadarView : public BaseView {
 private:
   Joystick *joystick;
 
 public:
-  DebugView(State *statePtr, Adafruit_ILI9341 *tftPtr, Joystick *joystickPtr);
+  RadarView(State *statePtr, Adafruit_ILI9341 *tftPtr, Joystick *joystickPtr);
   int runCoroutine() override;
 };
 

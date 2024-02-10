@@ -11,6 +11,9 @@
 #ifndef Screen_H
 #define Screen_H
 
+#define SCREEN_VIEW_DEBUG 0x00
+#define SCREEN_VIEW_RADAR 0x01
+
 class Screen {
 private:
   Adafruit_ILI9341 tft;
@@ -19,6 +22,8 @@ private:
   Joystick *joystick;
 
   DebugView debugView;
+
+  uint8_t activeView;
 
 public:
   Screen(State *statePtr, Adafruit_MCP23X17 *mcpPtr, Joystick *joystickPtr);

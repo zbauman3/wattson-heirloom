@@ -13,12 +13,23 @@ void Joystick::sample() {
 
   // shift 4 to get an average of 16. Then shift 4 more to reduce resolution and
   // get a stable 8 bit value
-  this->state->joystick_lr = (unsigned char)(lr >> 8);
-  this->state->joystick_ud = (unsigned char)(ud >> 8);
+  this->state->setJoystick((uint8_t)(lr >> 8), (uint8_t)(ud >> 8));
 }
 
 void Joystick::begin() {
   analogReadResolution(12);
   pinMode(PinDefs::joystickLR, INPUT);
   pinMode(PinDefs::joystickUD, INPUT);
+}
+
+int Joystick::runCoroutine() {
+  COROUTINE_LOOP() {
+    this->sample();
+
+    if (this->state->joystickMoving()) {
+      COROUTINE_YIELD();
+    } else {
+      COROUTINE_DELAY(300);
+    }
+  }
 }

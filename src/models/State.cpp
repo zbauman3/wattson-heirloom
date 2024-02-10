@@ -1,8 +1,34 @@
 #include "./State.h"
 
-State::State() { this->interrupt = {.type = STATE_INTR_EMPTY}; };
+State::State() {
+  this->interrupt = {.type = STATE_INTR_EMPTY};
+  this->joystick_lr = 0;
+  this->joystick_ud = 0;
+  this->joystick_lr_prev = 0;
+  this->joystick_ud_prev = 0;
+};
 
 bool State::hasInterrupt() { return this->interrupt.type != STATE_INTR_EMPTY; };
+
+// outside of dead zone
+bool State::joystickMoving() {
+  return this->joystick_lr < 130 || this->joystick_lr > 190 ||
+         this->joystick_ud < 130 || this->joystick_ud > 190;
+}
+
+bool State::joystickChanged() {
+  return this->joystickMoving() ||
+         abs(this->joystick_lr_prev - this->joystick_lr) > 2 ||
+         abs(this->joystick_ud_prev - this->joystick_ud) > 2;
+}
+
+void State::setJoystick(uint8_t _joystick_lr, uint8_t _joystick_ud) {
+  this->joystick_lr_prev = this->joystick_lr;
+  this->joystick_ud_prev = this->joystick_ud;
+
+  this->joystick_lr = _joystick_lr;
+  this->joystick_ud = _joystick_ud;
+}
 
 void State::setMcpValueByPin(unsigned char pin, bool value) {
   if (PinDefs::mcp_menu == pin) {

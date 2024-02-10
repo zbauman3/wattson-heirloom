@@ -36,13 +36,18 @@ public:
 
   unsigned char screenBrightness;
 
-  unsigned char joystick_ud;
+  unsigned char joystick_lr_prev;
+  unsigned char joystick_ud_prev;
   unsigned char joystick_lr;
+  unsigned char joystick_ud;
 
   interruptState interrupt;
 
   State();
   bool hasInterrupt();
+  void setJoystick(uint8_t joystick_lr, uint8_t joystick_ud);
+  bool joystickMoving();
+  bool joystickChanged();
   void setMcpValueByPin(unsigned char pin, bool value);
 };
 

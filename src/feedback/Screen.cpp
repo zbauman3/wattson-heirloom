@@ -7,6 +7,7 @@ Screen::Screen(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
   this->mcp = mcpPtr;
   this->joystick = joystickPtr;
   this->state = statePtr;
+  this->activeView = SCREEN_VIEW_DEBUG;
 }
 
 void Screen::begin() {
@@ -41,7 +42,18 @@ void Screen::begin() {
   });
 }
 
-void Screen::loop() { this->debugView.runCoroutine(); }
+void Screen::loop() {
+  switch (this->activeView) {
+  case SCREEN_VIEW_RADAR:
+    this->debugView.runCoroutine();
+    break;
+
+  default:
+  case SCREEN_VIEW_DEBUG:
+    this->debugView.runCoroutine();
+    break;
+  }
+}
 
 void Screen::setBrightness(unsigned char brightness) {
   this->mcp->digitalWrite(PinDefs::mcp_screenDimmer, brightness);
