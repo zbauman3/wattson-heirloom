@@ -49,9 +49,6 @@ void setup() {
   interrupts.begin();
 }
 
-// TODO move this to the screen
-bool firstDraw = true;
-
 void loop(void) {
   interrupts.loop();
 
@@ -60,28 +57,23 @@ void loop(void) {
   screen.loop();
   vibe.runCoroutine();
 
-  if (!firstDraw && !state.hasInterrupt()) {
-    return;
-  }
+  // TODO remove this tmp code
+  if (state.hasInterrupt()) {
+    if (state.mcp_up) {
+      feedbackLEDs.flashGreen();
+    }
 
-  DEBUG_LN("--Acting--");
+    if (state.mcp_record) {
+      feedbackLEDs.flashRed();
+    }
 
-  firstDraw = false;
+    if (state.mcp_left) {
+      screen.toggleBrightness();
+    }
 
-  if (state.mcp_up) {
-    feedbackLEDs.flashGreen();
-  }
-
-  if (state.mcp_record) {
-    feedbackLEDs.flashRed();
-  }
-
-  if (state.mcp_left) {
-    screen.toggleBrightness();
-  }
-
-  if (state.mcp_trigger) {
-    lightRods.startPattern(1);
-    vibe.startPattern(1);
+    if (state.mcp_trigger) {
+      lightRods.startPattern(1);
+      vibe.startPattern(1);
+    }
   }
 }

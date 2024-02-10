@@ -2,26 +2,30 @@
 using namespace ace_routine;
 
 DebugView::DebugView(State *statePtr, Adafruit_ILI9341 *tftPtr,
-                     Joystick *joystickPtr)
-    : BaseView(statePtr, tftPtr) {
+                     Joystick *joystickPtr, SetActiveViewPtr(setActiveViewPtr))
+    : BaseView(statePtr, tftPtr, setActiveViewPtr) {
   this->joystick = joystickPtr;
+}
+
+void DebugView::setup() {
+  this->canvas->setTextColor(ILI9341_DARKGREEN, ILI9341_BLACK);
+  this->canvas->setTextSize(2);
+  this->canvas->setTextWrap(false);
 }
 
 int DebugView::runCoroutine() {
   COROUTINE_LOOP() {
     this->joystick->runCoroutine();
 
-    if (!this->rendered || this->state->hasInterrupt() ||
+    if (this->state->hasInterrupt() && this->state->mcp_menu) {
+      this->setActiveView(VIEW_RADAR);
+      COROUTINE_YIELD();
+    }
+
+    if (this->isInitialRender || this->state->hasInterrupt() ||
         this->state->joystickChanged()) {
 
-      COROUTINE_YIELD();
-
       this->canvas->setCursor(0, 0);
-      this->canvas->setTextColor(ILI9341_DARKGREEN, ILI9341_BLACK);
-      this->canvas->setTextSize(2);
-      this->canvas->setTextWrap(false);
-
-      COROUTINE_YIELD();
 
       this->canvas->printf("Joystick lr:      %d         \n",
                            this->state->joystick_lr);
@@ -38,8 +42,6 @@ int DebugView::runCoroutine() {
       this->canvas->printf("btn_2_pressed:    %d         \n",
                            this->state->mcp_record);
 
-      COROUTINE_YIELD();
-
       this->canvas->printf("btn_3_pressed:    %d         \n",
                            this->state->mcp_left);
       this->canvas->printf("btn_4_pressed:    %d         \n",
@@ -55,13 +57,9 @@ int DebugView::runCoroutine() {
       this->canvas->printf("trigger_pressed:  %d         \n",
                            this->state->mcp_trigger);
 
-      COROUTINE_YIELD();
-
       this->sendCanvas();
-
-      this->rendered = true;
-    } else {
-      COROUTINE_YIELD();
     }
+
+    COROUTINE_YIELD();
   }
 }

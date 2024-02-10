@@ -1,13 +1,20 @@
 #include "./Screen.h"
 
+Screen *screenPtr;
+void setActiveViewCallback(uint8_t view) { screenPtr->setActiveView(view); }
+
 Screen::Screen(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
                Joystick *joystickPtr)
     : tft(Adafruit_ILI9341(PinDefs::screenCS, PinDefs::screenDC)),
-      debugView(statePtr, &this->tft, joystickPtr) {
+      debugView(statePtr, &this->tft, joystickPtr, &setActiveViewCallback),
+      radarView(statePtr, &this->tft, joystickPtr, &setActiveViewCallback) {
   this->mcp = mcpPtr;
   this->joystick = joystickPtr;
   this->state = statePtr;
-  this->activeView = SCREEN_VIEW_DEBUG;
+  this->activeView = VIEW_DEBUG;
+  this->switchedView = true;
+
+  screenPtr = this;
 }
 
 void Screen::begin() {
@@ -43,14 +50,21 @@ void Screen::begin() {
 }
 
 void Screen::loop() {
+  // switching view happens inside the views `loop` fn
+  // this means that passing in `switchedView` then
+  // then changing it to `false` at the end of this fn
+  // immediately overrides the `true` inside `setActiveView`
+  bool didSwitchView = this->switchedView;
+  this->switchedView = false;
+
   switch (this->activeView) {
-  case SCREEN_VIEW_RADAR:
-    this->debugView.runCoroutine();
+  case VIEW_RADAR:
+    this->radarView.loop(didSwitchView);
     break;
 
   default:
-  case SCREEN_VIEW_DEBUG:
-    this->debugView.runCoroutine();
+  case VIEW_DEBUG:
+    this->debugView.loop(didSwitchView);
     break;
   }
 }
@@ -66,4 +80,9 @@ void Screen::toggleBrightness() {
   } else {
     this->setBrightness(LOW);
   }
+}
+
+void Screen::setActiveView(uint8_t view) {
+  this->activeView = view;
+  this->switchedView = true;
 }

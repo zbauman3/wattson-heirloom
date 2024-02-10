@@ -14,8 +14,10 @@ private:
   Joystick *joystick;
 
 public:
-  DebugView(State *statePtr, Adafruit_ILI9341 *tftPtr, Joystick *joystickPtr);
+  DebugView(State *statePtr, Adafruit_ILI9341 *tftPtr, Joystick *joystickPtr,
+            SetActiveViewPtr(setActiveViewPtr));
   int runCoroutine() override;
+  void setup() override;
 };
 
 #endif
