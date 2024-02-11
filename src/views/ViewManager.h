@@ -20,8 +20,14 @@ private:
   LightRods *lightRods;
   Vibration *vibration;
 
+  int debugTimer;
+  uint8_t debugStep;
+  signed long debugRotaryPos;
+
   RadarView radarView;
   DebugView debugView;
+
+  void checkDebugMode();
 
 public:
   ViewManager(State *statePtr, Screen *screenPtr, Joystick *joystickPtr,

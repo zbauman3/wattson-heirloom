@@ -2,85 +2,15 @@
 using namespace ace_routine;
 
 DebugView::DebugView(State *statePtr, Screen *screenPtr,
-                     SetActiveViewPtr(setActiveViewPtr), Joystick *joystickPtr,
-                     Leds *ledsPtr)
+                     SetActiveViewPtr(setActiveViewPtr), Joystick *joystickPtr)
     : BaseView(statePtr, screenPtr, setActiveViewPtr) {
   this->joystick = joystickPtr;
-  this->leds = ledsPtr;
-  this->debugTimer = 0;
-  this->debugStep = 0;
-  this->debugRotaryPos = 0;
 }
 
 void DebugView::setup() {
   this->canvas->setTextColor(ILI9341_WHITE, ILI9341_BLACK);
   this->canvas->setTextSize(1);
   this->canvas->setTextWrap(false);
-}
-
-void DebugView::enterDebug() {
-  if (this->debugStep == 5) {
-    this->debugTimer = 0;
-    this->debugStep = 0;
-    this->debugRotaryPos = 0;
-    if (this->state->activeView == STATE_VIEW_DEBUG) {
-      this->setActiveView(STATE_VIEW_INIT);
-    } else {
-      this->setActiveView(STATE_VIEW_DEBUG);
-    }
-  }
-
-  if (this->state->hasInterrupt()) {
-    if (this->state->rotary_btn) {
-      if (this->debugStep == 0) {
-        this->debugTimer = millis();
-        this->debugRotaryPos = this->state->rotary_position;
-        this->debugStep = 1;
-      } else if (this->debugStep == 1 &&
-                 this->state->rotary_position == this->debugRotaryPos + 5) {
-        if (this->state->activeView == STATE_VIEW_DEBUG) {
-          this->leds->flashGreen();
-          this->debugStep = 5;
-        } else {
-          this->debugTimer = millis();
-          this->debugRotaryPos = this->state->rotary_position;
-          this->debugStep = 2;
-        }
-      } else if (this->debugStep == 2 &&
-                 this->state->rotary_position == this->debugRotaryPos - 5) {
-        this->debugTimer = millis();
-        this->leds->flashGreen();
-        this->debugRotaryPos = this->state->rotary_position;
-        this->debugStep = 3;
-      } else if (this->debugStep == 3 &&
-                 this->state->rotary_position == this->debugRotaryPos - 5) {
-        this->debugTimer = millis();
-        this->leds->flashGreen();
-        this->debugRotaryPos = this->state->rotary_position;
-        this->debugStep = 4;
-      } else if (this->debugStep == 4 &&
-                 this->state->rotary_position == this->debugRotaryPos + 5) {
-        this->leds->flashGreen();
-        this->debugStep = 5;
-      } else if (this->debugStep > 0 && millis() - this->debugTimer > 3000) {
-        if (this->debugStep > 1) {
-          this->leds->flashGreen();
-          this->leds->flashRed();
-        }
-        this->debugTimer = 0;
-        this->debugRotaryPos = 0;
-        this->debugStep = 0;
-      }
-    } else if (this->debugStep > 0) {
-      if (this->debugStep > 1) {
-        this->leds->flashGreen();
-        this->leds->flashRed();
-      }
-      this->debugTimer = 0;
-      this->debugRotaryPos = 0;
-      this->debugStep = 0;
-    }
-  }
 }
 
 int DebugView::runCoroutine() {
