@@ -14,8 +14,8 @@ private:
   Joystick *joystick;
 
 public:
-  RadarView(State *statePtr, Adafruit_ILI9341 *tftPtr, Joystick *joystickPtr,
-            SetActiveViewPtr(setActiveViewPtr));
+  RadarView(State *statePtr, Screen *screenPtr,
+            SetActiveViewPtr(setActiveViewPtr), Joystick *joystickPtr);
   int runCoroutine() override;
   void setup() override;
 };

@@ -29,7 +29,7 @@ int Joystick::runCoroutine() {
     if (this->state->joystickMoving()) {
       COROUTINE_YIELD();
     } else {
-      COROUTINE_DELAY(300);
+      COROUTINE_DELAY(500);
     }
   }
 }

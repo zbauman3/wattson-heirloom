@@ -1,9 +1,8 @@
 #include "../controllers/Joystick.h"
-// #include "../feedback/Screen.h"
+#include "../feedback/Screen.h"
 #include "../models/State.h"
-#include "Adafruit_GFX.h"
-#include "Adafruit_ILI9341.h"
 #include <AceRoutine.h>
+#include <Adafruit_GFX.h>
 #include <Arduino.h>
 
 #ifndef BaseView_H
@@ -14,7 +13,7 @@
 class BaseView : public ace_routine::Coroutine {
 protected:
   State *state;
-  Adafruit_ILI9341 *tft;
+  Screen *screen;
   GFXcanvas16 *canvas;
   SetActiveViewPtr(_setActiveView);
   bool isInitialRender;
@@ -23,7 +22,7 @@ protected:
   void setActiveView(uint8_t view);
 
 public:
-  BaseView(State *statePtr, Adafruit_ILI9341 *tftPtr,
+  BaseView(State *statePtr, Screen *screenPtr,
            SetActiveViewPtr(setActiveViewPtr));
 
   void loop(bool isInitialRender);

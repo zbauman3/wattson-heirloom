@@ -7,7 +7,7 @@ State::State() {
   this->joystick_lr_prev = 0;
   this->joystick_ud_prev = 0;
 
-  this->activeView = STATE_VIEW_RADAR;
+  this->activeView = STATE_VIEW_INIT;
   this->viewChanged = true;
 };
 

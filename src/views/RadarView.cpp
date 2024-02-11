@@ -1,9 +1,9 @@
 #include "./RadarView.h"
 using namespace ace_routine;
 
-RadarView::RadarView(State *statePtr, Adafruit_ILI9341 *tftPtr,
-                     Joystick *joystickPtr, SetActiveViewPtr(setActiveViewPtr))
-    : BaseView(statePtr, tftPtr, setActiveViewPtr) {
+RadarView::RadarView(State *statePtr, Screen *screenPtr,
+                     SetActiveViewPtr(setActiveViewPtr), Joystick *joystickPtr)
+    : BaseView(statePtr, screenPtr, setActiveViewPtr) {
   this->joystick = joystickPtr;
 }
 
@@ -17,10 +17,10 @@ int RadarView::runCoroutine() {
   COROUTINE_LOOP() {
     this->joystick->runCoroutine();
 
-    if (this->state->hasInterrupt() && this->state->mcp_menu) {
-      this->setActiveView(STATE_VIEW_DEBUG);
-      COROUTINE_YIELD();
-    }
+    // if (this->state->hasInterrupt() && this->state->mcp_menu) {
+    //   this->setActiveView(STATE_VIEW_DEBUG);
+    //   COROUTINE_YIELD();
+    // }
 
     if (this->isInitialRender || this->state->hasInterrupt() ||
         this->state->joystickChanged()) {

@@ -1,4 +1,5 @@
 #include "../controllers/Joystick.h"
+#include "../feedback/Leds.h"
 #include "../models/State.h"
 #include "./BaseView.h"
 #include "Adafruit_GFX.h"
@@ -12,12 +13,19 @@
 class DebugView : public BaseView {
 private:
   Joystick *joystick;
+  Leds *leds;
+
+  int debugTimer;
+  uint8_t debugStep;
+  signed long debugRotaryPos;
 
 public:
-  DebugView(State *statePtr, Adafruit_ILI9341 *tftPtr, Joystick *joystickPtr,
-            SetActiveViewPtr(setActiveViewPtr));
+  DebugView(State *statePtr, Screen *screenPtr,
+            SetActiveViewPtr(setActiveViewPtr), Joystick *joystickPtr,
+            Leds *ledsPtr);
   int runCoroutine() override;
   void setup() override;
+  void enterDebug();
 };
 
 #endif

@@ -7,6 +7,7 @@
 #include "./src/feedback/Screen.h"
 #include "./src/feedback/Vibration.h"
 #include "./src/models/State.h"
+#include "./src/views/ViewManager.h"
 #include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
 
@@ -14,17 +15,19 @@ Adafruit_MCP23X17 mcp;
 State state;
 LightRods lightRods;
 Joystick joystick(&state);
-Leds feedbackLEDs = Leds(&mcp);
+Leds leds = Leds(&mcp);
 Rotary rotary = Rotary(&state);
-Screen screen(&state, &mcp, &joystick);
-Vibration vibe;
+Screen screen(&state, &mcp);
+Vibration vibration;
 Interrupts interrupts = Interrupts(&state, &mcp, &rotary);
+ViewManager viewManager(&state, &screen, &joystick, &leds, &lightRods,
+                        &vibration);
 
 void setup() {
 
   // call immediately to prevent initial Vibration
   // still needed after pulldown resistor?
-  vibe.begin();
+  vibration.begin();
 
   // ESP32-s2 has different pins for the i2c headers/stemmaQT.
   // We want to use stemmaQT, so we need to set the pins here.
@@ -45,26 +48,31 @@ void setup() {
   lightRods.begin();
   screen.begin();
   joystick.begin();
-  feedbackLEDs.begin();
+  leds.begin();
   interrupts.begin();
 }
+
+int debugTimer = 0;
+uint8_t debugStep = 0;
+signed long debugRotaryPos = 0;
+signed long debugDistance = 5;
 
 void loop(void) {
   interrupts.loop();
 
-  feedbackLEDs.loop();
+  leds.loop();
   lightRods.runCoroutine();
-  screen.loop();
-  vibe.runCoroutine();
+  viewManager.loop();
+  vibration.runCoroutine();
 
-  // TODO remove this tmp code
+  // TODO remove this tmp code below
   if (state.hasInterrupt()) {
     if (state.mcp_up) {
-      feedbackLEDs.flashGreen();
+      leds.flashGreen();
     }
 
     if (state.mcp_record) {
-      feedbackLEDs.flashRed();
+      leds.flashRed();
     }
 
     if (state.mcp_left) {
@@ -73,7 +81,7 @@ void loop(void) {
 
     if (state.mcp_trigger) {
       lightRods.startPattern(1);
-      vibe.startPattern(1);
+      vibration.startPattern(1);
     }
   }
 }

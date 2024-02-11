@@ -12,6 +12,8 @@
 #define STATE_VIEW_DEBUG 0x00
 #define STATE_VIEW_RADAR 0x01
 
+#define STATE_VIEW_INIT STATE_VIEW_RADAR
+
 typedef struct {
   unsigned char type;
   union {
