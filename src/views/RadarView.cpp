@@ -7,10 +7,59 @@ RadarView::RadarView(State *statePtr, Screen *screenPtr,
   this->joystick = joystickPtr;
 }
 
-void RadarView::setup() {
-  this->canvas->setTextColor(ILI9341_DARKGREEN, ILI9341_BLACK);
-  this->canvas->setTextSize(2);
-  this->canvas->setTextWrap(false);
+void RadarView::drawRadarBackground() {
+  // circles
+  this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT,
+                           COLOR_GREEN_FOREGND);
+
+  this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 8,
+                           COLOR_BLACK);
+
+  this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 60,
+                           COLOR_GREEN_FOREGND);
+
+  this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 66,
+                           COLOR_BLACK);
+
+  this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 120,
+                           COLOR_GREEN_FOREGND);
+
+  this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 124,
+                           COLOR_BLACK);
+
+  this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 180,
+                           COLOR_GREEN_FOREGND);
+
+  this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 182,
+                           COLOR_BLACK);
+
+  // lines
+  this->canvas->drawFastVLine(SCREEN_CENTER_X - 1, 0, SCREEN_HEIGHT,
+                              COLOR_GREEN_FOREGND);
+  this->canvas->drawFastVLine(SCREEN_CENTER_X, 0, SCREEN_HEIGHT,
+                              COLOR_GREEN_FOREGND);
+  this->canvas->drawFastVLine(SCREEN_CENTER_X + 1, 0, SCREEN_HEIGHT,
+                              COLOR_GREEN_FOREGND);
+
+  this->canvas->drawLine(19, 50, SCREEN_CENTER_X - 1, SCREEN_HEIGHT,
+                         COLOR_GREEN_FOREGND);
+  this->canvas->drawLine(20, 50, SCREEN_CENTER_X, SCREEN_HEIGHT,
+                         COLOR_GREEN_FOREGND);
+  this->canvas->drawLine(21, 50, SCREEN_CENTER_X + 1, SCREEN_HEIGHT,
+                         COLOR_GREEN_FOREGND);
+
+  this->canvas->drawLine(SCREEN_WIDTH - 21, 50, SCREEN_CENTER_X - 1,
+                         SCREEN_HEIGHT, COLOR_GREEN_FOREGND);
+  this->canvas->drawLine(SCREEN_WIDTH - 20, 50, SCREEN_CENTER_X, SCREEN_HEIGHT,
+                         COLOR_GREEN_FOREGND);
+  this->canvas->drawLine(SCREEN_WIDTH - 19, 50, SCREEN_CENTER_X + 1,
+                         SCREEN_HEIGHT, COLOR_GREEN_FOREGND);
+}
+
+void RadarView::drawRadarPing(int16_t x, int16_t y) {
+  this->canvas->fillCircle(x, y, 16, 0x0903);
+  this->canvas->fillCircle(x, y, 14, 0x12a7);
+  this->canvas->fillCircle(x, y, 13, 0x0c0a);
 }
 
 int RadarView::runCoroutine() {
@@ -22,14 +71,15 @@ int RadarView::runCoroutine() {
     //   COROUTINE_YIELD();
     // }
 
-    if (this->isInitialRender || this->state->hasInterrupt() ||
-        this->state->joystickChanged()) {
+    // if (this->isInitialRender || this->state->hasInterrupt() ||
+    //     this->state->joystickChanged()) {
 
-      this->canvas->setCursor(0, 0);
+    if (this->isInitialRender) {
 
-      this->canvas->printf("RadarView:\n");
+      this->drawRadarBackground();
+      this->drawRadarPing(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
-      this->sendCanvas();
+      this->sendMainCanvas();
     }
 
     COROUTINE_YIELD();

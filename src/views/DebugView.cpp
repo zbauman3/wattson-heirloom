@@ -48,7 +48,7 @@ int DebugView::runCoroutine() {
       this->canvas->printf("trigger_pressed:  %d    \n",
                            this->state->mcp_trigger);
 
-      this->sendCanvas();
+      this->sendMainCanvas();
     }
 
     COROUTINE_YIELD();

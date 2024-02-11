@@ -17,7 +17,8 @@ public:
   RadarView(State *statePtr, Screen *screenPtr,
             SetActiveViewPtr(setActiveViewPtr), Joystick *joystickPtr);
   int runCoroutine() override;
-  void setup() override;
+  void drawRadarBackground();
+  void drawRadarPing(int16_t x0, int16_t y0);
 };
 
 #endif
