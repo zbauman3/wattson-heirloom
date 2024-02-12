@@ -1,10 +1,45 @@
 #include "./RadarView.h"
 using namespace ace_routine;
 
+int16_t movePoint(int16_t current, int16_t to, int16_t percentStep) {
+  int16_t pMove = ceil(abs(current - to) / percentStep);
+  int16_t newCurrent;
+
+  if (to >= current) {
+    newCurrent = min((int16_t)(current + pMove), to);
+  } else {
+    newCurrent = max(int16_t(current - pMove), to);
+  }
+
+  return newCurrent;
+}
+
+void movePing(Coord *current, Coord *to, int16_t percentStep) {
+  int16_t newY = floor(current->y - to->y);
+  int16_t newC = floor(current->x - to->x);
+
+  current->x = movePoint(current->x, to->x, percentStep);
+  current->y = movePoint(current->y, to->y, percentStep);
+}
+
 RadarView::RadarView(State *statePtr, Screen *screenPtr,
-                     SetActiveViewPtr(setActiveViewPtr), Joystick *joystickPtr)
+                     SetActiveViewPtr(setActiveViewPtr))
     : BaseView(statePtr, screenPtr, setActiveViewPtr) {
-  this->joystick = joystickPtr;
+  this->pingCurrent.x = 0;
+  this->pingCurrent.y = 0;
+  this->pingEnd.x = 0;
+  this->pingEnd.y = 0;
+}
+
+void RadarView::setup() {
+  this->pingCurrent.x = 0;
+  this->pingCurrent.y = 0;
+  this->pingEnd.x = SCREEN_WIDTH;
+  this->pingEnd.y = SCREEN_HEIGHT;
+}
+
+void RadarView::moveRadarPing() {
+  movePing(&this->pingCurrent, &this->pingEnd, 10);
 }
 
 void RadarView::drawRadarBackground() {
@@ -64,8 +99,6 @@ void RadarView::drawRadarPing(int16_t x, int16_t y) {
 
 int RadarView::runCoroutine() {
   COROUTINE_LOOP() {
-    this->joystick->runCoroutine();
-
     // if (this->state->hasInterrupt() && this->state->mcp_menu) {
     //   this->setActiveView(STATE_VIEW_DEBUG);
     //   COROUTINE_YIELD();
@@ -74,14 +107,13 @@ int RadarView::runCoroutine() {
     // if (this->isInitialRender || this->state->hasInterrupt() ||
     //     this->state->joystickChanged()) {
 
-    if (this->isInitialRender) {
+    this->clearMainCanvas();
+    this->drawRadarBackground();
+    this->moveRadarPing();
+    this->drawRadarPing(this->pingCurrent.x, this->pingCurrent.y);
+    this->sendMainCanvas();
 
-      this->drawRadarBackground();
-      this->drawRadarPing(SCREEN_CENTER_X, SCREEN_CENTER_Y);
-
-      this->sendMainCanvas();
-    }
-
-    COROUTINE_YIELD();
+    COROUTINE_DELAY(250);
+    // COROUTINE_YIELD();
   }
 }

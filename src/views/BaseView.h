@@ -18,6 +18,7 @@ protected:
   SetActiveViewPtr(_setActiveView);
   bool isInitialRender;
 
+  void clearMainCanvas();
   void sendMainCanvas();
   void setActiveView(uint8_t view);
   void sendCanvas(GFXcanvas16 *newCanvas, int16_t x, int16_t y, int16_t w,

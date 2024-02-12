@@ -1,5 +1,6 @@
 #include "../controllers/Joystick.h"
 #include "../models/State.h"
+#include "../types.h"
 #include "./BaseView.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
@@ -11,14 +12,18 @@
 
 class RadarView : public BaseView {
 private:
-  Joystick *joystick;
+  Coord pingCurrent;
+  Coord pingEnd;
+
+  void drawRadarBackground();
+  void drawRadarPing(int16_t x0, int16_t y0);
+  void moveRadarPing();
 
 public:
   RadarView(State *statePtr, Screen *screenPtr,
-            SetActiveViewPtr(setActiveViewPtr), Joystick *joystickPtr);
+            SetActiveViewPtr(setActiveViewPtr));
   int runCoroutine() override;
-  void drawRadarBackground();
-  void drawRadarPing(int16_t x0, int16_t y0);
+  void setup() override;
 };
 
 #endif

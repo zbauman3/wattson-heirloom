@@ -28,7 +28,7 @@ void BaseView::loop(bool _isInitialRender) {
 
   if (_isInitialRender) {
     this->reset();
-    this->canvas->fillScreen(ILI9341_BLACK);
+    this->clearMainCanvas();
     this->setup();
   }
 
@@ -38,6 +38,8 @@ void BaseView::loop(bool _isInitialRender) {
     this->isInitialRender = false;
   }
 }
+
+void BaseView::clearMainCanvas() { this->canvas->fillScreen(ILI9341_BLACK); }
 
 // this should be overriden
 void BaseView::setup(){};

@@ -9,7 +9,7 @@ ViewManager::ViewManager(State *statePtr, Screen *screenPtr,
                          Joystick *joystickPtr, Leds *ledsPtr,
                          LightRods *lightRodsPtr, Vibration *vibrationPtr)
     : debugView(statePtr, screenPtr, &setActiveViewCallback, joystickPtr),
-      radarView(statePtr, screenPtr, &setActiveViewCallback, joystickPtr) {
+      radarView(statePtr, screenPtr, &setActiveViewCallback) {
 
   this->state = statePtr;
   this->screen = screenPtr;
