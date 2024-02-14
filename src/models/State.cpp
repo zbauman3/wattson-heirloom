@@ -1,6 +1,18 @@
 #include "./State.h"
 
 State::State() {
+  this->mcp_menu = false;
+  this->mcp_up = false;
+  this->mcp_record = false;
+  this->mcp_left = false;
+  this->mcp_down = false;
+  this->mcp_right = false;
+  this->mcp_one = false;
+  this->mcp_two = false;
+  this->mcp_power = false;
+  this->mcp_trigger = false;
+  this->rotary_btn = false;
+
   this->interrupt = {.type = STATE_INTR_EMPTY};
   this->joystick_lr = 0;
   this->joystick_ud = 0;

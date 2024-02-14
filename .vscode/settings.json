@@ -2,6 +2,8 @@
   "files.associations": {
     "*.ino": "cpp",
     "functional": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "iterator": "cpp",
+    "cmath": "cpp"
   }
 }

@@ -8,7 +8,7 @@ Screen::Screen(State *statePtr, Adafruit_MCP23X17 *mcpPtr)
 
 void Screen::begin() {
   this->mcp->pinMode(PinDefs::mcp_screenDimmer, OUTPUT);
-  this->setBrightness(LOW);
+  this->setBrightness(HIGH);
 
   // give TFT time to boot
   delay(250);
