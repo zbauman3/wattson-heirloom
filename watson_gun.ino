@@ -10,16 +10,17 @@
 #include "./src/views/ViewManager.h"
 #include <AceRoutine.h>
 #include <Adafruit_MCP23X17.h>
+#include <Arduino.h>
 
 Adafruit_MCP23X17 mcp;
 State state;
 LightRods lightRods;
 Joystick joystick(&state);
-Leds leds = Leds(&mcp);
-Rotary rotary = Rotary(&state);
+Leds leds(&mcp);
+Rotary rotary(&state);
 Screen screen(&state, &mcp);
 Vibration vibration;
-Interrupts interrupts = Interrupts(&state, &mcp, &rotary);
+Interrupts inter(&state, &mcp, &rotary);
 ViewManager viewManager(&state, &screen, &joystick, &leds, &lightRods,
                         &vibration);
 
@@ -49,7 +50,7 @@ void setup() {
   screen.begin();
   joystick.begin();
   leds.begin();
-  interrupts.begin();
+  inter.begin();
 }
 
 int debugTimer = 0;
@@ -58,7 +59,7 @@ signed long debugRotaryPos = 0;
 signed long debugDistance = 5;
 
 void loop(void) {
-  interrupts.loop();
+  inter.loop();
 
   leds.loop();
   lightRods.runCoroutine();

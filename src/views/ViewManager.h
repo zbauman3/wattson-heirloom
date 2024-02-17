@@ -5,6 +5,7 @@
 #include "../feedback/Vibration.h"
 #include "../models/State.h"
 #include "../views/DebugView.h"
+#include "../views/MenuView.h"
 #include "../views/RadarView.h"
 #include <Arduino.h>
 
@@ -26,6 +27,7 @@ private:
 
   RadarView radarView;
   DebugView debugView;
+  MenuView menuView;
 
   void checkDebugMode();
 

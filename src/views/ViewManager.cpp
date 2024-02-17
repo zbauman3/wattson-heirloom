@@ -9,7 +9,8 @@ ViewManager::ViewManager(State *statePtr, Screen *screenPtr,
                          Joystick *joystickPtr, Leds *ledsPtr,
                          LightRods *lightRodsPtr, Vibration *vibrationPtr)
     : debugView(statePtr, screenPtr, &setActiveViewCallback, joystickPtr),
-      radarView(statePtr, screenPtr, &setActiveViewCallback) {
+      radarView(statePtr, screenPtr, &setActiveViewCallback),
+      menuView(statePtr, screenPtr, &setActiveViewCallback) {
 
   this->state = statePtr;
   this->screen = screenPtr;
@@ -34,6 +35,10 @@ void ViewManager::loop() {
   this->state->viewChanged = false;
 
   switch (this->state->activeView) {
+  case STATE_VIEW_MENU:
+    this->menuView.loop(didChangeView);
+    break;
+
   case STATE_VIEW_RADAR:
     this->radarView.loop(didChangeView);
     break;

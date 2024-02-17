@@ -11,8 +11,10 @@
 
 #define STATE_VIEW_DEBUG 0x00
 #define STATE_VIEW_RADAR 0x01
+#define STATE_VIEW_MENU 0x02
 
-#define STATE_VIEW_INIT STATE_VIEW_RADAR
+// #define STATE_VIEW_INIT STATE_VIEW_RADAR
+#define STATE_VIEW_INIT STATE_VIEW_MENU
 
 typedef struct {
   unsigned char type;
@@ -52,6 +54,7 @@ public:
   interruptState interrupt;
 
   State();
+
   bool hasInterrupt();
   void setJoystick(uint8_t joystick_lr, uint8_t joystick_ud);
   bool joystickMoving();

@@ -1,10 +1,6 @@
-#include "../controllers/Joystick.h"
 #include "../models/State.h"
 #include "../types.h"
 #include "./BaseView.h"
-#include "Adafruit_GFX.h"
-#include "Adafruit_ILI9341.h"
-#include <AceRoutine.h>
 #include <Arduino.h>
 
 #ifndef RadarView_H

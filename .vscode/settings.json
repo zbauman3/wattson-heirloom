@@ -4,6 +4,7 @@
     "functional": "cpp",
     "typeinfo": "cpp",
     "iterator": "cpp",
-    "cmath": "cpp"
+    "cmath": "cpp",
+    "random": "cpp"
   }
 }

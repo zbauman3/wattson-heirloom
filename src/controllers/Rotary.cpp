@@ -33,7 +33,9 @@ void Rotary::enableInterrupts() {
 
 signed long Rotary::getValue() {
   signed long pos = this->ss.getEncoderPosition();
-  this->state->rotary_position = pos;
+  // invert the position, because they come in inverted to normal
+  // (i.e. left = down, right = up)
+  this->state->rotary_position = -pos;
   return this->state->rotary_position;
 }
 
