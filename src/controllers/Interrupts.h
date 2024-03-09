@@ -13,7 +13,7 @@
 
 class Interrupts {
 private:
-  unsigned long clearTime;
+  unsigned long trueUpTime;
   State *state;
   Adafruit_MCP23X17 *mcp;
   Rotary *rotary;
@@ -25,6 +25,9 @@ public:
 
   void begin();
   void loop();
+  void trueUp();
+  void readMcp();
+  uint8_t readRotary();
 };
 
 #endif

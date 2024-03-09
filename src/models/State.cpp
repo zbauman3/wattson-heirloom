@@ -13,7 +13,7 @@ State::State() {
   this->mcp_trigger = false;
   this->rotary_btn = false;
 
-  this->interrupt = {.type = STATE_INTR_EMPTY};
+  this->interrupt = STATE_INTR_EMPTY;
   this->joystick_lr = 0;
   this->joystick_ud = 0;
   this->joystick_lr_prev = 0;
@@ -23,7 +23,7 @@ State::State() {
   this->viewChanged = true;
 };
 
-bool State::hasInterrupt() { return this->interrupt.type != STATE_INTR_EMPTY; };
+bool State::hasInterrupt() { return this->interrupt != STATE_INTR_EMPTY; };
 
 // outside of dead zone
 bool State::joystickMoving() {

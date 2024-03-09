@@ -33,7 +33,7 @@ void MenuView::drawBox(int16_t x, int16_t y, String text, boolean active) {
 
 int MenuView::runCoroutine() {
   COROUTINE_LOOP() {
-    if (this->state->interrupt.type == STATE_INTR_ROTARY_BTN &&
+    if (this->state->interrupt == STATE_INTR_ROTARY_BTN &&
         this->state->rotary_btn) {
       if (this->selectedIndex == 0) {
         this->setActiveView(STATE_VIEW_RADAR);
@@ -47,7 +47,7 @@ int MenuView::runCoroutine() {
 
       if (this->isInitialRender) {
         didMove = true;
-      } else if (this->state->interrupt.type == STATE_INTR_ROTARY) {
+      } else if (this->state->interrupt == STATE_INTR_ROTARY) {
         didMove = true;
 
         if (this->state->rotary_position >= 0) {

@@ -15,7 +15,7 @@ public:
   Rotary(State *statePtr);
   bool begin();
   void enableInterrupts();
-  signed long getValue();
+  int32_t getValue();
   bool isPressed();
 };
 

@@ -16,15 +16,6 @@
 // #define STATE_VIEW_INIT STATE_VIEW_RADAR
 #define STATE_VIEW_INIT STATE_VIEW_MENU
 
-typedef struct {
-  unsigned char type;
-  union {
-    unsigned char mcp;
-    signed long rotary;
-    bool rotaryPressed;
-  };
-} interruptState;
-
 class State {
 public:
   bool mcp_menu;
@@ -51,7 +42,7 @@ public:
   uint8_t activeView;
   bool viewChanged;
 
-  interruptState interrupt;
+  uint8_t interrupt;
 
   State();
 
