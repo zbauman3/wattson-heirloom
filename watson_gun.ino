@@ -53,11 +53,6 @@ void setup() {
   inter.begin();
 }
 
-int debugTimer = 0;
-uint8_t debugStep = 0;
-signed long debugRotaryPos = 0;
-signed long debugDistance = 5;
-
 void loop(void) {
   inter.loop();
 
