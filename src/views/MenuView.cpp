@@ -5,17 +5,14 @@ MenuView::MenuView(State *statePtr, Screen *screenPtr,
                    SetActiveViewPtr(setActiveViewPtr))
     : BaseView(statePtr, screenPtr, setActiveViewPtr) {}
 
-void MenuView::setup() {
-  this->canvas->setTextSize(2);
-  this->canvas->setTextWrap(false);
-}
-
 void MenuView::drawBox(int16_t x, int16_t y, String text, boolean active) {
   if (active) {
-    this->canvas->fillRect(x, y, 145, 66, COLOR_GREEN_FOREGND);
+    this->canvas->fillRect(x, y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT,
+                           COLOR_GREEN_FOREGND);
     this->canvas->setTextColor(COLOR_BLACK, COLOR_GREEN_FOREGND);
   } else {
-    this->canvas->drawRect(x, y, 145, 66, COLOR_GREEN_FOREGND);
+    this->canvas->drawRect(x, y, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT,
+                           COLOR_GREEN_FOREGND);
     this->canvas->setTextColor(COLOR_GREEN_FOREGND, COLOR_BLACK);
   }
 
@@ -24,8 +21,8 @@ void MenuView::drawBox(int16_t x, int16_t y, String text, boolean active) {
 
   this->canvas->getTextBounds(text, x, y, &x1, &y1, &w, &h);
 
-  int16_t leftPad = ceil((145 - w) / 2);
-  int16_t topPad = ceil((66 - h) / 2);
+  int16_t leftPad = ceil((MENU_BUTTON_WIDTH - w) / 2);
+  int16_t topPad = ceil((MENU_BUTTON_HEIGHT - h) / 2);
 
   this->canvas->setCursor(x + leftPad, y + topPad);
   this->canvas->print(text);
@@ -35,9 +32,21 @@ int MenuView::runCoroutine() {
   COROUTINE_LOOP() {
     if (this->state->interrupt == STATE_INTR_ROTARY_BTN &&
         this->state->rotary_btn) {
-      if (this->selectedIndex == 0) {
+      switch (this->selectedIndex) {
+      case 0:
         this->setActiveView(STATE_VIEW_RADAR);
+        break;
+      case 1:
+        this->setActiveView(STATE_VIEW_GAMES);
+        break;
+      case 2:
+        this->setActiveView(STATE_VIEW_LIGHTS);
+        break;
+      case 3:
+        this->setActiveView(STATE_VIEW_SETTINGS);
+        break;
       }
+
       COROUTINE_YIELD();
     }
 
@@ -51,11 +60,12 @@ int MenuView::runCoroutine() {
         didMove = true;
 
         if (this->state->rotary_position >= 0) {
-          this->selectedIndex = this->state->rotary_position % 6;
+          this->selectedIndex = this->state->rotary_position % MENU_ITEMS_COUNT;
         } else {
-          this->selectedIndex = abs(this->state->rotary_position % -6);
+          this->selectedIndex =
+              abs(this->state->rotary_position % -MENU_ITEMS_COUNT);
           if (this->selectedIndex != 0) {
-            this->selectedIndex = 6 - this->selectedIndex;
+            this->selectedIndex = MENU_ITEMS_COUNT - this->selectedIndex;
           }
         }
       }
@@ -63,13 +73,48 @@ int MenuView::runCoroutine() {
       if (didMove) {
         this->clearMainCanvas();
 
-        for (uint8_t i = 0; i < 6; i++) {
+        this->canvas->setTextSize(6);
+        this->canvas->setTextColor(COLOR_GREEN_FOREGND, COLOR_BLACK);
+
+        int16_t throwAway;
+        uint16_t title_w, title_h;
+
+        this->canvas->getTextBounds("MENU", 0, 0, &throwAway, &throwAway,
+                                    &title_w, &title_h);
+
+        int16_t leftPad = ceil((SCREEN_WIDTH - title_w) / 2);
+        int16_t topPad = ceil((MENU_BUTTON_HEIGHT - title_h) / 2);
+
+        this->canvas->setCursor(leftPad, MENU_BUTTON_PADDING + topPad);
+        this->canvas->print("MENU");
+
+        this->canvas->setTextSize(2);
+
+        for (uint8_t i = 0; i < MENU_ITEMS_COUNT; i++) {
           uint8_t row = floor(i / 2);
           uint8_t col = (i % 2);
 
-          this->drawBox((145 * col) + (10 * (col + 1)),
-                        (66 * row) + (10 * (row + 1)), i == 0 ? "Radar" : "",
-                        this->selectedIndex == i);
+          String text;
+          switch (i) {
+          case 3:
+            text = "Settings";
+            break;
+          case 2:
+            text = "Lights";
+            break;
+          case 1:
+            text = "Games";
+            break;
+          default:
+            text = "Radar";
+            break;
+          }
+
+          this->drawBox(
+              (MENU_BUTTON_WIDTH * col) + (MENU_BUTTON_PADDING * (col + 1)),
+              (MENU_BUTTON_HEIGHT * (row + 1)) +
+                  (MENU_BUTTON_PADDING * (row + 1)) + MENU_BUTTON_PADDING,
+              text, this->selectedIndex == i);
         }
 
         this->sendMainCanvas();

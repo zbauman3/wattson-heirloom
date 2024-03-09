@@ -10,6 +10,9 @@ ViewManager::ViewManager(State *statePtr, Screen *screenPtr,
                          LightRods *lightRodsPtr, Vibration *vibrationPtr)
     : debugView(statePtr, screenPtr, &setActiveViewCallback, joystickPtr),
       radarView(statePtr, screenPtr, &setActiveViewCallback),
+      gamesView(statePtr, screenPtr, &setActiveViewCallback),
+      lightsView(statePtr, screenPtr, &setActiveViewCallback),
+      settingsView(statePtr, screenPtr, &setActiveViewCallback),
       menuView(statePtr, screenPtr, &setActiveViewCallback) {
 
   this->state = statePtr;
@@ -41,6 +44,18 @@ void ViewManager::loop() {
 
   case STATE_VIEW_RADAR:
     this->radarView.loop(didChangeView);
+    break;
+
+  case STATE_VIEW_GAMES:
+    this->gamesView.loop(didChangeView);
+    break;
+
+  case STATE_VIEW_LIGHTS:
+    this->lightsView.loop(didChangeView);
+    break;
+
+  case STATE_VIEW_SETTINGS:
+    this->settingsView.loop(didChangeView);
     break;
 
   default:

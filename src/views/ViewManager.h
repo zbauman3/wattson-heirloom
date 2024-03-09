@@ -5,8 +5,11 @@
 #include "../feedback/Vibration.h"
 #include "../models/State.h"
 #include "../views/DebugView.h"
+#include "../views/GamesView.h"
+#include "../views/LightsView.h"
 #include "../views/MenuView.h"
 #include "../views/RadarView.h"
+#include "../views/SettingsView.h"
 #include <Arduino.h>
 
 #ifndef ViewManager_H
@@ -26,6 +29,9 @@ private:
   signed long debugRotaryPos;
 
   RadarView radarView;
+  GamesView gamesView;
+  LightsView lightsView;
+  SettingsView settingsView;
   DebugView debugView;
   MenuView menuView;
 

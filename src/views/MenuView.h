@@ -6,6 +6,11 @@
 #ifndef MenuView_H
 #define MenuView_H
 
+#define MENU_ITEMS_COUNT 4
+#define MENU_BUTTON_WIDTH 145
+#define MENU_BUTTON_HEIGHT 66
+#define MENU_BUTTON_PADDING 10
+
 class MenuView : public BaseView {
 private:
   uint8_t selectedIndex;
@@ -15,7 +20,6 @@ public:
   MenuView(State *statePtr, Screen *screenPtr,
            SetActiveViewPtr(setActiveViewPtr));
   int runCoroutine() override;
-  void setup() override;
 };
 
 #endif

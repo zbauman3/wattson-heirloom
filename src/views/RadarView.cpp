@@ -163,8 +163,7 @@ void RadarView::drawWave() {
 
 int RadarView::runCoroutine() {
   COROUTINE_LOOP() {
-    if (this->state->hasInterrupt() && this->state->mcp_menu) {
-      this->setActiveView(STATE_VIEW_MENU);
+    if (this->changeToMenu()) {
       COROUTINE_YIELD();
     }
 

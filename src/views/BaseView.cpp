@@ -23,6 +23,16 @@ void BaseView::sendMainCanvas() {
 
 void BaseView::setActiveView(uint8_t view) { this->_setActiveView(view); }
 
+// We cannot call coroutine methods here, so return a boolean to indicate if we
+// should yield
+boolean BaseView::changeToMenu() {
+  if (this->state->hasInterrupt() && this->state->mcp_menu) {
+    this->setActiveView(STATE_VIEW_MENU);
+    return true;
+  }
+  return false;
+}
+
 void BaseView::loop(bool _isInitialRender) {
   this->isInitialRender = _isInitialRender;
 
@@ -42,4 +52,8 @@ void BaseView::loop(bool _isInitialRender) {
 void BaseView::clearMainCanvas() { this->canvas->fillScreen(ILI9341_BLACK); }
 
 // this should be overriden
-void BaseView::setup(){};
+void BaseView::setup() {
+  this->canvas->setTextSize(2);
+  this->canvas->setTextWrap(false);
+  this->canvas->setTextColor(COLOR_GREEN_FOREGND, COLOR_BLACK);
+};
