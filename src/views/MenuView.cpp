@@ -30,8 +30,9 @@ void MenuView::drawBox(int16_t x, int16_t y, String text, boolean active) {
 
 int MenuView::runCoroutine() {
   COROUTINE_LOOP() {
-    if (this->state->interrupt == STATE_INTR_ROTARY_BTN &&
-        this->state->rotary_btn) {
+    if ((this->state->interrupt == STATE_INTR_ROTARY_BTN &&
+         this->state->rotary_btn) ||
+        (this->state->interrupt == STATE_INTR_MCP && this->state->mcp_record)) {
       switch (this->selectedIndex) {
       case 0:
         this->setActiveView(STATE_VIEW_RADAR);
@@ -67,6 +68,23 @@ int MenuView::runCoroutine() {
           if (this->selectedIndex != 0) {
             this->selectedIndex = MENU_ITEMS_COUNT - this->selectedIndex;
           }
+        }
+      } else if (this->state->interrupt == STATE_INTR_MCP) {
+        if (this->state->mcp_up && this->selectedIndex > 1) {
+          didMove = true;
+          this->selectedIndex -= 2;
+
+        } else if (this->state->mcp_left && this->selectedIndex % 2 != 0) {
+          didMove = true;
+          this->selectedIndex -= 1;
+
+        } else if (this->state->mcp_down && this->selectedIndex < 2) {
+          didMove = true;
+          this->selectedIndex += 2;
+
+        } else if (this->state->mcp_right && this->selectedIndex % 2 == 0) {
+          didMove = true;
+          this->selectedIndex += 1;
         }
       }
 

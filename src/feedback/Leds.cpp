@@ -7,6 +7,7 @@ LedRoutine::LedRoutine(Adafruit_MCP23X17 *mcpPtr, unsigned char pin) {
   this->mcp = mcpPtr;
   this->pin = pin;
   this->routine = 0;
+  this->routineDelay = 0;
 }
 
 void LedRoutine::begin() {
@@ -19,21 +20,51 @@ void LedRoutine::set(unsigned char state) {
 }
 
 int LedRoutine::runCoroutine() {
-  COROUTINE_BEGIN();
+  COROUTINE_LOOP() {
+    if (this->routine == 1) {
+      this->set(HIGH);
+      COROUTINE_DELAY(this->routineDelay);
+      this->set(LOW);
+      COROUTINE_DELAY(this->routineDelay);
+    } else if (this->routine == 2) {
+      this->set(HIGH);
+      COROUTINE_DELAY(this->routineDelay);
+      this->set(LOW);
+      this->routine = 0;
+    }
 
-  if (this->routine == 1) {
-    this->set(HIGH);
-    COROUTINE_DELAY(150);
-    this->set(LOW);
+    COROUTINE_YIELD();
   }
-
-  this->routine = 0;
-
-  COROUTINE_END();
 }
 
-void LedRoutine::flash() {
+void LedRoutine::flash(uint16_t delay, bool restart) {
+  bool isChange = this->routine != 1;
+
   this->routine = 1;
+  this->routineDelay = delay;
+
+  if (isChange || restart) {
+    this->set(LOW);
+    this->reset();
+  }
+}
+
+void LedRoutine::flashOnce(uint16_t length, bool restart) {
+  bool isChange = this->routine != 2;
+
+  this->routine = 2;
+  this->routineDelay = length;
+
+  if (isChange || restart) {
+    this->set(LOW);
+    this->reset();
+  }
+}
+
+void LedRoutine::clear() {
+  this->routine = 0;
+  this->routineDelay = 0;
+  this->set(LOW);
   this->reset();
 }
 
@@ -54,6 +85,26 @@ void Leds::loop() {
   this->redRoutine->runCoroutine();
 }
 
-void Leds::flashGreen() { this->greenRoutine->flash(); }
+void Leds::flash(uint8_t which, uint16_t delay, bool restart) {
+  if (which == LEDS_GREEN) {
+    this->greenRoutine->flash(delay, restart);
+  } else {
+    this->redRoutine->flash(delay, restart);
+  }
+}
 
-void Leds::flashRed() { this->redRoutine->flash(); }
+void Leds::flashOnce(uint8_t which, uint16_t length, bool restart) {
+  if (which == LEDS_GREEN) {
+    this->greenRoutine->flashOnce(length, restart);
+  } else {
+    this->redRoutine->flashOnce(length, restart);
+  }
+}
+
+void Leds::clear(uint8_t which) {
+  if (which == LEDS_GREEN) {
+    this->greenRoutine->clear();
+  } else {
+    this->redRoutine->clear();
+  }
+}

@@ -6,23 +6,29 @@
 #ifndef Leds_H
 #define Leds_H
 
+#define LEDS_GREEN 0x00
+#define LEDS_RED 0x01
+
 class LedRoutine : public ace_routine::Coroutine {
 private:
   Adafruit_MCP23X17 *mcp;
-  unsigned char pin;
+  uint8_t pin;
 
   // 0: off
   // 1: flash
-  unsigned char routine;
-
-  void set(unsigned char state);
+  // 1: flashOnce
+  uint8_t routine;
+  uint16_t routineDelay;
 
 public:
-  LedRoutine(Adafruit_MCP23X17 *mcpPtr, unsigned char pin);
+  LedRoutine(Adafruit_MCP23X17 *mcpPtr, uint8_t pin);
 
   int runCoroutine() override;
-  void flash();
   void begin();
+  void set(uint8_t state);
+  void flash(uint16_t delay, bool restart = false);
+  void flashOnce(uint16_t length, bool restart = false);
+  void clear();
 };
 
 class Leds {
@@ -34,8 +40,9 @@ public:
   Leds(Adafruit_MCP23X17 *mcpPtr);
   void begin();
   void loop();
-  void flashGreen();
-  void flashRed();
+  void flash(uint8_t which, uint16_t delay, bool restart = false);
+  void flashOnce(uint8_t which, uint16_t length, bool restart = false);
+  void clear(uint8_t which);
 };
 
 #endif

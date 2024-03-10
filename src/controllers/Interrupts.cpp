@@ -68,6 +68,10 @@ void Interrupts::readMcp() {
   }
 
   this->mcp->clearInterrupts();
+
+  // The power plug seems to be especially finicky... Ready it again to confirm
+  this->state->setMcpValueByPin(PinDefs::mcp_power,
+                                !this->mcp->digitalRead(PinDefs::mcp_power));
 }
 
 // return:

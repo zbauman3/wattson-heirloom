@@ -68,19 +68,18 @@ int RadarPing::runCoroutine() {
   }
 }
 
-void movePing(Coord *current, Coord *to, int16_t distance) {
-  current->x = movePoint(current->x, to->x, distance);
-  current->y = movePoint(current->y, to->y, distance);
-}
-
 RadarView::RadarView(State *statePtr, Screen *screenPtr,
-                     SetActiveViewPtr(setActiveViewPtr))
+                     SetActiveViewPtr(setActiveViewPtr), Leds *ledsPtr,
+                     LightRods *lightRodsPtr)
     : BaseView(statePtr, screenPtr, setActiveViewPtr), ping1(), ping2(),
       ping3() {
   this->waveRadius = 1;
+  this->leds = ledsPtr;
+  this->lightRods = lightRodsPtr;
 }
 
 void RadarView::drawBackground() {
+
   // circles
   this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT,
                            COLOR_GREEN_FOREGND);
@@ -146,9 +145,12 @@ void RadarView::drawPings() {
   this->drawPingCircle(this->ping3.pingCurrent.x, this->ping3.pingCurrent.y);
 }
 
-void RadarView::drawWave() {
+// returns boolean to symbolize if this is the "start" of a wave
+bool RadarView::drawWave() {
+  bool isWaveStart = false;
   if (this->waveRadius >= SCREEN_HEIGHT - 3) {
     this->waveRadius = 1;
+    isWaveStart = true;
   } else {
     this->waveRadius += 3;
   }
@@ -159,6 +161,35 @@ void RadarView::drawWave() {
                            COLOR_GREEN_FOREGND);
   this->canvas->drawCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, this->waveRadius + 1,
                            COLOR_GREEN_FOREGND);
+
+  return isWaveStart;
+}
+
+bool RadarView::pingIsClose() {
+  for (uint8_t i = 0; i < 3; i++) {
+    RadarPing *ping;
+    if (i == 0) {
+      ping = &this->ping1;
+    } else if (i == 1) {
+      ping = &this->ping2;
+    } else {
+      ping = &this->ping3;
+    }
+
+    if (ping->pingCurrent.x >= CLOSE_PING_X1 &&
+        ping->pingCurrent.x <= CLOSE_PING_X2 &&
+        ping->pingCurrent.y >= CLOSE_PING_Y1) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void RadarView::cleanup() {
+  this->leds->clear(LEDS_GREEN);
+  this->leds->clear(LEDS_RED);
+  this->lightRods->clear();
 }
 
 int RadarView::runCoroutine() {
@@ -167,11 +198,26 @@ int RadarView::runCoroutine() {
       COROUTINE_YIELD();
     }
 
-    this->clearMainCanvas();
-    this->drawBackground();
-    this->drawPings();
-    this->drawWave();
-    this->sendMainCanvas();
+    // closure for `isWaveStart` in coroutine
+    {
+      this->clearMainCanvas();
+      this->drawBackground();
+      this->drawPings();
+      bool isWaveStart = this->drawWave();
+      this->sendMainCanvas();
+
+      if (isWaveStart || this->isInitialRender) {
+
+        if (this->pingIsClose()) {
+          this->lightRods->showPattern(LIGHTS_PATTERN_RADAR, 1, true);
+          this->leds->flash(LEDS_RED, 250);
+        } else {
+          this->lightRods->showPattern(LIGHTS_PATTERN_RADAR, 0, true);
+          this->leds->clear(LEDS_RED);
+          this->leds->flashOnce(LEDS_GREEN, 500);
+        }
+      }
+    }
 
     COROUTINE_YIELD();
   }

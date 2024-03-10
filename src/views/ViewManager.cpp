@@ -9,7 +9,8 @@ ViewManager::ViewManager(State *statePtr, Screen *screenPtr,
                          Joystick *joystickPtr, Leds *ledsPtr,
                          LightRods *lightRodsPtr, Vibration *vibrationPtr)
     : debugView(statePtr, screenPtr, &setActiveViewCallback, joystickPtr),
-      radarView(statePtr, screenPtr, &setActiveViewCallback),
+      radarView(statePtr, screenPtr, &setActiveViewCallback, ledsPtr,
+                lightRodsPtr),
       gamesView(statePtr, screenPtr, &setActiveViewCallback),
       lightsView(statePtr, screenPtr, &setActiveViewCallback),
       settingsView(statePtr, screenPtr, &setActiveViewCallback),
@@ -34,33 +35,33 @@ void ViewManager::loop() {
   // This means that passing in `viewChanged` then
   // then setting it to `false` at the end of this fn
   // immediately overrides the `true` inside `setActiveView`
-  bool didChangeView = this->state->viewChanged;
+  bool isInitialRender = this->state->viewChanged;
   this->state->viewChanged = false;
 
   switch (this->state->activeView) {
   case STATE_VIEW_MENU:
-    this->menuView.loop(didChangeView);
+    this->menuView.loop(isInitialRender);
     break;
 
   case STATE_VIEW_RADAR:
-    this->radarView.loop(didChangeView);
+    this->radarView.loop(isInitialRender);
     break;
 
   case STATE_VIEW_GAMES:
-    this->gamesView.loop(didChangeView);
+    this->gamesView.loop(isInitialRender);
     break;
 
   case STATE_VIEW_LIGHTS:
-    this->lightsView.loop(didChangeView);
+    this->lightsView.loop(isInitialRender);
     break;
 
   case STATE_VIEW_SETTINGS:
-    this->settingsView.loop(didChangeView);
+    this->settingsView.loop(isInitialRender);
     break;
 
   default:
   case STATE_VIEW_DEBUG:
-    this->debugView.loop(didChangeView);
+    this->debugView.loop(isInitialRender);
     break;
   }
 
@@ -68,6 +69,33 @@ void ViewManager::loop() {
 }
 
 void ViewManager::setActiveView(uint8_t view) {
+  switch (this->state->activeView) {
+  case STATE_VIEW_MENU:
+    this->menuView.cleanup();
+    break;
+
+  case STATE_VIEW_RADAR:
+    this->radarView.cleanup();
+    break;
+
+  case STATE_VIEW_GAMES:
+    this->gamesView.cleanup();
+    break;
+
+  case STATE_VIEW_LIGHTS:
+    this->lightsView.cleanup();
+    break;
+
+  case STATE_VIEW_SETTINGS:
+    this->settingsView.cleanup();
+    break;
+
+  default:
+  case STATE_VIEW_DEBUG:
+    this->debugView.cleanup();
+    break;
+  }
+
   this->state->activeView = view;
   this->state->viewChanged = true;
 }
@@ -90,7 +118,7 @@ void ViewManager::checkDebugMode() {
       if (this->state->activeView == STATE_VIEW_DEBUG) {
         this->setActiveView(STATE_VIEW_INIT);
       } else {
-        this->leds->flashGreen();
+        this->leds->flashOnce(LEDS_GREEN, 150);
         this->debugStep = 2;
         this->debugTimer = millis();
       }
@@ -98,10 +126,10 @@ void ViewManager::checkDebugMode() {
   } else if (this->debugStep == 2 && this->state->rotary_btn) {
     if (millis() - this->debugTimer > 7000) {
       if (this->state->rotary_position == this->debugRotaryPos + 5) {
-        this->leds->flashGreen();
+        this->leds->flashOnce(LEDS_GREEN, 150);
         this->setActiveView(STATE_VIEW_DEBUG);
       } else {
-        this->leds->flashRed();
+        this->leds->flashOnce(LEDS_RED, 150);
       }
 
       this->debugStep = 0;

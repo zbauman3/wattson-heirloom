@@ -31,6 +31,7 @@ public:
 
   void loop(bool isInitialRender);
   virtual void setup();
+  virtual void cleanup();
 };
 
 #endif

@@ -1,14 +1,12 @@
 #include "./Screen.h"
 
-Screen::Screen(State *statePtr, Adafruit_MCP23X17 *mcpPtr)
+Screen::Screen(Adafruit_MCP23X17 *mcpPtr)
     : tft(Adafruit_ILI9341(PinDefs::screenCS, PinDefs::screenDC)) {
   this->mcp = mcpPtr;
-  this->state = statePtr;
 }
 
 void Screen::begin() {
   this->mcp->pinMode(PinDefs::mcp_screenDimmer, OUTPUT);
-  this->setBrightness(HIGH);
 
   // give TFT time to boot
   delay(250);
@@ -35,17 +33,4 @@ void Screen::begin() {
     DEBUG("Self Diagnostic: 0x");
     DEBUG_LN(x, HEX);
   });
-}
-
-void Screen::setBrightness(unsigned char brightness) {
-  this->mcp->digitalWrite(PinDefs::mcp_screenDimmer, brightness);
-  this->state->screenBrightness = brightness;
-}
-
-void Screen::toggleBrightness() {
-  if (this->state->screenBrightness == LOW) {
-    this->setBrightness(HIGH);
-  } else {
-    this->setBrightness(LOW);
-  }
 }

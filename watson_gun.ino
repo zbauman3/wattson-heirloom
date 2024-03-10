@@ -14,11 +14,11 @@
 
 Adafruit_MCP23X17 mcp;
 State state;
-LightRods lightRods;
+LightRods lightRods(&state);
 Joystick joystick(&state);
 Leds leds(&mcp);
 Rotary rotary(&state);
-Screen screen(&state, &mcp);
+Screen screen(&mcp);
 Vibration vibration;
 Interrupts inter(&state, &mcp, &rotary);
 ViewManager viewManager(&state, &screen, &joystick, &leds, &lightRods,
@@ -55,29 +55,8 @@ void setup() {
 
 void loop(void) {
   inter.loop();
-
   leds.loop();
   lightRods.runCoroutine();
   viewManager.loop();
   vibration.runCoroutine();
-
-  // TODO remove this tmp code below
-  if (state.hasInterrupt()) {
-    if (state.mcp_up) {
-      leds.flashGreen();
-    }
-
-    if (state.mcp_record) {
-      leds.flashRed();
-    }
-
-    if (state.mcp_left) {
-      screen.toggleBrightness();
-    }
-
-    if (state.mcp_trigger) {
-      lightRods.startPattern(1);
-      vibration.startPattern(1);
-    }
-  }
 }

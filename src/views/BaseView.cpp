@@ -57,3 +57,6 @@ void BaseView::setup() {
   this->canvas->setTextWrap(false);
   this->canvas->setTextColor(COLOR_GREEN_FOREGND, COLOR_BLACK);
 };
+
+// this should be overriden
+void BaseView::cleanup(){};
