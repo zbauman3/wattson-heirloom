@@ -10,8 +10,6 @@
 class Joystick : public ace_routine::Coroutine {
 private:
   State *state;
-  bool delay;
-  uint16_t delayAmt;
 
 public:
   Joystick(State *statePtr);

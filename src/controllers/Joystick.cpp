@@ -3,8 +3,8 @@
 Joystick::Joystick(State *statePtr) { this->state = statePtr; }
 
 void Joystick::sample() {
-  unsigned int lr = 0;
-  unsigned int ud = 0;
+  uint16_t lr = 0;
+  uint16_t ud = 0;
 
   for (int i = 0; i < 16; i++) {
     lr += analogRead(PinDefs::joystickLR);

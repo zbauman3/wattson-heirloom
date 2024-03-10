@@ -13,7 +13,7 @@ bool Rotary::begin() {
     return false;
   }
 
-  unsigned long version = ((this->ss.getVersion() >> 16) & 0xFFFF);
+  uint32_t version = ((this->ss.getVersion() >> 16) & 0xFFFF);
   if (version != 4991) {
     DEBUG_F("Wrong seesaw firmware loaded? %d\n", version);
     return false;

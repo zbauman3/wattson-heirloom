@@ -3,7 +3,7 @@ using namespace ace_routine;
 
 //--------LedRoutine
 
-LedRoutine::LedRoutine(Adafruit_MCP23X17 *mcpPtr, unsigned char pin) {
+LedRoutine::LedRoutine(Adafruit_MCP23X17 *mcpPtr, uint8_t pin) {
   this->mcp = mcpPtr;
   this->pin = pin;
   this->routine = 0;
@@ -15,7 +15,7 @@ void LedRoutine::begin() {
   this->set(LOW);
 }
 
-void LedRoutine::set(unsigned char state) {
+void LedRoutine::set(uint8_t state) {
   this->mcp->digitalWrite(this->pin, state);
 }
 

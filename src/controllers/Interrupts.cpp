@@ -18,12 +18,18 @@ Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
 void Interrupts::begin() {
   this->trueUpTime = 0;
 
-  for (unsigned char i = 0; i < PinDefs::mcpInputPinsLength; i++) {
-    unsigned char pin = PinDefs::mcpInputPins[i];
+  for (uint8_t i = 0; i < PinDefs::mcpInputPinsLength; i++) {
+    uint8_t pin = PinDefs::mcpInputPins[i];
     // set all to input
     this->mcp->pinMode(pin, INPUT_PULLUP);
-    // set init states for all inputs
-    this->state->setMcpValueByPin(pin, false);
+  }
+
+  // MCP sometimes seems to start with a bad state?
+  // clear interrupts and read all pins once.
+  this->mcp->clearInterrupts();
+  for (uint8_t i = 0; i < PinDefs::mcpInputPinsLength; i++) {
+    uint8_t pin = PinDefs::mcpInputPins[i];
+    this->mcp->digitalRead(pin);
   }
 
   pinMode(PinDefs::mcp_interrupts, INPUT_PULLUP);
@@ -37,7 +43,7 @@ void Interrupts::begin() {
   // enable interrupts
   this->rotary->enableInterrupts();
 
-  for (unsigned char i = 0; i < PinDefs::mcpInputPinsLength; i++) {
+  for (uint8_t i = 0; i < PinDefs::mcpInputPinsLength; i++) {
     // enable/set all pin interrupt modes
     this->mcp->setupInterruptPin(PinDefs::mcpInputPins[i], CHANGE);
   }

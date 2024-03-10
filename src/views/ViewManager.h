@@ -26,7 +26,7 @@ private:
 
   int debugTimer;
   uint8_t debugStep;
-  signed long debugRotaryPos;
+  int32_t debugRotaryPos;
 
   RadarView radarView;
   GamesView gamesView;

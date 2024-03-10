@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #ifndef PinDefs_H
 #define PinDefs_H
 
@@ -6,37 +8,37 @@
 class PinDefs {
 
 public:
-  static unsigned char joystickLR;
-  static unsigned char joystickUD;
-  static unsigned char neopixels;
+  static uint8_t joystickLR;
+  static uint8_t joystickUD;
+  static uint8_t neopixels;
 
-  static unsigned char mcp_interrupts;
-  static unsigned char rotary_interrupts;
+  static uint8_t mcp_interrupts;
+  static uint8_t rotary_interrupts;
 
-  static unsigned char screenDC;
-  static unsigned char screenCS;
+  static uint8_t screenDC;
+  static uint8_t screenCS;
 
-  static unsigned char i2cSda;
-  static unsigned char i2cScl;
+  static uint8_t i2cSda;
+  static uint8_t i2cScl;
 
-  static unsigned char vibe;
+  static uint8_t vibe;
 
-  static unsigned char mcp_menu;
-  static unsigned char mcp_up;
-  static unsigned char mcp_record;
-  static unsigned char mcp_left;
-  static unsigned char mcp_down;
-  static unsigned char mcp_right;
-  static unsigned char mcp_one;
-  static unsigned char mcp_two;
-  static unsigned char mcp_ledGreen;
-  static unsigned char mcp_ledRed;
-  static unsigned char mcp_screenDimmer;
-  static unsigned char mcp_power;
-  static unsigned char mcp_trigger;
+  static uint8_t mcp_menu;
+  static uint8_t mcp_up;
+  static uint8_t mcp_record;
+  static uint8_t mcp_left;
+  static uint8_t mcp_down;
+  static uint8_t mcp_right;
+  static uint8_t mcp_one;
+  static uint8_t mcp_two;
+  static uint8_t mcp_ledGreen;
+  static uint8_t mcp_ledRed;
+  static uint8_t mcp_screenDimmer;
+  static uint8_t mcp_power;
+  static uint8_t mcp_trigger;
 
-  static unsigned char mcpInputPinsLength;
-  static unsigned char mcpInputPins[PD_MCP_INPUT_PINS_LEN];
+  static uint8_t mcpInputPinsLength;
+  static uint8_t mcpInputPins[PD_MCP_INPUT_PINS_LEN];
 };
 
 #endif

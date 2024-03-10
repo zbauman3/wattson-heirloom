@@ -6,6 +6,7 @@ LightRods::LightRods(State *statePtr)
                                   NEO_GRB + NEO_KHZ800)) {
   this->state = statePtr;
   this->routine = 0;
+  this->routineVariation = 0;
 }
 
 void LightRods::begin() {

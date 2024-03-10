@@ -10,10 +10,9 @@ class Vibration : public ace_routine::Coroutine {
 private:
   // 0: off
   // 1: trigger - quick
-  unsigned char routine;
-  unsigned short int routineLoop;
+  uint8_t routine;
 
-  void set(unsigned char value);
+  void set(uint8_t value);
 
 public:
   Vibration();
@@ -21,7 +20,7 @@ public:
   int runCoroutine() override;
   void begin();
 
-  void startPattern(unsigned char which);
+  void startPattern(uint8_t which);
 };
 
 #endif

@@ -33,12 +33,12 @@ public:
   bool mcp_trigger;
 
   bool rotary_btn;
-  signed long rotary_position;
+  int32_t rotary_position;
 
-  unsigned char joystick_lr_prev;
-  unsigned char joystick_ud_prev;
-  unsigned char joystick_lr;
-  unsigned char joystick_ud;
+  uint8_t joystick_lr_prev;
+  uint8_t joystick_ud_prev;
+  uint8_t joystick_lr;
+  uint8_t joystick_ud;
 
   uint8_t activeView;
   bool viewChanged;
@@ -51,7 +51,7 @@ public:
   void setJoystick(uint8_t joystick_lr, uint8_t joystick_ud);
   bool joystickMoving();
   bool joystickChanged();
-  void setMcpValueByPin(unsigned char pin, bool value);
+  void setMcpValueByPin(uint8_t pin, bool value);
 };
 
 #endif

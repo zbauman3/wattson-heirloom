@@ -12,6 +12,7 @@ State::State() {
   this->mcp_power = false;
   this->mcp_trigger = false;
   this->rotary_btn = false;
+  this->rotary_position = 0;
 
   this->interrupt = STATE_INTR_EMPTY;
   this->joystick_lr = 0;
@@ -45,7 +46,7 @@ void State::setJoystick(uint8_t _joystick_lr, uint8_t _joystick_ud) {
   this->joystick_ud = _joystick_ud;
 }
 
-void State::setMcpValueByPin(unsigned char pin, bool value) {
+void State::setMcpValueByPin(uint8_t pin, bool value) {
   if (PinDefs::mcp_menu == pin) {
     this->mcp_menu = value;
   } else if (PinDefs::mcp_up == pin) {

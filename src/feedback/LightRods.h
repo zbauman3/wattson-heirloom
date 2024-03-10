@@ -28,7 +28,8 @@ public:
   void begin();
   int runCoroutine() override;
 
-  void showPattern(uint8_t routine, uint8_t variation, bool restart = false);
+  void showPattern(uint8_t routine, uint8_t variation = 0,
+                   bool restart = false);
   void clear();
 };
 

@@ -25,7 +25,6 @@ ViewManager viewManager(&state, &screen, &joystick, &leds, &lightRods,
                         &vibration);
 
 void setup() {
-
   // call immediately to prevent initial Vibration
   // still needed after pulldown resistor?
   vibration.begin();
