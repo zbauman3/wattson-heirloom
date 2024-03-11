@@ -16,20 +16,10 @@ Interrupts::Interrupts(State *statePtr, Adafruit_MCP23X17 *mcpPtr,
 };
 
 void Interrupts::begin() {
-  this->trueUpTime = 0;
-
   for (uint8_t i = 0; i < PinDefs::mcpInputPinsLength; i++) {
     uint8_t pin = PinDefs::mcpInputPins[i];
     // set all to input
     this->mcp->pinMode(pin, INPUT_PULLUP);
-  }
-
-  // MCP sometimes seems to start with a bad state?
-  // clear interrupts and read all pins once.
-  this->mcp->clearInterrupts();
-  for (uint8_t i = 0; i < PinDefs::mcpInputPinsLength; i++) {
-    uint8_t pin = PinDefs::mcpInputPins[i];
-    this->mcp->digitalRead(pin);
   }
 
   pinMode(PinDefs::mcp_interrupts, INPUT_PULLUP);
@@ -49,76 +39,51 @@ void Interrupts::begin() {
   }
 }
 
-// Sometimes seeing interrupts not getting handled correctly.
-// This checks every few seconds to avoid missed state changes
-void Interrupts::trueUp() {
-  unsigned long nowTime = millis();
-
-  if (nowTime - this->trueUpTime < 7500) {
-    return;
-  }
-
-  this->trueUpTime = nowTime;
-  this->readMcp();
-  this->readRotary();
-}
-
-void Interrupts::readMcp() {
-  uint16_t capturedInterrupt = this->mcp->getCapturedInterrupt();
-
-  for (uint8_t i = 0; i < PinDefs::mcpInputPinsLength; i++) {
-    uint8_t pin = PinDefs::mcpInputPins[i];
-    // set value by bitmap
-    this->state->setMcpValueByPin(pin,
-                                  !((capturedInterrupt & (1 << pin)) >> pin));
-  }
-
-  this->mcp->clearInterrupts();
-
-  // The power plug seems to be especially finicky... Ready it again to confirm
-  this->state->setMcpValueByPin(PinDefs::mcp_power,
-                                !this->mcp->digitalRead(PinDefs::mcp_power));
-}
-
-// return:
-// STATE_INTR_ROTARY
-// STATE_INTR_ROTARY_BTN
-uint8_t Interrupts::readRotary() {
-  // capture this value now, since it will change when read
-  bool lastRotaryButton = this->state->rotary_btn;
-  bool rotaryPressed = this->rotary->isPressed();
-  this->rotary->getValue();
-
-  if (rotaryPressed != lastRotaryButton) {
-    return STATE_INTR_ROTARY_BTN;
-  }
-
-  return STATE_INTR_ROTARY;
-}
-
 void Interrupts::loop() {
   if (!this->_mcp_interrupted && !this->_rotary_interrupted) {
     // if this is not an interrupt cycle, reset the state
     this->state->interrupt = STATE_INTR_EMPTY;
-    this->trueUp();
     return;
   }
 
   if (this->_mcp_interrupted) {
     this->_mcp_interrupted = false;
-    this->readMcp();
     this->state->interrupt = STATE_INTR_MCP;
     DEBUG_LN("Interrupt - MCP");
+
+    uint16_t capturedInterrupt = this->mcp->getCapturedInterrupt();
+
+    for (uint8_t i = 0; i < PinDefs::mcpInputPinsLength; i++) {
+      uint8_t pin = PinDefs::mcpInputPins[i];
+      // set value by bitmap
+      this->state->setMcpValueByPin(pin,
+                                    !((capturedInterrupt & (1 << pin)) >> pin));
+    }
+
+    this->mcp->clearInterrupts();
+
+    // The power plug seems to be especially finicky... Read it again to confirm
+    this->state->setMcpValueByPin(PinDefs::mcp_power,
+                                  !this->mcp->digitalRead(PinDefs::mcp_power));
   }
 
   if (this->_rotary_interrupted) {
     this->_rotary_interrupted = false;
-    this->state->interrupt = this->readRotary();
+    // capture this value now, since it will change when read
+    signed long lastRotaryValue = this->state->rotary_position;
+    bool lastRotaryButton = this->state->rotary_btn;
+    signed long rotaryValue = this->rotary->getValue();
+    bool rotaryPressed = this->rotary->isPressed();
 
-    if (this->state->interrupt == STATE_INTR_ROTARY_BTN) {
-      DEBUG_LN("Interrupt - Rotary Btn");
+    if (rotaryValue != lastRotaryValue) {
+      DEBUG_F("Interrupt - Rotary: %d\n", rotaryValue);
+      this->state->interrupt = STATE_INTR_ROTARY;
+    } else if (rotaryPressed != lastRotaryButton) {
+      DEBUG_F("Interrupt - Rotary Btn: %d\n", rotaryPressed);
+      this->state->interrupt = STATE_INTR_ROTARY_BTN;
     } else {
-      DEBUG_LN("Interrupt - Rotary");
+      DEBUG_LN("Interrupt - Rotary MISS");
+      this->state->interrupt = STATE_INTR_EMPTY;
     }
   }
 }
