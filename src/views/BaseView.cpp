@@ -106,18 +106,22 @@ void BaseView::drawButton(uint8_t position, uint8_t selectedMode, String text) {
 
 uint8_t BaseView::getCursorPosition(int8_t direction, uint8_t currentItem,
                                     uint8_t numItems) {
-  uint8_t selectedIndex = currentItem + (direction >= 0 ? 1 : -1);
 
-  if (selectedIndex >= 0) {
-    selectedIndex = selectedIndex % numItems;
-  } else {
-    selectedIndex = abs(selectedIndex % -numItems);
-    if (selectedIndex != 0) {
-      selectedIndex = numItems - selectedIndex;
+  if (direction >= 0) {
+    uint8_t selectedIndex = currentItem + 1;
+
+    if (selectedIndex >= numItems) {
+      selectedIndex = 0;
     }
+
+    return selectedIndex;
   }
 
-  return selectedIndex;
+  if (currentItem == 0) {
+    return numItems - 1;
+  }
+
+  return currentItem - 1;
 }
 
 bool BaseView::updateCursor(uint8_t numItems) {
