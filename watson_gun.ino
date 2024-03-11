@@ -1,4 +1,5 @@
 #include "./src/config/Macros.h"
+#include "./src/config/PinDefs.h"
 #include "./src/controllers/Interrupts.h"
 #include "./src/controllers/Joystick.h"
 #include "./src/controllers/Rotary.h"
@@ -9,10 +10,12 @@
 #include "./src/models/State.h"
 #include "./src/views/ViewManager.h"
 #include <AceRoutine.h>
+#include <Adafruit_EEPROM_I2C.h>
 #include <Adafruit_MCP23X17.h>
 #include <Arduino.h>
 
 Adafruit_MCP23X17 mcp;
+Adafruit_EEPROM_I2C eeprom;
 State state;
 LightRods lightRods(&state);
 Joystick joystick(&state);
@@ -22,7 +25,7 @@ Screen screen(&mcp);
 Vibration vibration;
 Interrupts inter(&state, &mcp, &rotary);
 ViewManager viewManager(&state, &screen, &joystick, &leds, &lightRods,
-                        &vibration);
+                        &vibration, &eeprom);
 
 void setup() {
   // call immediately to prevent initial Vibration
@@ -38,6 +41,11 @@ void setup() {
 
   if (!mcp.begin_I2C(MCP23XXX_ADDR, &Wire)) {
     DEBUG_LN("Error beginning MCP23017.");
+    INFINITE_LOOP;
+  }
+
+  if (!eeprom.begin(EEPROM_ADDR)) {
+    DEBUG_LN("Error beginning EEPROM I2C.");
     INFINITE_LOOP;
   }
 

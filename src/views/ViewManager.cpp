@@ -7,13 +7,14 @@ void setActiveViewCallback(uint8_t view) {
 
 ViewManager::ViewManager(State *statePtr, Screen *screenPtr,
                          Joystick *joystickPtr, Leds *ledsPtr,
-                         LightRods *lightRodsPtr, Vibration *vibrationPtr)
+                         LightRods *lightRodsPtr, Vibration *vibrationPtr,
+                         Adafruit_EEPROM_I2C *eepromPtr)
     : debugView(statePtr, screenPtr, &setActiveViewCallback, joystickPtr),
       radarView(statePtr, screenPtr, &setActiveViewCallback, ledsPtr,
                 lightRodsPtr),
       gamesView(statePtr, screenPtr, &setActiveViewCallback),
       lightsView(statePtr, screenPtr, &setActiveViewCallback, lightRodsPtr),
-      settingsView(statePtr, screenPtr, &setActiveViewCallback),
+      settingsView(statePtr, screenPtr, &setActiveViewCallback, eepromPtr),
       menuView(statePtr, screenPtr, &setActiveViewCallback) {
 
   this->state = statePtr;
@@ -22,6 +23,7 @@ ViewManager::ViewManager(State *statePtr, Screen *screenPtr,
   this->leds = ledsPtr;
   this->lightRods = lightRodsPtr;
   this->vibration = vibrationPtr;
+  this->eeprom = eepromPtr;
 
   this->debugTimer = 0;
   this->debugStep = 0;
