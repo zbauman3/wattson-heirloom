@@ -194,9 +194,6 @@ void RadarView::cleanup() {
 
 int RadarView::runCoroutine() {
   COROUTINE_LOOP() {
-    if (this->changeToMenu()) {
-      COROUTINE_YIELD();
-    }
 
     // closure for `isWaveStart` in coroutine
     {

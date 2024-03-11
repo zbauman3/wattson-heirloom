@@ -7,9 +7,6 @@ GamesView::GamesView(State *statePtr, Screen *screenPtr,
 
 int GamesView::runCoroutine() {
   COROUTINE_LOOP() {
-    if (this->changeToMenu()) {
-      COROUTINE_YIELD();
-    }
 
     if (this->isInitialRender) {
       this->clearMainCanvas();

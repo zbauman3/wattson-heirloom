@@ -38,6 +38,7 @@ private:
   MenuView menuView;
 
   void checkDebugMode();
+  void checkMenuButton();
 
 public:
   ViewManager(State *statePtr, Screen *screenPtr, Joystick *joystickPtr,

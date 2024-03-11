@@ -51,9 +51,7 @@ void SettingsView::drawMainMenu() {
 
 int SettingsView::runCoroutine() {
   COROUTINE_LOOP() {
-    if (this->changeToMenu()) {
-      COROUTINE_YIELD();
-    }
+
     this->shouldRender = this->updateCursor(this->getButtonCount());
 
     if (!this->shouldRender && this->didSelect()) {

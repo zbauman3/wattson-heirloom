@@ -10,7 +10,8 @@
   Serial.begin(rate);                                                          \
   while (!Serial) {                                                            \
     ;                                                                          \
-  }
+  }                                                                            \
+  delay(250);
 #define DEBUG_LN(...) Serial.println(__VA_ARGS__)
 #define DEBUG_F(...) Serial.printf(__VA_ARGS__)
 #define DEBUG(...) Serial.print(__VA_ARGS__)

@@ -33,10 +33,11 @@ ViewManager::ViewManager(State *statePtr, Screen *screenPtr,
 }
 
 void ViewManager::loop() {
-  // Switching view happens inside the views `loop` fn.
-  // This means that passing in `viewChanged` then
-  // then setting it to `false` at the end of this fn
-  // immediately overrides the `true` inside `setActiveView`
+  this->checkMenuButton();
+  this->checkDebugMode();
+
+  // Switching view happens inside the views `loop` fn. So updating
+  // `viewChanged` at the _end_ of this `loop clobbers the update
   bool isInitialRender = this->state->viewChanged;
   this->state->viewChanged = false;
 
@@ -66,8 +67,6 @@ void ViewManager::loop() {
     this->debugView.loop(isInitialRender);
     break;
   }
-
-  this->checkDebugMode();
 }
 
 void ViewManager::setActiveView(uint8_t view) {
@@ -142,5 +141,12 @@ void ViewManager::checkDebugMode() {
     this->debugStep = 0;
     this->debugTimer = 0;
     this->debugRotaryPos = 0;
+  }
+}
+
+void ViewManager::checkMenuButton() {
+  if (this->state->activeView != STATE_VIEW_MENU &&
+      this->state->hasInterrupt() && this->state->mcp_menu) {
+    this->setActiveView(STATE_VIEW_MENU);
   }
 }

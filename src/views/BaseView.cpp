@@ -26,16 +26,6 @@ void BaseView::sendMainCanvas() {
 
 void BaseView::setActiveView(uint8_t view) { this->_setActiveView(view); }
 
-// We cannot call coroutine methods here, so return a boolean to indicate if we
-// should yield
-boolean BaseView::changeToMenu() {
-  if (this->state->hasInterrupt() && this->state->mcp_menu) {
-    this->setActiveView(STATE_VIEW_MENU);
-    return true;
-  }
-  return false;
-}
-
 void BaseView::loop(bool _isInitialRender) {
   this->isInitialRender = _isInitialRender;
 
@@ -140,11 +130,13 @@ bool BaseView::updateCursor(uint8_t numItems) {
         this->state->rotary_direction, this->cursorIndex, numItems);
 
   } else if (this->state->interrupt == STATE_INTR_MCP &&
-             (this->state->mcp_up || this->state->mcp_down)) {
+             (this->state->mcp_up || this->state->mcp_down ||
+              this->state->mcp_left || this->state->mcp_right)) {
 
     didUpdate = true;
     this->cursorIndex = BaseView::getCursorPosition(
-        this->state->mcp_up ? -1 : 1, this->cursorIndex, numItems);
+        this->state->mcp_up || this->state->mcp_left ? -1 : 1,
+        this->cursorIndex, numItems);
   }
 
   return didUpdate;
