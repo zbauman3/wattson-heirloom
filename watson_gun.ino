@@ -1,5 +1,5 @@
+#include "./src/config/EEPROM.h"
 #include "./src/config/Macros.h"
-#include "./src/config/PinDefs.h"
 #include "./src/controllers/Interrupts.h"
 #include "./src/controllers/Joystick.h"
 #include "./src/controllers/Rotary.h"
@@ -35,6 +35,12 @@ void setup() {
   // ESP32-s2 has different pins for the i2c headers/stemmaQT.
   // We want to use stemmaQT, so we need to set the pins here.
   Wire.setPins(PinDefs::i2cSda, PinDefs::i2cScl);
+  Wire.begin();
+  // for some reason, after adding EEPROM and doing one `write`, the i2c bus
+  // becomes _very_ slow (MCP & rotary too). The EEPROM can operate at 1MHz, and
+  // setting to that speeds up the issue. No more time to debug, leaving this
+  // for now.
+  Wire.setClock(1000000);
 
   DEBUG_INIT(9600);
   DEBUG_LN("Started!");
@@ -44,7 +50,7 @@ void setup() {
     INFINITE_LOOP;
   }
 
-  if (!eeprom.begin(EEPROM_ADDR)) {
+  if (!eeprom.begin(EEPROM_ADDR, &Wire)) {
     DEBUG_LN("Error beginning EEPROM I2C.");
     INFINITE_LOOP;
   }

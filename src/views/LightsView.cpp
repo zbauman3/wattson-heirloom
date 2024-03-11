@@ -3,9 +3,11 @@ using namespace ace_routine;
 
 LightsView::LightsView(State *statePtr, Screen *screenPtr,
                        SetActiveViewPtr(setActiveViewPtr),
-                       LightRods *lightRodsPtr)
+                       LightRods *lightRodsPtr, Adafruit_EEPROM_I2C *eepromPtr)
     : BaseView(statePtr, screenPtr, setActiveViewPtr) {
   this->lightRods = lightRodsPtr;
+  this->eeprom = eepromPtr;
+
   this->shouldRender = true;
 
   // navigation
@@ -22,7 +24,22 @@ LightsView::LightsView(State *statePtr, Screen *screenPtr,
 void LightsView::setup() {
   this->cursorIndex = 0;
   this->screen = 0;
+
+  eepromToBuffer(buffer, this->eeprom->read, EEPROM_LIGHTS_MEM_START,
+                 EEPROM_LIGHTS_MEM_LENGTH);
+
+  this->mode =
+      readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START, EEPROM_LIGHTS_MODE);
+  this->brightness = readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START,
+                                      EEPROM_LIGHTS_BRIGHTNESS);
+  this->color =
+      readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START, EEPROM_LIGHTS_COLOR);
+  this->speed =
+      readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START, EEPROM_LIGHTS_SPEED);
+  this->direction = readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START,
+                                     EEPROM_LIGHTS_DIRECTION);
 }
+
 void LightsView::cleanup() { this->lightRods->clear(); }
 
 void LightsView::handleSelect() {
@@ -33,6 +50,7 @@ void LightsView::handleSelect() {
       this->cursorIndex = 0;
     } else {
       this->mode = this->cursorIndex - 1;
+      this->eeprom->write(EEPROM_LIGHTS_MODE, this->mode);
     }
     break;
   case 2:
@@ -41,6 +59,7 @@ void LightsView::handleSelect() {
       this->cursorIndex = 1;
     } else {
       this->brightness = this->cursorIndex - 1;
+      this->eeprom->write(EEPROM_LIGHTS_BRIGHTNESS, this->brightness);
     }
     break;
   case 3:
@@ -49,6 +68,7 @@ void LightsView::handleSelect() {
       this->cursorIndex = 2;
     } else {
       this->speed = this->cursorIndex - 1;
+      this->eeprom->write(EEPROM_LIGHTS_SPEED, this->speed);
     }
     break;
   case 4:
@@ -57,6 +77,7 @@ void LightsView::handleSelect() {
       this->cursorIndex = 3;
     } else {
       this->direction = this->cursorIndex == 2 ? false : true;
+      this->eeprom->write(EEPROM_LIGHTS_DIRECTION, this->direction);
     }
     break;
   case 5:
@@ -65,6 +86,7 @@ void LightsView::handleSelect() {
       this->cursorIndex = 2;
     } else {
       this->color = this->cursorIndex - 1;
+      this->eeprom->write(EEPROM_LIGHTS_COLOR, this->color);
     }
     break;
   case 0:
@@ -201,7 +223,7 @@ int LightsView::runCoroutine() {
         uint8_t realBrightness = this->brightness == 1   ? 160
                                  : this->brightness == 2 ? 240
                                                          : 75;
-        uint8_t realSpeed = this->speed == 1 ? 10 : this->speed == 2 ? 0 : 25;
+        uint8_t realSpeed = this->speed == 1 ? 12 : this->speed == 2 ? 3 : 25;
         uint8_t realRed, realGreen, realBlue;
         switch (this->color) {
         case 0: // Red

@@ -13,7 +13,8 @@ ViewManager::ViewManager(State *statePtr, Screen *screenPtr,
       radarView(statePtr, screenPtr, &setActiveViewCallback, ledsPtr,
                 lightRodsPtr),
       gamesView(statePtr, screenPtr, &setActiveViewCallback),
-      lightsView(statePtr, screenPtr, &setActiveViewCallback, lightRodsPtr),
+      lightsView(statePtr, screenPtr, &setActiveViewCallback, lightRodsPtr,
+                 eepromPtr),
       settingsView(statePtr, screenPtr, &setActiveViewCallback, eepromPtr),
       menuView(statePtr, screenPtr, &setActiveViewCallback) {
 

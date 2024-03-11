@@ -4,7 +4,6 @@
 #define PinDefs_H
 
 #define PD_MCP_INPUT_PINS_LEN 10
-#define EEPROM_ADDR 0x50
 
 class PinDefs {
 

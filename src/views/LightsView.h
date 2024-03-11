@@ -1,9 +1,11 @@
+#include "../config/EEPROM.h"
 #include "../feedback/LightRods.h"
 #include "../models/State.h"
 #include "./BaseView.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 #include <AceRoutine.h>
+#include <Adafruit_EEPROM_I2C.h>
 #include <Arduino.h>
 
 #ifndef LightsView_H
@@ -12,6 +14,7 @@
 class LightsView : public BaseView {
 private:
   LightRods *lightRods;
+  Adafruit_EEPROM_I2C *eeprom;
 
   bool shouldRender;
 
@@ -34,7 +37,8 @@ private:
 
 public:
   LightsView(State *statePtr, Screen *screenPtr,
-             SetActiveViewPtr(setActiveViewPtr), LightRods *lightRodsPtr);
+             SetActiveViewPtr(setActiveViewPtr), LightRods *lightRodsPtr,
+             Adafruit_EEPROM_I2C *eepromPtr);
   int runCoroutine() override;
   void setup() override;
   void cleanup() override;
