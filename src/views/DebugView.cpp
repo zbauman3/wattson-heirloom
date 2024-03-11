@@ -17,7 +17,7 @@ int DebugView::runCoroutine() {
   COROUTINE_LOOP() {
     this->joystick->runCoroutine();
 
-    if (this->isInitialRender || this->state->hasInterrupt() ||
+    if (this->isInitialRender || this->state->interrupt != STATE_INTR_EMPTY ||
         this->state->joystickChanged()) {
 
       this->canvas->setCursor(0, 0);

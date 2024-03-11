@@ -67,8 +67,6 @@ State::State(Adafruit_EEPROM_I2C *eepromPtr) : eepromState(eepromPtr) {
   this->viewChanged = true;
 };
 
-bool State::hasInterrupt() { return this->interrupt != STATE_INTR_EMPTY; };
-
 // outside of dead zone
 bool State::joystickMoving() {
   return this->joystick_lr < 130 || this->joystick_lr > 190 ||

@@ -75,7 +75,6 @@ public:
 
   void begin();
 
-  bool hasInterrupt();
   void setJoystick(uint8_t joystick_lr, uint8_t joystick_ud);
   bool joystickMoving();
   bool joystickChanged();
