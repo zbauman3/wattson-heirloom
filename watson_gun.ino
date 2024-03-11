@@ -16,7 +16,7 @@
 
 Adafruit_MCP23X17 mcp;
 Adafruit_EEPROM_I2C eeprom;
-State state;
+State state(&eeprom);
 LightRods lightRods(&state);
 Joystick joystick(&state);
 Leds leds(&mcp);
@@ -25,7 +25,7 @@ Screen screen(&mcp);
 Vibration vibration;
 Interrupts inter(&state, &mcp, &rotary);
 ViewManager viewManager(&state, &screen, &joystick, &leds, &lightRods,
-                        &vibration, &eeprom);
+                        &vibration);
 
 void setup() {
   // call immediately to prevent initial Vibration
@@ -59,6 +59,7 @@ void setup() {
     INFINITE_LOOP;
   }
 
+  state.begin();
   lightRods.begin();
   screen.begin();
   joystick.begin();

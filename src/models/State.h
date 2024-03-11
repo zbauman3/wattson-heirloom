@@ -1,4 +1,6 @@
+#include "../config/EEPROM.h"
 #include "../config/PinDefs.h"
+#include <Adafruit_EEPROM_I2C.h>
 #include <Arduino.h>
 
 #ifndef State_H
@@ -18,6 +20,24 @@
 
 // #define STATE_VIEW_INIT STATE_VIEW_RADAR
 #define STATE_VIEW_INIT STATE_VIEW_MENU
+
+class EepromState {
+private:
+  Adafruit_EEPROM_I2C *eeprom;
+
+public:
+  uint8_t lights_mode;
+  uint8_t lights_brightness;
+  uint8_t lights_speed;
+  bool lights_direction;
+  uint8_t lights_color;
+
+  EepromState(Adafruit_EEPROM_I2C *eepromPtr);
+
+  void begin();
+  void setValue(uint16_t addr, uint8_t value);
+  void getBlock(uint16_t addr, uint8_t value);
+};
 
 class State {
 public:
@@ -49,7 +69,11 @@ public:
 
   uint8_t interrupt;
 
-  State();
+  EepromState eepromState;
+
+  State(Adafruit_EEPROM_I2C *eepromPtr);
+
+  void begin();
 
   bool hasInterrupt();
   void setJoystick(uint8_t joystick_lr, uint8_t joystick_ud);

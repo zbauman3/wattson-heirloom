@@ -1,6 +1,48 @@
 #include "./State.h"
 
-State::State() {
+EepromState::EepromState(Adafruit_EEPROM_I2C *eepromPtr) {
+  this->eeprom = eepromPtr;
+};
+
+void EepromState::begin() {
+  eepromToBuffer(buffer, this->eeprom->read, EEPROM_LIGHTS_MEM_START,
+                 EEPROM_LIGHTS_MEM_LENGTH);
+
+  this->lights_mode =
+      readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START, EEPROM_LIGHTS_MODE);
+  this->lights_brightness = readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START,
+                                             EEPROM_LIGHTS_BRIGHTNESS);
+  this->lights_color =
+      readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START, EEPROM_LIGHTS_COLOR);
+  this->lights_speed =
+      readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START, EEPROM_LIGHTS_SPEED);
+  this->lights_direction = readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START,
+                                            EEPROM_LIGHTS_DIRECTION);
+}
+
+void EepromState::setValue(uint16_t addr, uint8_t value) {
+  this->eeprom->write(addr, value);
+
+  switch (addr) {
+  case EEPROM_LIGHTS_MODE:
+    this->lights_mode = value;
+    break;
+  case EEPROM_LIGHTS_BRIGHTNESS:
+    this->lights_brightness = value;
+    break;
+  case EEPROM_LIGHTS_SPEED:
+    this->lights_speed = value;
+    break;
+  case EEPROM_LIGHTS_DIRECTION:
+    this->lights_direction = value;
+    break;
+  case EEPROM_LIGHTS_COLOR:
+    this->lights_color = value;
+    break;
+  }
+}
+
+State::State(Adafruit_EEPROM_I2C *eepromPtr) : eepromState(eepromPtr) {
   this->mcp_menu = false;
   this->mcp_up = false;
   this->mcp_record = false;
@@ -70,3 +112,5 @@ void State::setMcpValueByPin(uint8_t pin, bool value) {
     this->mcp_trigger = value;
   }
 }
+
+void State::begin() { this->eepromState.begin(); }

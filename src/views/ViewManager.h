@@ -10,7 +10,6 @@
 #include "../views/MenuView.h"
 #include "../views/RadarView.h"
 #include "../views/SettingsView.h"
-#include <Adafruit_EEPROM_I2C.h>
 #include <Arduino.h>
 
 #ifndef ViewManager_H
@@ -24,7 +23,6 @@ private:
   Leds *leds;
   LightRods *lightRods;
   Vibration *vibration;
-  Adafruit_EEPROM_I2C *eeprom;
 
   int debugTimer;
   uint8_t debugStep;
@@ -37,13 +35,11 @@ private:
   DebugView debugView;
   MenuView menuView;
 
-  void checkDebugMode();
   void checkMenuButton();
 
 public:
   ViewManager(State *statePtr, Screen *screenPtr, Joystick *joystickPtr,
-              Leds *ledsPtr, LightRods *lightRodsPtr, Vibration *vibrationPtr,
-              Adafruit_EEPROM_I2C *eepromPtr);
+              Leds *ledsPtr, LightRods *lightRodsPtr, Vibration *vibrationPtr);
   void loop();
   void setActiveView(uint8_t view);
 };

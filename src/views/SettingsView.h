@@ -3,7 +3,6 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 #include <AceRoutine.h>
-#include <Adafruit_EEPROM_I2C.h>
 #include <Arduino.h>
 
 #ifndef SettingsView_H
@@ -11,10 +10,6 @@
 
 class SettingsView : public BaseView {
 private:
-  Adafruit_EEPROM_I2C *eeprom;
-
-  uint8_t lastEeprom;
-
   bool shouldRender;
   uint8_t screen;
   void handleSelect();
@@ -24,8 +19,7 @@ private:
 
 public:
   SettingsView(State *statePtr, Screen *screenPtr,
-               SetActiveViewPtr(setActiveViewPtr),
-               Adafruit_EEPROM_I2C *eepromPtr);
+               SetActiveViewPtr(setActiveViewPtr));
   int runCoroutine() override;
   void setup() override;
 };
