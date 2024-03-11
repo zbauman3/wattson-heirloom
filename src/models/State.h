@@ -34,6 +34,10 @@ public:
 
   bool rotary_btn;
   int32_t rotary_position;
+  // `-1` = down
+  // `0` = none
+  // `1` = up
+  uint8_t rotary_direction;
 
   uint8_t joystick_lr_prev;
   uint8_t joystick_ud_prev;

@@ -13,6 +13,7 @@ State::State() {
   this->mcp_trigger = false;
   this->rotary_btn = false;
   this->rotary_position = 0;
+  this->rotary_direction = 0;
 
   this->interrupt = STATE_INTR_EMPTY;
   this->joystick_lr = 0;

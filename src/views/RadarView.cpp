@@ -209,10 +209,10 @@ int RadarView::runCoroutine() {
       if (isWaveStart || this->isInitialRender) {
 
         if (this->pingIsClose()) {
-          this->lightRods->showPattern(LIGHTS_PATTERN_RADAR, 1, true);
+          this->lightRods->radarPulse(1);
           this->leds->flash(LEDS_RED, 250);
         } else {
-          this->lightRods->showPattern(LIGHTS_PATTERN_RADAR, 0, true);
+          this->lightRods->radarPulse(0);
           this->leds->clear(LEDS_RED);
           this->leds->flashOnce(LEDS_GREEN, 500);
         }

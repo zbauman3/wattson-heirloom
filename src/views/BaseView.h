@@ -10,6 +10,11 @@
 
 #define SetActiveViewPtr(name) void (*name)(uint8_t)
 
+#define VIEW_PADDING 10
+#define VIEW_TITLE_SPACE 60
+#define VIEW_BUTTON_W (SCREEN_WIDTH - (VIEW_PADDING * 2))
+#define VIEW_BUTTON_H 36
+
 class BaseView : public ace_routine::Coroutine {
 protected:
   State *state;
@@ -18,12 +23,19 @@ protected:
   SetActiveViewPtr(_setActiveView);
   bool isInitialRender;
 
+  uint8_t cursorIndex;
+
   void clearMainCanvas();
   void sendMainCanvas();
   void setActiveView(uint8_t view);
   boolean changeToMenu();
   void sendCanvas(GFXcanvas16 *newCanvas, int16_t x, int16_t y, int16_t w,
                   int16_t h);
+  void drawTitle(String title, bool small = false);
+  void drawButton(uint8_t position, uint8_t selectedMode, String text);
+
+  bool updateCursor(uint8_t numItems);
+  bool didSelect();
 
 public:
   BaseView(State *statePtr, Screen *screenPtr,
@@ -32,6 +44,9 @@ public:
   void loop(bool isInitialRender);
   virtual void setup();
   virtual void cleanup();
+
+  static uint8_t getCursorPosition(int8_t direction, uint8_t currentItem,
+                                   uint8_t numItems);
 };
 
 #endif
