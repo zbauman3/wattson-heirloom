@@ -101,7 +101,7 @@ void ViewManager::setActiveView(uint8_t view) {
 void ViewManager::checkMenuButton() {
   if (this->state->activeView != STATE_VIEW_MENU &&
       this->state->activeView != STATE_VIEW_DEBUG &&
-      this->state->interrupt != STATE_INTR_MCP && this->state->mcp_menu) {
+      this->state->interrupt == STATE_INTR_MCP && this->state->mcp_menu) {
     this->setActiveView(STATE_VIEW_MENU);
   }
 }

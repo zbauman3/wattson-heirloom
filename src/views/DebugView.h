@@ -13,6 +13,9 @@ class DebugView : public BaseView {
 private:
   Joystick *joystick;
 
+  unsigned long holdTimer;
+  uint8_t lastInterrupt;
+
 public:
   DebugView(State *statePtr, Screen *screenPtr,
             SetActiveViewPtr(setActiveViewPtr), Joystick *joystickPtr);

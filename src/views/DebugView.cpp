@@ -11,19 +11,41 @@ void DebugView::setup() {
   this->canvas->setTextColor(ILI9341_WHITE, ILI9341_BLACK);
   this->canvas->setTextSize(1);
   this->canvas->setTextWrap(false);
+
+  this->lastInterrupt = STATE_INTR_EMPTY;
+  this->holdTimer = 0;
 }
 
 int DebugView::runCoroutine() {
   COROUTINE_LOOP() {
+    if (this->state->interrupt == STATE_INTR_MCP && this->state->mcp_menu &&
+        this->holdTimer == 0) {
+      this->holdTimer = millis();
+    } else if (this->holdTimer != 0) {
+      if (this->state->mcp_menu) {
+        if (millis() - this->holdTimer > 5000) {
+          this->setActiveView(STATE_VIEW_SETTINGS);
+          this->holdTimer = 0;
+          COROUTINE_YIELD();
+        }
+      } else {
+        this->holdTimer = 0;
+      }
+    }
+
     this->joystick->runCoroutine();
 
-    if (this->isInitialRender || this->state->interrupt != STATE_INTR_EMPTY ||
+    if (this->isInitialRender ||
+        this->state->interrupt != this->lastInterrupt ||
         this->state->joystickChanged()) {
+      this->lastInterrupt = this->state->interrupt;
 
       this->canvas->setCursor(0, 0);
 
       this->canvas->println("-------- DEBUG --------");
 
+      this->canvas->printf("Interrupt:        %d    \n",
+                           this->state->interrupt);
       this->canvas->printf("Joystick lr:      %d    \n",
                            this->state->joystick_lr);
       this->canvas->printf("joystick ud:      %d    \n",
