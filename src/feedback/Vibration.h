@@ -19,7 +19,7 @@ private:
   uint8_t routine;
   uint8_t i, j, k;
 
-  void set(uint8_t value);
+  void set(uint8_t value, bool allowDeadzone = false);
   bool changeRoutine(uint8_t routine, bool restart);
 
 public:

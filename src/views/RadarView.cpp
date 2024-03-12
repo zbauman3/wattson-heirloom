@@ -216,6 +216,10 @@ int RadarView::runCoroutine() {
       }
     }
 
-    COROUTINE_YIELD();
+    if (this->state->isInTriggerRoutine) {
+      COROUTINE_DELAY(1500);
+    } else {
+      COROUTINE_YIELD();
+    }
   }
 }

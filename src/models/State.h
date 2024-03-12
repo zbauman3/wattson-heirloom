@@ -72,6 +72,8 @@ public:
   uint8_t activeView;
   bool viewChanged;
 
+  bool isInTriggerRoutine;
+
   uint8_t interrupt;
 
   EepromState eepromState;

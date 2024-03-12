@@ -134,7 +134,7 @@ int LightRods::runCoroutine() {
         COROUTINE_YIELD();
       }
     } else if (this->routine == LIGHTS_PATTERN_TRIGGER_HIGHPOWER) {
-      for (this->j = 0; this->j < 7; this->j++) {
+      for (this->j = 0; this->j < 5; this->j++) {
         if (this->j % 2 == 0) {
           for (this->k = 0; this->k < 2; this->k++) {
             this->neopixels.clear();
@@ -183,6 +183,14 @@ int LightRods::runCoroutine() {
 bool LightRods::changeRoutine(uint8_t which, bool restart) {
   bool isChange = this->routine != which;
   this->routine = which;
+
+  if (this->routine == LIGHTS_PATTERN_TRIGGER_INIT ||
+      this->routine == LIGHTS_PATTERN_TRIGGER_BUILD ||
+      this->routine == LIGHTS_PATTERN_TRIGGER_HIGHPOWER ||
+      this->routine == LIGHTS_PATTERN_TRIGGER_LOWPOWER) {
+    this->state->isInTriggerRoutine = true;
+  }
+
   if (isChange || restart) {
     this->neopixels.fill(neopixels.Color(0, 0, 0));
     this->neopixels.show();
@@ -193,6 +201,7 @@ bool LightRods::changeRoutine(uint8_t which, bool restart) {
 }
 
 void LightRods::clear() {
+  this->state->isInTriggerRoutine = false;
   this->routine = 0;
   this->routineVariation = 0;
   this->neopixels.fill(neopixels.Color(0, 0, 0));
@@ -201,6 +210,10 @@ void LightRods::clear() {
 }
 
 void LightRods::radarPulse(bool danger) {
+  if (this->state->isInTriggerRoutine) {
+    return;
+  }
+
   this->routineVariation = danger ? 1 : 0;
   this->changeRoutine(LIGHTS_PATTERN_RADAR, true);
 }

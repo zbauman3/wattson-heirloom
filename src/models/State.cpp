@@ -81,6 +81,8 @@ State::State(Adafruit_EEPROM_I2C *eepromPtr) : eepromState(eepromPtr) {
 
   this->activeView = STATE_VIEW_INIT;
   this->viewChanged = true;
+
+  this->isInTriggerRoutine = false;
 };
 
 // outside of dead zone

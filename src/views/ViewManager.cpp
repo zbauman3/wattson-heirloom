@@ -66,6 +66,17 @@ void ViewManager::loop() {
 }
 
 void ViewManager::setActiveView(uint8_t view) {
+
+  // clear the trigger routine if leaving a display that can use it
+  switch (this->state->activeView) {
+  case STATE_VIEW_MENU:
+  case STATE_VIEW_RADAR:
+    this->lightRods->clear();
+    this->vibration->clear();
+    this->triggerTimer = 0;
+    break;
+  }
+
   switch (this->state->activeView) {
   case STATE_VIEW_MENU:
     this->menuView.cleanup();
@@ -108,8 +119,8 @@ void ViewManager::checkMenuButton() {
 }
 
 void ViewManager::checkTriggerPull() {
-  if (this->state->activeView == STATE_VIEW_SETTINGS ||
-      this->state->activeView == STATE_VIEW_DEBUG) {
+  if (this->state->activeView != STATE_VIEW_MENU &&
+      this->state->activeView != STATE_VIEW_RADAR) {
     return;
   }
 
@@ -122,12 +133,17 @@ void ViewManager::checkTriggerPull() {
   }
 
   if (this->triggerTimer != 0) {
+    unsigned long now = millis();
     if (this->state->mcp_trigger) {
-      if (millis() - this->triggerTimer > 1000) {
+      if (now - this->triggerTimer > 10000) {
+        this->lightRods->triggerHighPower();
+        this->vibration->triggerHighPower();
+        this->triggerTimer = 0;
+      } else if (now - this->triggerTimer > 1000) {
         this->lightRods->triggerBuild();
         this->vibration->triggerBuild();
       }
-    } else if (millis() - this->triggerTimer > 3000) {
+    } else if (now - this->triggerTimer > 3000) {
       this->lightRods->triggerHighPower();
       this->vibration->triggerHighPower();
       this->triggerTimer = 0;

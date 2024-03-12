@@ -9,7 +9,13 @@ void Vibration::begin() {
   this->set(0);
 }
 
-void Vibration::set(uint8_t value) { analogWrite(PinDefs::vibe, value); }
+void Vibration::set(uint8_t value, bool allowDeadzone) {
+  if (value > 0 && value < 75 && !allowDeadzone) {
+    value = 75;
+  }
+
+  analogWrite(PinDefs::vibe, value);
+}
 
 int Vibration::runCoroutine() {
   COROUTINE_LOOP() {
@@ -66,9 +72,9 @@ int Vibration::runCoroutine() {
         COROUTINE_YIELD();
       }
     } else if (this->routine == VIBE_PATTERN_TRIGGER_HIGHPOWER) {
-      // this->set(0);
+      this->set(0);
 
-      for (this->j = 0; this->j < 7; this->j++) {
+      for (this->j = 0; this->j < 5; this->j++) {
         this->i = 0;
         for (this->k = 0; this->k < 3; this->k++) {
           if (this->i == 0) {
