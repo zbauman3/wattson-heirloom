@@ -2,22 +2,24 @@
 
 EepromState::EepromState(Adafruit_EEPROM_I2C *eepromPtr) {
   this->eeprom = eepromPtr;
+
+  this->lights_mode = 0;
+  this->lights_brightness = 2;
+  this->lights_speed = 0;
+  this->lights_direction = true;
+  this->lights_color = 0;
+
+  this->hrdwr_plug = 0;
 };
 
 void EepromState::begin() {
-  eepromToBuffer(buffer, this->eeprom->read, EEPROM_LIGHTS_MEM_START,
-                 EEPROM_LIGHTS_MEM_LENGTH);
+  this->lights_mode = this->eeprom->read(EEPROM_LIGHTS_MODE);
+  this->lights_brightness = this->eeprom->read(EEPROM_LIGHTS_BRIGHTNESS);
+  this->lights_color = this->eeprom->read(EEPROM_LIGHTS_COLOR);
+  this->lights_speed = this->eeprom->read(EEPROM_LIGHTS_SPEED);
+  this->lights_direction = this->eeprom->read(EEPROM_LIGHTS_DIRECTION);
 
-  this->lights_mode =
-      readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START, EEPROM_LIGHTS_MODE);
-  this->lights_brightness = readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START,
-                                             EEPROM_LIGHTS_BRIGHTNESS);
-  this->lights_color =
-      readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START, EEPROM_LIGHTS_COLOR);
-  this->lights_speed =
-      readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START, EEPROM_LIGHTS_SPEED);
-  this->lights_direction = readEepromBuffer(buffer, EEPROM_LIGHTS_MEM_START,
-                                            EEPROM_LIGHTS_DIRECTION);
+  this->hrdwr_plug = this->eeprom->read(EEPROM_HRDWR_PLUG);
 }
 
 void EepromState::setValue(uint16_t addr, uint8_t value) {
@@ -39,8 +41,22 @@ void EepromState::setValue(uint16_t addr, uint8_t value) {
   case EEPROM_LIGHTS_COLOR:
     this->lights_color = value;
     break;
+
+  case EEPROM_HRDWR_PLUG:
+    this->hrdwr_plug = value;
+    break;
   }
 }
+
+void EepromState::reset() {
+  this->setValue(EEPROM_LIGHTS_MODE, 0);
+  this->setValue(EEPROM_LIGHTS_BRIGHTNESS, 2);
+  this->setValue(EEPROM_LIGHTS_SPEED, 0);
+  this->setValue(EEPROM_LIGHTS_DIRECTION, true);
+  this->setValue(EEPROM_LIGHTS_COLOR, 0);
+
+  this->setValue(EEPROM_HRDWR_PLUG, 0);
+};
 
 State::State(Adafruit_EEPROM_I2C *eepromPtr) : eepromState(eepromPtr) {
   this->mcp_menu = false;
@@ -51,7 +67,7 @@ State::State(Adafruit_EEPROM_I2C *eepromPtr) : eepromState(eepromPtr) {
   this->mcp_right = false;
   this->mcp_one = false;
   this->mcp_two = false;
-  this->mcp_power = false;
+  this->mcp_plug = false;
   this->mcp_trigger = false;
   this->rotary_btn = false;
   this->rotary_position = 0;
@@ -104,8 +120,8 @@ void State::setMcpValueByPin(uint8_t pin, bool value) {
     this->mcp_one = value;
   } else if (PinDefs::mcp_two == pin) {
     this->mcp_two = value;
-  } else if (PinDefs::mcp_power == pin) {
-    this->mcp_power = value;
+  } else if (PinDefs::mcp_plug == pin) {
+    this->mcp_plug = value;
   } else if (PinDefs::mcp_trigger == pin) {
     this->mcp_trigger = value;
   }

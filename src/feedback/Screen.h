@@ -14,8 +14,8 @@
 #define SCREEN_CENTER_Y 120
 
 #define COLOR_GREEN_FOREGND 0x060f
-#define COLOR_GREEN_FADED 0x0143
 #define COLOR_BLACK 0x0000
+#define COLOR_WHITE 0xFFFF
 
 class Screen {
 private:

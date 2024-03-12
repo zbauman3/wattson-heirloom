@@ -6,10 +6,7 @@ LightsView::LightsView(State *statePtr, Screen *screenPtr,
                        LightRods *lightRodsPtr)
     : BaseView(statePtr, screenPtr, setActiveViewPtr) {
   this->lightRods = lightRodsPtr;
-
   this->shouldRender = true;
-
-  // navigation
   this->screen = 0;
 }
 
@@ -102,7 +99,7 @@ uint8_t LightsView::getButtonCount() {
 }
 
 void LightsView::drawMainMenu() {
-  this->drawTitle("LIGHTS");
+  this->drawTitle("Lights");
   this->drawButton(0, this->cursorIndex == 0, "Mode");
   this->drawButton(1, this->cursorIndex == 1, "Brightness");
   if (this->state->eepromState.lights_mode == 1) {
@@ -115,48 +112,94 @@ void LightsView::drawMainMenu() {
 }
 
 void LightsView::drawModeMenu() {
-  this->drawTitle("MODE");
+  uint8_t selectedIndex = this->state->eepromState.lights_mode + 1;
+
+  this->drawTitle("Lights > Mode", 4);
   this->drawButton(0, this->cursorIndex == 0, "< Back");
-  this->drawButton(1, this->cursorIndex == 1, "Flashlight");
-  this->drawButton(2, this->cursorIndex == 2, "Rainbow");
-  this->drawButton(3, this->cursorIndex == 3, "Color");
+  this->drawButton(
+      1, (selectedIndex == 1 ? 2 : 0) + (this->cursorIndex == 1 ? 1 : 0),
+      "Flashlight");
+  this->drawButton(
+      2, (selectedIndex == 2 ? 2 : 0) + (this->cursorIndex == 2 ? 1 : 0),
+      "Rainbow");
+  this->drawButton(
+      3, (selectedIndex == 3 ? 2 : 0) + (this->cursorIndex == 3 ? 1 : 0),
+      "Color");
 }
 
 void LightsView::drawBrightnessMenu() {
-  this->drawTitle("Brightness", true);
+  uint8_t selectedIndex = this->state->eepromState.lights_brightness + 1;
+
+  this->drawTitle("Lights > Brightness", 4);
   this->drawButton(0, this->cursorIndex == 0, "< Back");
-  this->drawButton(1, this->cursorIndex == 1, "Low");
-  this->drawButton(2, this->cursorIndex == 2, "Medium");
-  this->drawButton(3, this->cursorIndex == 3, "High");
+  this->drawButton(
+      1, (selectedIndex == 1 ? 2 : 0) + (this->cursorIndex == 1 ? 1 : 0),
+      "Low");
+  this->drawButton(
+      2, (selectedIndex == 2 ? 2 : 0) + (this->cursorIndex == 2 ? 1 : 0),
+      "Medium");
+  this->drawButton(
+      3, (selectedIndex == 3 ? 2 : 0) + (this->cursorIndex == 3 ? 1 : 0),
+      "High");
 }
 
 void LightsView::drawSpeedMenu() {
-  this->drawTitle("Speed");
+  uint8_t selectedIndex = this->state->eepromState.lights_speed + 1;
+
+  this->drawTitle("Lights > Speed", 4);
   this->drawButton(0, this->cursorIndex == 0, "< Back");
-  this->drawButton(1, this->cursorIndex == 1, "Slow");
-  this->drawButton(2, this->cursorIndex == 2, "Medium");
-  this->drawButton(3, this->cursorIndex == 3, "Fast");
+  this->drawButton(
+      1, (selectedIndex == 1 ? 2 : 0) + (this->cursorIndex == 1 ? 1 : 0),
+      "Slow");
+  this->drawButton(
+      2, (selectedIndex == 2 ? 2 : 0) + (this->cursorIndex == 2 ? 1 : 0),
+      "Medium");
+  this->drawButton(
+      3, (selectedIndex == 3 ? 2 : 0) + (this->cursorIndex == 3 ? 1 : 0),
+      "Fast");
 }
 
 void LightsView::drawDirectionMenu() {
-  this->drawTitle("Direction", true);
+  uint8_t selectedIndex = this->state->eepromState.lights_direction ? 1 : 2;
+
+  this->drawTitle("Lights > Direction", 4);
   this->drawButton(0, this->cursorIndex == 0, "< Back");
-  this->drawButton(1, this->cursorIndex == 1, "Inward");
-  this->drawButton(2, this->cursorIndex == 2, "Outward");
+  this->drawButton(
+      1, (selectedIndex == 1 ? 2 : 0) + (this->cursorIndex == 1 ? 1 : 0),
+      "Inward");
+  this->drawButton(
+      2, (selectedIndex == 2 ? 2 : 0) + (this->cursorIndex == 2 ? 1 : 0),
+      "Outward");
 }
 
 void LightsView::drawColorMenu() {
-  this->drawTitle("Color");
+  uint8_t selectedIndex = (uint8_t)(this->state->eepromState.lights_color) + 1;
+
+  this->drawTitle("Lights > Color", 4);
   if (this->cursorIndex <= 3) {
     this->drawButton(0, this->cursorIndex == 0, "< Back");
-    this->drawButton(1, this->cursorIndex == 1, "Red");
-    this->drawButton(2, this->cursorIndex == 2, "Green");
-    this->drawButton(3, this->cursorIndex == 3, "Blue");
+    this->drawButton(
+        1, (selectedIndex == 1 ? 2 : 0) + (this->cursorIndex == 1 ? 1 : 0),
+        "Red");
+    this->drawButton(
+        2, (selectedIndex == 2 ? 2 : 0) + (this->cursorIndex == 2 ? 1 : 0),
+        "Green");
+    this->drawButton(
+        3, (selectedIndex == 3 ? 2 : 0) + (this->cursorIndex == 3 ? 1 : 0),
+        "Blue");
   } else {
-    this->drawButton(0, this->cursorIndex == 4, "Cyan");
-    this->drawButton(1, this->cursorIndex == 5, "Magenta");
-    this->drawButton(2, this->cursorIndex == 6, "Yellow");
-    this->drawButton(3, this->cursorIndex == 7, "White");
+    this->drawButton(
+        0, (selectedIndex == 4 ? 2 : 0) + (this->cursorIndex == 4 ? 1 : 0),
+        "Cyan");
+    this->drawButton(
+        1, (selectedIndex == 5 ? 2 : 0) + (this->cursorIndex == 5 ? 1 : 0),
+        "Magenta");
+    this->drawButton(
+        2, (selectedIndex == 6 ? 2 : 0) + (this->cursorIndex == 6 ? 1 : 0),
+        "Yellow");
+    this->drawButton(
+        3, (selectedIndex == 7 ? 2 : 0) + (this->cursorIndex == 7 ? 1 : 0),
+        "White");
   }
 }
 

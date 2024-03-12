@@ -16,6 +16,8 @@ private:
   uint8_t getButtonCount();
 
   void drawMainMenu();
+  void drawReset();
+  void drawPlugOverride();
 
 public:
   SettingsView(State *statePtr, Screen *screenPtr,

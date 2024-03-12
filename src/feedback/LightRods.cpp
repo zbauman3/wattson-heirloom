@@ -20,7 +20,7 @@ void LightRods::begin() {
 
 uint32_t LightRods::adjustColorByPower(uint8_t r, uint8_t g, uint8_t b,
                                        float percent) {
-  if (this->state->mcp_power) {
+  if (this->state->mcp_plug) {
     return neopixels.Color(r, g, b);
   }
 

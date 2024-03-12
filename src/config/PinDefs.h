@@ -34,7 +34,7 @@ public:
   static uint8_t mcp_ledGreen;
   static uint8_t mcp_ledRed;
   static uint8_t mcp_screenDimmer;
-  static uint8_t mcp_power;
+  static uint8_t mcp_plug;
   static uint8_t mcp_trigger;
 
   static uint8_t mcpInputPinsLength;

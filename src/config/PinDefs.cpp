@@ -25,7 +25,7 @@ uint8_t PinDefs::mcp_one = 6;
 uint8_t PinDefs::mcp_two = 7;
 uint8_t PinDefs::mcp_ledGreen = 8;
 uint8_t PinDefs::mcp_ledRed = 9;
-uint8_t PinDefs::mcp_power = 10;
+uint8_t PinDefs::mcp_plug = 10;
 uint8_t PinDefs::mcp_trigger = 11;
 uint8_t PinDefs::mcp_screenDimmer = 12;
 
@@ -33,5 +33,5 @@ uint8_t PinDefs::mcpInputPinsLength = PD_MCP_INPUT_PINS_LEN;
 uint8_t PinDefs::mcpInputPins[PD_MCP_INPUT_PINS_LEN] = {
     PinDefs::mcp_menu,   PinDefs::mcp_up,   PinDefs::mcp_record,
     PinDefs::mcp_left,   PinDefs::mcp_down, PinDefs::mcp_right,
-    PinDefs::mcp_one,    PinDefs::mcp_two,  PinDefs::mcp_power,
+    PinDefs::mcp_one,    PinDefs::mcp_two,  PinDefs::mcp_plug,
     PinDefs::mcp_trigger};

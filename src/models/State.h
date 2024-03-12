@@ -18,7 +18,6 @@
 #define STATE_VIEW_LIGHTS 0x04
 #define STATE_VIEW_SETTINGS 0x05
 
-// #define STATE_VIEW_INIT STATE_VIEW_RADAR
 #define STATE_VIEW_INIT STATE_VIEW_MENU
 
 class EepromState {
@@ -32,11 +31,17 @@ public:
   bool lights_direction;
   uint8_t lights_color;
 
+  // 0 = nothing
+  // 1 = override to false
+  // 2 = override to true
+  uint8_t hrdwr_plug;
+
   EepromState(Adafruit_EEPROM_I2C *eepromPtr);
 
   void begin();
   void setValue(uint16_t addr, uint8_t value);
   void getBlock(uint16_t addr, uint8_t value);
+  void reset();
 };
 
 class State {
@@ -49,7 +54,7 @@ public:
   bool mcp_right;
   bool mcp_one;
   bool mcp_two;
-  bool mcp_power;
+  bool mcp_plug;
   bool mcp_trigger;
 
   bool rotary_btn;

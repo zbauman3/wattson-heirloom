@@ -37,6 +37,11 @@ void Interrupts::begin() {
     // enable/set all pin interrupt modes
     this->mcp->setupInterruptPin(PinDefs::mcpInputPins[i], CHANGE);
   }
+
+  if (this->state->eepromState.hrdwr_plug != 0) {
+    // override setting
+    this->state->mcp_plug = (bool)(this->state->eepromState.hrdwr_plug - 1);
+  }
 }
 
 void Interrupts::loop() {
@@ -62,9 +67,14 @@ void Interrupts::loop() {
 
     this->mcp->clearInterrupts();
 
-    // The power plug seems to be especially finicky... Read it again to confirm
-    this->state->setMcpValueByPin(PinDefs::mcp_power,
-                                  !this->mcp->digitalRead(PinDefs::mcp_power));
+    if (this->state->eepromState.hrdwr_plug == 0) {
+      // The power plug seems to be especially finicky... Read it again.
+      this->state->setMcpValueByPin(PinDefs::mcp_plug,
+                                    !this->mcp->digitalRead(PinDefs::mcp_plug));
+    } else {
+      // override setting
+      this->state->mcp_plug = (bool)(this->state->eepromState.hrdwr_plug - 1);
+    }
   }
 
   if (this->_rotary_interrupted) {
