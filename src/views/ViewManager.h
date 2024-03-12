@@ -24,10 +24,6 @@ private:
   LightRods *lightRods;
   Vibration *vibration;
 
-  int debugTimer;
-  uint8_t debugStep;
-  int32_t debugRotaryPos;
-
   RadarView radarView;
   GamesView gamesView;
   LightsView lightsView;
@@ -35,7 +31,10 @@ private:
   DebugView debugView;
   MenuView menuView;
 
+  unsigned long triggerTimer;
+
   void checkMenuButton();
+  void checkTriggerPull();
 
 public:
   ViewManager(State *statePtr, Screen *screenPtr, Joystick *joystickPtr,

@@ -23,15 +23,14 @@ ViewManager::ViewManager(State *statePtr, Screen *screenPtr,
   this->lightRods = lightRodsPtr;
   this->vibration = vibrationPtr;
 
-  this->debugTimer = 0;
-  this->debugStep = 0;
-  this->debugRotaryPos = 0;
+  this->triggerTimer = 0;
 
   viewManagerPtr = this;
 }
 
 void ViewManager::loop() {
   this->checkMenuButton();
+  this->checkTriggerPull();
 
   // Switching view happens inside the views `loop` fn. So updating
   // `viewChanged` at the _end_ of this `loop clobbers the update
@@ -99,9 +98,43 @@ void ViewManager::setActiveView(uint8_t view) {
 }
 
 void ViewManager::checkMenuButton() {
-  if (this->state->activeView != STATE_VIEW_MENU &&
-      this->state->activeView != STATE_VIEW_DEBUG &&
-      this->state->interrupt == STATE_INTR_MCP && this->state->mcp_menu) {
-    this->setActiveView(STATE_VIEW_MENU);
+  if (this->state->activeView == STATE_VIEW_MENU ||
+      this->state->activeView == STATE_VIEW_DEBUG ||
+      this->state->interrupt != STATE_INTR_MCP || !this->state->mcp_menu) {
+    return;
+  }
+
+  this->setActiveView(STATE_VIEW_MENU);
+}
+
+void ViewManager::checkTriggerPull() {
+  if (this->state->activeView == STATE_VIEW_SETTINGS ||
+      this->state->activeView == STATE_VIEW_DEBUG) {
+    return;
+  }
+
+  if (this->state->interrupt == STATE_INTR_MCP && this->state->mcp_trigger &&
+      this->triggerTimer == 0) {
+    this->triggerTimer = millis();
+    this->lightRods->triggerInit();
+    this->vibration->triggerInit();
+    return;
+  }
+
+  if (this->triggerTimer != 0) {
+    if (this->state->mcp_trigger) {
+      if (millis() - this->triggerTimer > 1000) {
+        this->lightRods->triggerBuild();
+        this->vibration->triggerBuild();
+      }
+    } else if (millis() - this->triggerTimer > 3000) {
+      this->lightRods->triggerHighPower();
+      this->vibration->triggerHighPower();
+      this->triggerTimer = 0;
+    } else {
+      this->lightRods->triggerLowPower();
+      this->vibration->triggerLowPower();
+      this->triggerTimer = 0;
+    }
   }
 }

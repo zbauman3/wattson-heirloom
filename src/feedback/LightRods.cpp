@@ -15,7 +15,8 @@ LightRods::LightRods(State *statePtr)
 void LightRods::begin() {
   this->neopixels.begin();
   this->neopixels.setBrightness(30);
-  this->off();
+  this->neopixels.fill(neopixels.Color(0, 0, 0));
+  this->neopixels.show();
 }
 
 uint32_t LightRods::adjustColorByPower(uint8_t r, uint8_t g, uint8_t b,
@@ -48,8 +49,7 @@ int LightRods::runCoroutine() {
         i++;
       }
 
-      this->off();
-      this->routine = 0;
+      this->clear();
     } else if (this->routine == LIGHTS_PATTERN_RAINBOW) {
       // Hue of first pixel runs 5 complete loops through the color wheel.
       // Color wheel has a range of 65536 but it's OK if we roll over.
@@ -63,22 +63,129 @@ int LightRods::runCoroutine() {
       }
       this->rainbowHue =
           this->rainbowHue + (this->rainbowDirection ? 256 : -256);
+    } else if (this->routine == LIGHTS_PATTERN_TRIGGER_INIT) {
+      for (this->i = 0; this->i < 3; this->i++) {
+        this->neopixels.clear();
+
+        for (this->j = this->i; this->j < NEOPIXEL_COUNT; this->j += 3) {
+          this->neopixels.setPixelColor(
+              this->j, this->adjustColorByPower(0, 125, 0, 0.166));
+        }
+
+        this->neopixels.show();
+        COROUTINE_DELAY(50);
+      }
+    } else if (this->routine == LIGHTS_PATTERN_TRIGGER_LOWPOWER) {
+      this->neopixels.clear();
+
+      for (this->i = 0; this->i < NEOPIXEL_COUNT / 2; this->i++) {
+        this->neopixels.setPixelColor(
+            this->i, this->adjustColorByPower(0, 125, 0, 0.332));
+
+        this->neopixels.setPixelColor(
+            NEOPIXEL_COUNT - (this->i + 1),
+            this->adjustColorByPower(0, 125, 0, 0.332));
+
+        this->neopixels.show();
+        COROUTINE_DELAY(20);
+      }
+
+      for (this->i = 125; this->i <= 245; this->i += 10) {
+        this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+        this->neopixels.show();
+        COROUTINE_DELAY(15);
+      }
+
+      for (this->i = 255; this->i > 100; this->i -= 15) {
+        this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+        this->neopixels.show();
+        COROUTINE_DELAY(10);
+      }
+
+      this->clear();
+    } else if (this->routine == LIGHTS_PATTERN_TRIGGER_BUILD) {
+      this->neopixels.clear();
+
+      for (this->i = 0; this->i < NEOPIXEL_COUNT / 2; this->i++) {
+        this->neopixels.setPixelColor(
+            this->i, this->adjustColorByPower(0, 125, 0, 0.332));
+
+        this->neopixels.setPixelColor(
+            NEOPIXEL_COUNT - (this->i + 1),
+            this->adjustColorByPower(0, 125, 0, 0.332));
+
+        this->neopixels.show();
+        COROUTINE_DELAY(100);
+      }
+
+      while (true) {
+        for (this->i = 125; this->i <= 245; this->i += 10) {
+          this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+          this->neopixels.show();
+          COROUTINE_DELAY(25);
+        }
+
+        for (this->i = 255; this->i >= 145; this->i -= 10) {
+          this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+          this->neopixels.show();
+          COROUTINE_DELAY(25);
+        }
+
+        COROUTINE_YIELD();
+      }
+    } else if (this->routine == LIGHTS_PATTERN_TRIGGER_HIGHPOWER) {
+      for (this->j = 0; this->j < 7; this->j++) {
+        if (this->j % 2 == 0) {
+          for (this->k = 0; this->k < 2; this->k++) {
+            this->neopixels.clear();
+            for (this->i = 0; this->i < NEOPIXEL_COUNT / 2; this->i++) {
+              this->neopixels.setPixelColor(
+                  this->i, this->adjustColorByPower(0, 255, 0, 0.332));
+
+              this->neopixels.setPixelColor(
+                  NEOPIXEL_COUNT - (this->i + 1),
+                  this->adjustColorByPower(0, 255, 0, 0.332));
+
+              this->neopixels.show();
+              COROUTINE_DELAY(8);
+            }
+          }
+        } else {
+          this->neopixels.clear();
+
+          for (this->i = 0; this->i < 3; this->i++) {
+            this->neopixels.clear();
+
+            for (this->k = this->i; this->k < NEOPIXEL_COUNT; this->k += 3) {
+              this->neopixels.setPixelColor(
+                  this->k, this->adjustColorByPower(0, 255, 0, 0.332));
+            }
+
+            this->neopixels.show();
+            COROUTINE_DELAY(50);
+          }
+        }
+      }
+
+      for (this->i = 255; this->i >= 10; this->i -= 10) {
+        this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+        this->neopixels.show();
+        COROUTINE_DELAY(50);
+      }
+
+      this->clear();
     }
 
     COROUTINE_YIELD();
   }
 }
 
-void LightRods::off() {
-  this->neopixels.fill(neopixels.Color(0, 0, 0));
-  this->neopixels.show();
-}
-
 bool LightRods::changeRoutine(uint8_t which, bool restart) {
   bool isChange = this->routine != which;
   this->routine = which;
   if (isChange || restart) {
-    this->off();
+    this->neopixels.fill(neopixels.Color(0, 0, 0));
+    this->neopixels.show();
     this->reset();
     return true;
   }
@@ -88,7 +195,8 @@ bool LightRods::changeRoutine(uint8_t which, bool restart) {
 void LightRods::clear() {
   this->routine = 0;
   this->routineVariation = 0;
-  this->off();
+  this->neopixels.fill(neopixels.Color(0, 0, 0));
+  this->neopixels.show();
   this->reset();
 }
 
@@ -132,6 +240,22 @@ void LightRods::solid(uint8_t r, uint8_t g, uint8_t b, uint8_t brightness,
     }
   }
   this->neopixels.show();
+}
+
+void LightRods::triggerInit() {
+  this->changeRoutine(LIGHTS_PATTERN_TRIGGER_INIT, false);
+}
+
+void LightRods::triggerBuild() {
+  this->changeRoutine(LIGHTS_PATTERN_TRIGGER_BUILD, false);
+}
+
+void LightRods::triggerHighPower() {
+  this->changeRoutine(LIGHTS_PATTERN_TRIGGER_HIGHPOWER, false);
+}
+
+void LightRods::triggerLowPower() {
+  this->changeRoutine(LIGHTS_PATTERN_TRIGGER_LOWPOWER, false);
 }
 
 uint8_t LightRods::adjustBrightness(uint8_t color, float percent) {
