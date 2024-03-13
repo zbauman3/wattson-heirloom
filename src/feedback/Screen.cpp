@@ -6,8 +6,6 @@ Screen::Screen(Adafruit_MCP23X17 *mcpPtr)
 }
 
 void Screen::begin() {
-  this->mcp->pinMode(PinDefs::mcp_screenDimmer, OUTPUT);
-
   // give TFT time to boot
   delay(250);
   this->tft.begin();
