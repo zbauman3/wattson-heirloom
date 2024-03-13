@@ -19,6 +19,7 @@ private:
   void drawTheme();
   void drawReset();
   void drawPlugOverride();
+  void drawTriggerOverride();
 
 public:
   SettingsView(State *statePtr, Screen *screenPtr,

@@ -124,7 +124,12 @@ void ViewManager::checkTriggerPull() {
     return;
   }
 
-  if (this->state->interrupt == STATE_INTR_MCP && this->state->mcp_trigger &&
+  // override the trigger to the `1` button if needed.
+  bool isPressed = this->state->eepromState.hrdwr_trigger
+                       ? this->state->mcp_one
+                       : this->state->mcp_trigger;
+
+  if (this->state->interrupt == STATE_INTR_MCP && isPressed &&
       this->triggerTimer == 0) {
     this->triggerTimer = millis();
     this->lightRods->triggerInit();
@@ -134,8 +139,8 @@ void ViewManager::checkTriggerPull() {
 
   if (this->triggerTimer != 0) {
     unsigned long now = millis();
-    if (this->state->mcp_trigger) {
-      if (now - this->triggerTimer > 10000) {
+    if (isPressed) {
+      if (now - this->triggerTimer > 5000) {
         this->lightRods->triggerHighPower();
         this->vibration->triggerHighPower();
         this->triggerTimer = 0;
@@ -143,7 +148,7 @@ void ViewManager::checkTriggerPull() {
         this->lightRods->triggerBuild();
         this->vibration->triggerBuild();
       }
-    } else if (now - this->triggerTimer > 3000) {
+    } else if (now - this->triggerTimer > 2500) {
       this->lightRods->triggerHighPower();
       this->vibration->triggerHighPower();
       this->triggerTimer = 0;

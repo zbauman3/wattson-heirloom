@@ -12,6 +12,7 @@ EepromState::EepromState(Adafruit_EEPROM_I2C *eepromPtr) {
   this->screen_theme = 0x060f;
 
   this->hrdwr_plug = 0;
+  this->hrdwr_trigger = 0;
 };
 
 void EepromState::begin() {
@@ -25,6 +26,7 @@ void EepromState::begin() {
   this->screen_theme = this->getThemeColorForScreen();
 
   this->hrdwr_plug = this->eeprom->read(EEPROM_HRDWR_PLUG);
+  this->hrdwr_trigger = this->eeprom->read(EEPROM_HRDWR_TRIGGER);
 }
 
 void EepromState::setValue(uint16_t addr, uint8_t value) {
@@ -54,6 +56,9 @@ void EepromState::setValue(uint16_t addr, uint8_t value) {
   case EEPROM_HRDWR_PLUG:
     this->hrdwr_plug = value;
     break;
+  case EEPROM_HRDWR_TRIGGER:
+    this->hrdwr_trigger = value;
+    break;
   }
 }
 
@@ -67,6 +72,7 @@ void EepromState::reset() {
   this->screen_theme = this->getThemeColorForScreen();
 
   this->setValue(EEPROM_HRDWR_PLUG, 0);
+  this->setValue(EEPROM_HRDWR_TRIGGER, 0);
 };
 
 uint16_t EepromState::getThemeColorForScreen() {

@@ -69,6 +69,9 @@ int DebugView::runCoroutine() {
       this->canvas->printf("trigger_pressed:  %d    \n",
                            this->state->mcp_trigger);
 
+      this->canvas->print("\n\n");
+      this->canvas->println("Hold \"Menu\" for 5 seconds to exit.");
+
       this->sendMainCanvas();
     }
 

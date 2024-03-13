@@ -34,6 +34,15 @@ void SettingsView::handleSelect() {
     }
     break;
   case 3:
+    if (this->cursorIndex == 0) {
+      this->screen = 0;
+      this->cursorIndex = 2;
+    } else {
+      this->state->eepromState.setValue(EEPROM_HRDWR_TRIGGER,
+                                        this->cursorIndex - 1);
+    }
+    break;
+  case 4:
     if (this->cursorIndex == 1) {
       this->state->eepromState.reset();
     }
@@ -43,7 +52,7 @@ void SettingsView::handleSelect() {
     break;
   case 0:
   default:
-    if (this->cursorIndex == 3) {
+    if (this->cursorIndex == 4) {
       this->setActiveView(STATE_VIEW_DEBUG);
     } else {
       this->screen = this->cursorIndex + 1;
@@ -60,20 +69,26 @@ uint8_t SettingsView::getButtonCount() {
   case 2:
     return 4;
   case 3:
+    return 3;
+  case 4:
     return 2;
   case 0:
   default:
-    return 4;
+    return 5;
   }
 }
 
 void SettingsView::drawMainMenu() {
   this->drawTitle("Settings");
 
-  this->drawButton(0, this->cursorIndex == 0, "Theme Color");
-  this->drawButton(1, this->cursorIndex == 1, "Override Plug");
-  this->drawButton(2, this->cursorIndex == 2, "Reset");
-  this->drawButton(3, this->cursorIndex == 3, "Debug Screen");
+  if (this->cursorIndex <= 3) {
+    this->drawButton(0, this->cursorIndex == 0, "Theme Color");
+    this->drawButton(1, this->cursorIndex == 1, "Override Plug");
+    this->drawButton(2, this->cursorIndex == 2, "Override Trigger");
+    this->drawButton(3, this->cursorIndex == 3, "Reset");
+  } else {
+    this->drawButton(0, this->cursorIndex == 4, "Debug Screen");
+  }
 }
 
 void SettingsView::drawReset() {
@@ -91,9 +106,24 @@ void SettingsView::drawPlugOverride() {
       1, (selectedIndex == 1 ? 2 : 0) + (this->cursorIndex == 1 ? 1 : 0),
       "None");
   this->drawButton(
-      2, (selectedIndex == 2 ? 2 : 0) + (this->cursorIndex == 2 ? 1 : 0), "1");
+      2, (selectedIndex == 2 ? 2 : 0) + (this->cursorIndex == 2 ? 1 : 0),
+      "Plug 1");
   this->drawButton(
-      3, (selectedIndex == 3 ? 2 : 0) + (this->cursorIndex == 3 ? 1 : 0), "2");
+      3, (selectedIndex == 3 ? 2 : 0) + (this->cursorIndex == 3 ? 1 : 0),
+      "Plug 2");
+}
+
+void SettingsView::drawTriggerOverride() {
+  uint8_t selectedIndex = this->state->eepromState.hrdwr_trigger + 1;
+
+  this->drawTitle("Settings > Override Trigger", 4);
+  this->drawButton(0, this->cursorIndex == 0, "< Back");
+  this->drawButton(
+      1, (selectedIndex == 1 ? 2 : 0) + (this->cursorIndex == 1 ? 1 : 0),
+      "None");
+  this->drawButton(
+      2, (selectedIndex == 2 ? 2 : 0) + (this->cursorIndex == 2 ? 1 : 0),
+      "\"1\" Button");
 }
 
 void SettingsView::drawTheme() {
@@ -149,6 +179,9 @@ int SettingsView::runCoroutine() {
         this->drawPlugOverride();
         break;
       case 3:
+        this->drawTriggerOverride();
+        break;
+      case 4:
         this->drawReset();
         break;
       case 0:

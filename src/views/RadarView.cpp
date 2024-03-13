@@ -166,8 +166,8 @@ bool RadarView::drawWave() {
 }
 
 bool RadarView::pingIsClose() {
+  RadarPing *ping;
   for (uint8_t i = 0; i < 3; i++) {
-    RadarPing *ping;
     if (i == 0) {
       ping = &this->ping1;
     } else if (i == 1) {
@@ -204,7 +204,6 @@ int RadarView::runCoroutine() {
       this->sendMainCanvas();
 
       if (isWaveStart || this->isInitialRender) {
-
         if (this->pingIsClose()) {
           this->lightRods->radarPulse(1);
           this->leds->flash(LEDS_RED, 250);
@@ -217,9 +216,12 @@ int RadarView::runCoroutine() {
     }
 
     if (this->state->isInTriggerRoutine) {
+      if (this->pingIsClose()) {
+        this->leds->clear(LEDS_RED);
+      }
       COROUTINE_DELAY(1500);
     } else {
-      COROUTINE_YIELD();
+      COROUTINE_DELAY(5);
     }
   }
 }

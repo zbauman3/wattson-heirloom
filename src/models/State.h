@@ -39,12 +39,12 @@ public:
   // 1 = override to false
   // 2 = override to true
   uint8_t hrdwr_plug;
+  bool hrdwr_trigger;
 
   EepromState(Adafruit_EEPROM_I2C *eepromPtr);
 
   void begin();
   void setValue(uint16_t addr, uint8_t value);
-  void getBlock(uint16_t addr, uint8_t value);
   void reset();
 };
 
