@@ -31,6 +31,7 @@ private:
   uint32_t adjustColorByPower(uint8_t r, uint8_t g, uint8_t b, float percent);
   bool changeRoutine(uint8_t routine, bool restart);
   void showColor(uint8_t r, uint8_t g, uint8_t b);
+  uint32_t getTriggerColor(uint8_t intensity, float percent);
 
 public:
   LightRods(State *statePtr);

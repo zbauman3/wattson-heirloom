@@ -16,6 +16,7 @@ private:
   uint8_t getButtonCount();
 
   void drawMainMenu();
+  void drawTheme();
   void drawReset();
   void drawPlugOverride();
 

@@ -48,7 +48,8 @@ void BaseView::clearMainCanvas() { this->canvas->fillScreen(ILI9341_BLACK); }
 void BaseView::setup() {
   this->canvas->setTextSize(2);
   this->canvas->setTextWrap(false);
-  this->canvas->setTextColor(COLOR_GREEN_FOREGND, COLOR_BLACK);
+  this->canvas->setTextColor(this->state->eepromState.screen_theme,
+                             COLOR_BLACK);
 };
 
 // this should be overriden
@@ -60,7 +61,8 @@ void BaseView::drawTitle(String title, uint8_t hSize) {
   }
   uint8_t parsedSize = 6 - hSize;
   this->canvas->setTextSize(parsedSize);
-  this->canvas->setTextColor(COLOR_GREEN_FOREGND, COLOR_BLACK);
+  this->canvas->setTextColor(this->state->eepromState.screen_theme,
+                             COLOR_BLACK);
 
   int16_t throwAway;
   uint16_t title_w;
@@ -84,7 +86,7 @@ void BaseView::drawButton(uint8_t position, uint8_t selectedMode, String text) {
 
   if (selectedMode == 3) { // selected, cursor
     this->canvas->fillRect(x, y, VIEW_BUTTON_W, VIEW_BUTTON_H,
-                           COLOR_GREEN_FOREGND);
+                           this->state->eepromState.screen_theme);
     this->canvas->drawRect(x, y, VIEW_BUTTON_W, VIEW_BUTTON_H, COLOR_WHITE);
     this->canvas->drawRect(x + 1, y + 1, VIEW_BUTTON_W - 2, VIEW_BUTTON_H - 2,
                            COLOR_BLACK);
@@ -94,7 +96,8 @@ void BaseView::drawButton(uint8_t position, uint8_t selectedMode, String text) {
                            COLOR_WHITE);
     this->canvas->drawRect(x + 4, y + 4, VIEW_BUTTON_W - 8, VIEW_BUTTON_H - 8,
                            COLOR_BLACK);
-    this->canvas->setTextColor(COLOR_BLACK, COLOR_GREEN_FOREGND);
+    this->canvas->setTextColor(COLOR_BLACK,
+                               this->state->eepromState.screen_theme);
   } else if (selectedMode == 2) { // selected
     this->canvas->drawRect(x, y, VIEW_BUTTON_W, VIEW_BUTTON_H, COLOR_WHITE);
     this->canvas->drawRect(x + 1, y + 1, VIEW_BUTTON_W - 2, VIEW_BUTTON_H - 2,
@@ -103,15 +106,18 @@ void BaseView::drawButton(uint8_t position, uint8_t selectedMode, String text) {
                            COLOR_BLACK);
     this->canvas->drawRect(x + 3, y + 3, VIEW_BUTTON_W - 6, VIEW_BUTTON_H - 6,
                            COLOR_WHITE);
-    this->canvas->setTextColor(COLOR_GREEN_FOREGND, COLOR_BLACK);
+    this->canvas->setTextColor(this->state->eepromState.screen_theme,
+                               COLOR_BLACK);
   } else if (selectedMode == 1) { // cursor
     this->canvas->fillRect(x, y, VIEW_BUTTON_W, VIEW_BUTTON_H,
-                           COLOR_GREEN_FOREGND);
-    this->canvas->setTextColor(COLOR_BLACK, COLOR_GREEN_FOREGND);
+                           this->state->eepromState.screen_theme);
+    this->canvas->setTextColor(COLOR_BLACK,
+                               this->state->eepromState.screen_theme);
   } else { // default
     this->canvas->drawRect(x, y, VIEW_BUTTON_W, VIEW_BUTTON_H,
-                           COLOR_GREEN_FOREGND);
-    this->canvas->setTextColor(COLOR_GREEN_FOREGND, COLOR_BLACK);
+                           this->state->eepromState.screen_theme);
+    this->canvas->setTextColor(this->state->eepromState.screen_theme,
+                               COLOR_BLACK);
   }
 
   int16_t throwAway;

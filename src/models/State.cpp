@@ -8,6 +8,8 @@ EepromState::EepromState(Adafruit_EEPROM_I2C *eepromPtr) {
   this->lights_speed = 0;
   this->lights_direction = true;
   this->lights_color = 0;
+  this->lights_theme = 1;
+  this->screen_theme = 0x060f;
 
   this->hrdwr_plug = 0;
 };
@@ -18,6 +20,9 @@ void EepromState::begin() {
   this->lights_color = this->eeprom->read(EEPROM_LIGHTS_COLOR);
   this->lights_speed = this->eeprom->read(EEPROM_LIGHTS_SPEED);
   this->lights_direction = this->eeprom->read(EEPROM_LIGHTS_DIRECTION);
+
+  this->lights_theme = this->eeprom->read(EEPROM_LIGHTS_THEME_COLOR);
+  this->screen_theme = this->getThemeColorForScreen();
 
   this->hrdwr_plug = this->eeprom->read(EEPROM_HRDWR_PLUG);
 }
@@ -41,6 +46,10 @@ void EepromState::setValue(uint16_t addr, uint8_t value) {
   case EEPROM_LIGHTS_COLOR:
     this->lights_color = value;
     break;
+  case EEPROM_LIGHTS_THEME_COLOR:
+    this->lights_theme = value;
+    this->screen_theme = this->getThemeColorForScreen();
+    break;
 
   case EEPROM_HRDWR_PLUG:
     this->hrdwr_plug = value;
@@ -54,9 +63,41 @@ void EepromState::reset() {
   this->setValue(EEPROM_LIGHTS_SPEED, 0);
   this->setValue(EEPROM_LIGHTS_DIRECTION, true);
   this->setValue(EEPROM_LIGHTS_COLOR, 0);
+  this->setValue(EEPROM_LIGHTS_THEME_COLOR, 1);
+  this->screen_theme = this->getThemeColorForScreen();
 
   this->setValue(EEPROM_HRDWR_PLUG, 0);
 };
+
+uint16_t EepromState::getThemeColorForScreen() {
+  uint16_t realColor;
+  switch (this->lights_theme) {
+  case 1: // Green
+    realColor = 0x060f;
+    break;
+  case 2: // Blue
+    realColor = 0x4a79;
+    break;
+  case 3: // Cyan
+    realColor = 0x07ff;
+    break;
+  case 4: // Magenta
+    realColor = 0xf81f;
+    break;
+  case 5: // Yellow
+    realColor = 0xd6c5;
+    break;
+  case 6: // White
+    realColor = 0xffff;
+    break;
+  case 0: // Red
+  default:
+    realColor = 0xf9c0;
+    break;
+  }
+
+  return realColor;
+}
 
 State::State(Adafruit_EEPROM_I2C *eepromPtr) : eepromState(eepromPtr) {
   this->mcp_menu = false;

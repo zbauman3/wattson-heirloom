@@ -20,11 +20,20 @@ void SettingsView::handleSelect() {
       this->screen = 0;
       this->cursorIndex = 0;
     } else {
-      this->state->eepromState.setValue(EEPROM_HRDWR_PLUG,
+      this->state->eepromState.setValue(EEPROM_LIGHTS_THEME_COLOR,
                                         this->cursorIndex - 1);
     }
     break;
   case 2:
+    if (this->cursorIndex == 0) {
+      this->screen = 0;
+      this->cursorIndex = 1;
+    } else {
+      this->state->eepromState.setValue(EEPROM_HRDWR_PLUG,
+                                        this->cursorIndex - 1);
+    }
+    break;
+  case 3:
     if (this->cursorIndex == 1) {
       this->state->eepromState.reset();
     }
@@ -34,7 +43,7 @@ void SettingsView::handleSelect() {
     break;
   case 0:
   default:
-    if (this->cursorIndex == 2) {
+    if (this->cursorIndex == 3) {
       this->setActiveView(STATE_VIEW_DEBUG);
     } else {
       this->screen = this->cursorIndex + 1;
@@ -47,21 +56,24 @@ void SettingsView::handleSelect() {
 uint8_t SettingsView::getButtonCount() {
   switch (this->screen) {
   case 1:
-    return 4;
+    return 8;
   case 2:
+    return 4;
+  case 3:
     return 2;
   case 0:
   default:
-    return 3;
+    return 4;
   }
 }
 
 void SettingsView::drawMainMenu() {
   this->drawTitle("Settings");
 
-  this->drawButton(0, this->cursorIndex == 0, "Override Plug");
-  this->drawButton(1, this->cursorIndex == 1, "Reset");
-  this->drawButton(2, this->cursorIndex == 2, "Debug Screen");
+  this->drawButton(0, this->cursorIndex == 0, "Theme Color");
+  this->drawButton(1, this->cursorIndex == 1, "Override Plug");
+  this->drawButton(2, this->cursorIndex == 2, "Reset");
+  this->drawButton(3, this->cursorIndex == 3, "Debug Screen");
 }
 
 void SettingsView::drawReset() {
@@ -84,6 +96,37 @@ void SettingsView::drawPlugOverride() {
       3, (selectedIndex == 3 ? 2 : 0) + (this->cursorIndex == 3 ? 1 : 0), "2");
 }
 
+void SettingsView::drawTheme() {
+  uint8_t selectedIndex = (uint8_t)(this->state->eepromState.lights_theme) + 1;
+
+  this->drawTitle("Settings > Theme Color", 4);
+  if (this->cursorIndex <= 3) {
+    this->drawButton(0, this->cursorIndex == 0, "< Back");
+    this->drawButton(
+        1, (selectedIndex == 1 ? 2 : 0) + (this->cursorIndex == 1 ? 1 : 0),
+        "Red");
+    this->drawButton(
+        2, (selectedIndex == 2 ? 2 : 0) + (this->cursorIndex == 2 ? 1 : 0),
+        "Green");
+    this->drawButton(
+        3, (selectedIndex == 3 ? 2 : 0) + (this->cursorIndex == 3 ? 1 : 0),
+        "Blue");
+  } else {
+    this->drawButton(
+        0, (selectedIndex == 4 ? 2 : 0) + (this->cursorIndex == 4 ? 1 : 0),
+        "Cyan");
+    this->drawButton(
+        1, (selectedIndex == 5 ? 2 : 0) + (this->cursorIndex == 5 ? 1 : 0),
+        "Magenta");
+    this->drawButton(
+        2, (selectedIndex == 6 ? 2 : 0) + (this->cursorIndex == 6 ? 1 : 0),
+        "Yellow");
+    this->drawButton(
+        3, (selectedIndex == 7 ? 2 : 0) + (this->cursorIndex == 7 ? 1 : 0),
+        "White");
+  }
+}
+
 int SettingsView::runCoroutine() {
   COROUTINE_LOOP() {
 
@@ -100,9 +143,12 @@ int SettingsView::runCoroutine() {
 
       switch (this->screen) {
       case 1:
-        this->drawPlugOverride();
+        this->drawTheme();
         break;
       case 2:
+        this->drawPlugOverride();
+        break;
+      case 3:
         this->drawReset();
         break;
       case 0:

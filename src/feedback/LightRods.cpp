@@ -30,23 +30,72 @@ uint32_t LightRods::adjustColorByPower(uint8_t r, uint8_t g, uint8_t b,
                          LightRods::adjustBrightness(b, percent));
 }
 
+uint32_t LightRods::getTriggerColor(uint8_t intensity, float percent) {
+  uint8_t realRed, realGreen, realBlue;
+  switch (this->state->eepromState.lights_theme) {
+  case 1: // Green
+    realRed = 0;
+    realGreen = intensity;
+    realBlue = 0;
+    break;
+  case 2: // Blue
+    realRed = 0;
+    realGreen = 0;
+    realBlue = intensity;
+    break;
+  case 3: // Cyan
+    realRed = 0;
+    realGreen = intensity;
+    realBlue = intensity;
+    break;
+  case 4: // Magenta
+    realRed = intensity;
+    realGreen = 0;
+    realBlue = intensity;
+    break;
+  case 5: // Yellow
+    realRed = intensity;
+    realGreen = intensity;
+    realBlue = 0;
+    break;
+  case 6: // White
+    realRed = intensity;
+    realGreen = intensity;
+    realBlue = intensity;
+    break;
+  case 0: // Red
+  default:
+    realRed = intensity;
+    realGreen = 0;
+    realBlue = 0;
+    break;
+  }
+
+  return this->adjustColorByPower(realRed, realGreen, realBlue, percent);
+}
+
 int LightRods::runCoroutine() {
   COROUTINE_LOOP() {
     if (this->routine == LIGHTS_PATTERN_RADAR) {
-      this->i = 0;
-      while (this->i < NEOPIXEL_COUNT + 5) {
-        if (this->routineVariation == 1) {
+
+      for (this->i = 0; this->i < (NEOPIXEL_COUNT / 2) + 5; this->i++) {
+        if (this->i < (NEOPIXEL_COUNT / 2)) {
           this->neopixels.setPixelColor(
-              i, this->adjustColorByPower(255, 100, 0, 0.166));
-        } else {
+              this->i, this->getTriggerColor(
+                           this->routineVariation == 1 ? 255 : 125, 0.332));
           this->neopixels.setPixelColor(
-              i, this->adjustColorByPower(0, 180, 255, 0.166));
+              NEOPIXEL_COUNT - (this->i + 1),
+              this->getTriggerColor(this->routineVariation == 1 ? 255 : 125,
+                                    0.332));
         }
-        this->neopixels.setPixelColor(i - 5,
-                                      this->adjustColorByPower(0, 0, 0, 0.166));
+        this->neopixels.setPixelColor(this->i - 5,
+                                      this->adjustColorByPower(0, 0, 0, 1));
+
+        this->neopixels.setPixelColor((NEOPIXEL_COUNT - (this->i + 1)) + 5,
+                                      this->adjustColorByPower(0, 0, 0, 1));
+
         this->neopixels.show();
         COROUTINE_DELAY(50);
-        i++;
       }
 
       this->clear();
@@ -68,8 +117,8 @@ int LightRods::runCoroutine() {
         this->neopixels.clear();
 
         for (this->j = this->i; this->j < NEOPIXEL_COUNT; this->j += 3) {
-          this->neopixels.setPixelColor(
-              this->j, this->adjustColorByPower(0, 125, 0, 0.166));
+          this->neopixels.setPixelColor(this->j,
+                                        this->getTriggerColor(125, 0.166));
         }
 
         this->neopixels.show();
@@ -79,25 +128,24 @@ int LightRods::runCoroutine() {
       this->neopixels.clear();
 
       for (this->i = 0; this->i < NEOPIXEL_COUNT / 2; this->i++) {
-        this->neopixels.setPixelColor(
-            this->i, this->adjustColorByPower(0, 125, 0, 0.332));
+        this->neopixels.setPixelColor(this->i,
+                                      this->getTriggerColor(125, 0.332));
 
-        this->neopixels.setPixelColor(
-            NEOPIXEL_COUNT - (this->i + 1),
-            this->adjustColorByPower(0, 125, 0, 0.332));
+        this->neopixels.setPixelColor(NEOPIXEL_COUNT - (this->i + 1),
+                                      this->getTriggerColor(125, 0.332));
 
         this->neopixels.show();
         COROUTINE_DELAY(20);
       }
 
       for (this->i = 125; this->i <= 245; this->i += 10) {
-        this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+        this->neopixels.fill(this->getTriggerColor(this->i, 0.332));
         this->neopixels.show();
         COROUTINE_DELAY(15);
       }
 
       for (this->i = 255; this->i > 100; this->i -= 15) {
-        this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+        this->neopixels.fill(this->getTriggerColor(this->i, 0.332));
         this->neopixels.show();
         COROUTINE_DELAY(10);
       }
@@ -107,12 +155,11 @@ int LightRods::runCoroutine() {
       this->neopixels.clear();
 
       for (this->i = 0; this->i < NEOPIXEL_COUNT / 2; this->i++) {
-        this->neopixels.setPixelColor(
-            this->i, this->adjustColorByPower(0, 125, 0, 0.332));
+        this->neopixels.setPixelColor(this->i,
+                                      this->getTriggerColor(125, 0.332));
 
-        this->neopixels.setPixelColor(
-            NEOPIXEL_COUNT - (this->i + 1),
-            this->adjustColorByPower(0, 125, 0, 0.332));
+        this->neopixels.setPixelColor(NEOPIXEL_COUNT - (this->i + 1),
+                                      this->getTriggerColor(125, 0.332));
 
         this->neopixels.show();
         COROUTINE_DELAY(100);
@@ -120,13 +167,13 @@ int LightRods::runCoroutine() {
 
       while (true) {
         for (this->i = 125; this->i <= 245; this->i += 10) {
-          this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+          this->neopixels.fill(this->getTriggerColor(this->i, 0.332));
           this->neopixels.show();
           COROUTINE_DELAY(25);
         }
 
         for (this->i = 255; this->i >= 145; this->i -= 10) {
-          this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+          this->neopixels.fill(this->getTriggerColor(this->i, 0.332));
           this->neopixels.show();
           COROUTINE_DELAY(25);
         }
@@ -139,12 +186,11 @@ int LightRods::runCoroutine() {
           for (this->k = 0; this->k < 2; this->k++) {
             this->neopixels.clear();
             for (this->i = 0; this->i < NEOPIXEL_COUNT / 2; this->i++) {
-              this->neopixels.setPixelColor(
-                  this->i, this->adjustColorByPower(0, 255, 0, 0.332));
+              this->neopixels.setPixelColor(this->i,
+                                            this->getTriggerColor(255, 0.332));
 
-              this->neopixels.setPixelColor(
-                  NEOPIXEL_COUNT - (this->i + 1),
-                  this->adjustColorByPower(0, 255, 0, 0.332));
+              this->neopixels.setPixelColor(NEOPIXEL_COUNT - (this->i + 1),
+                                            this->getTriggerColor(255, 0.332));
 
               this->neopixels.show();
               COROUTINE_DELAY(8);
@@ -157,8 +203,8 @@ int LightRods::runCoroutine() {
             this->neopixels.clear();
 
             for (this->k = this->i; this->k < NEOPIXEL_COUNT; this->k += 3) {
-              this->neopixels.setPixelColor(
-                  this->k, this->adjustColorByPower(0, 255, 0, 0.332));
+              this->neopixels.setPixelColor(this->k,
+                                            this->getTriggerColor(255, 0.332));
             }
 
             this->neopixels.show();
@@ -168,7 +214,7 @@ int LightRods::runCoroutine() {
       }
 
       for (this->i = 255; this->i >= 10; this->i -= 10) {
-        this->neopixels.fill(this->adjustColorByPower(0, this->i, 0, 0.332));
+        this->neopixels.fill(this->getTriggerColor(this->i, 0.332));
         this->neopixels.show();
         COROUTINE_DELAY(50);
       }

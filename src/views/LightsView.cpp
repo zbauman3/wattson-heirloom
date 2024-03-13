@@ -250,11 +250,6 @@ int LightsView::runCoroutine() {
                                                                          : 25;
         uint8_t realRed, realGreen, realBlue;
         switch (this->state->eepromState.lights_color) {
-        case 0: // Red
-          realRed = 255;
-          realGreen = 0;
-          realBlue = 0;
-          break;
         case 1: // Green
           realRed = 0;
           realGreen = 255;
@@ -284,6 +279,12 @@ int LightsView::runCoroutine() {
           realRed = 255;
           realGreen = 255;
           realBlue = 255;
+          break;
+        case 0: // Red
+        default:
+          realRed = 255;
+          realGreen = 0;
+          realBlue = 0;
           break;
         }
 

@@ -23,6 +23,7 @@
 class EepromState {
 private:
   Adafruit_EEPROM_I2C *eeprom;
+  uint16_t getThemeColorForScreen();
 
 public:
   uint8_t lights_mode;
@@ -30,6 +31,9 @@ public:
   uint8_t lights_speed;
   bool lights_direction;
   uint8_t lights_color;
+
+  uint8_t lights_theme;
+  uint16_t screen_theme;
 
   // 0 = nothing
   // 1 = override to false

@@ -82,50 +82,50 @@ void RadarView::drawBackground() {
 
   // circles
   this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT,
-                           COLOR_GREEN_FOREGND);
+                           this->state->eepromState.screen_theme);
 
   this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 8,
                            COLOR_BLACK);
 
   this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 60,
-                           COLOR_GREEN_FOREGND);
+                           this->state->eepromState.screen_theme);
 
   this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 66,
                            COLOR_BLACK);
 
   this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 120,
-                           COLOR_GREEN_FOREGND);
+                           this->state->eepromState.screen_theme);
 
   this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 124,
                            COLOR_BLACK);
 
   this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 180,
-                           COLOR_GREEN_FOREGND);
+                           this->state->eepromState.screen_theme);
 
   this->canvas->fillCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, SCREEN_HEIGHT - 182,
                            COLOR_BLACK);
 
   // lines
   this->canvas->drawFastVLine(SCREEN_CENTER_X - 1, 0, SCREEN_HEIGHT,
-                              COLOR_GREEN_FOREGND);
+                              this->state->eepromState.screen_theme);
   this->canvas->drawFastVLine(SCREEN_CENTER_X, 0, SCREEN_HEIGHT,
-                              COLOR_GREEN_FOREGND);
+                              this->state->eepromState.screen_theme);
   this->canvas->drawFastVLine(SCREEN_CENTER_X + 1, 0, SCREEN_HEIGHT,
-                              COLOR_GREEN_FOREGND);
+                              this->state->eepromState.screen_theme);
 
   this->canvas->drawLine(19, 50, SCREEN_CENTER_X - 1, SCREEN_HEIGHT,
-                         COLOR_GREEN_FOREGND);
+                         this->state->eepromState.screen_theme);
   this->canvas->drawLine(20, 50, SCREEN_CENTER_X, SCREEN_HEIGHT,
-                         COLOR_GREEN_FOREGND);
+                         this->state->eepromState.screen_theme);
   this->canvas->drawLine(21, 50, SCREEN_CENTER_X + 1, SCREEN_HEIGHT,
-                         COLOR_GREEN_FOREGND);
+                         this->state->eepromState.screen_theme);
 
   this->canvas->drawLine(SCREEN_WIDTH - 21, 50, SCREEN_CENTER_X - 1,
-                         SCREEN_HEIGHT, COLOR_GREEN_FOREGND);
+                         SCREEN_HEIGHT, this->state->eepromState.screen_theme);
   this->canvas->drawLine(SCREEN_WIDTH - 20, 50, SCREEN_CENTER_X, SCREEN_HEIGHT,
-                         COLOR_GREEN_FOREGND);
+                         this->state->eepromState.screen_theme);
   this->canvas->drawLine(SCREEN_WIDTH - 19, 50, SCREEN_CENTER_X + 1,
-                         SCREEN_HEIGHT, COLOR_GREEN_FOREGND);
+                         SCREEN_HEIGHT, this->state->eepromState.screen_theme);
 }
 
 void RadarView::drawPingCircle(int16_t x, int16_t y) {
@@ -156,11 +156,11 @@ bool RadarView::drawWave() {
   }
 
   this->canvas->drawCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, this->waveRadius - 1,
-                           COLOR_GREEN_FOREGND);
+                           this->state->eepromState.screen_theme);
   this->canvas->drawCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, this->waveRadius,
-                           COLOR_GREEN_FOREGND);
+                           this->state->eepromState.screen_theme);
   this->canvas->drawCircle(SCREEN_CENTER_X, SCREEN_HEIGHT, this->waveRadius + 1,
-                           COLOR_GREEN_FOREGND);
+                           this->state->eepromState.screen_theme);
 
   return isWaveStart;
 }
