@@ -65,7 +65,7 @@ int DebugView::runCoroutine() {
                            this->state->mcp_right);
       this->canvas->printf("mcp_one:          %d    \n", this->state->mcp_one);
       this->canvas->printf("mcp_two:          %d    \n", this->state->mcp_two);
-      this->canvas->printf("mcp_plug_gnd:   %d    \n", this->state->mcp_plug);
+      this->canvas->printf("mcp_plug_gnd:     %d    \n", this->state->mcp_plug);
       this->canvas->printf("trigger_pressed:  %d    \n",
                            this->state->mcp_trigger);
 
