@@ -82,17 +82,17 @@ int LightRods::runCoroutine() {
         if (this->i < (NEOPIXEL_COUNT / 2)) {
           this->neopixels.setPixelColor(
               this->i, this->getTriggerColor(
-                           this->routineVariation == 1 ? 255 : 125, 0.332));
+                           this->routineVariation == 1 ? 255 : 125, 0.166));
           this->neopixels.setPixelColor(
               NEOPIXEL_COUNT - (this->i + 1),
               this->getTriggerColor(this->routineVariation == 1 ? 255 : 125,
-                                    0.332));
+                                    0.166));
         }
         this->neopixels.setPixelColor(this->i - 5,
-                                      this->adjustColorByPower(0, 0, 0, 1));
+                                      this->neopixels.Color(0, 0, 0));
 
         this->neopixels.setPixelColor((NEOPIXEL_COUNT - (this->i + 1)) + 5,
-                                      this->adjustColorByPower(0, 0, 0, 1));
+                                      this->neopixels.Color(0, 0, 0));
 
         this->neopixels.show();
         COROUTINE_DELAY(50);
