@@ -1,6 +1,8 @@
 #include "./GamesView.h"
 using namespace ace_routine;
 
+// UNUSED :(
+
 GamesView::GamesView(State *statePtr, Screen *screenPtr,
                      SetActiveViewPtr(setActiveViewPtr))
     : BaseView(statePtr, screenPtr, setActiveViewPtr) {}

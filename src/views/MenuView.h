@@ -6,7 +6,7 @@
 #ifndef MenuView_H
 #define MenuView_H
 
-#define MENU_VIEW_ITEMS 4
+#define MENU_VIEW_ITEMS 3
 
 class MenuView : public BaseView {
 

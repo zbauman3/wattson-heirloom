@@ -175,7 +175,8 @@ bool BaseView::updateCursor(uint8_t numItems) {
 }
 
 bool BaseView::didSelect() {
-  return (this->state->interrupt == STATE_INTR_ROTARY_BTN &&
+  return (!this->isInitialRender &&
+          this->state->interrupt == STATE_INTR_ROTARY_BTN &&
           this->state->rotary_btn) ||
          (this->state->interrupt == STATE_INTR_MCP && this->state->mcp_record);
 }

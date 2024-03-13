@@ -8,6 +8,8 @@
 #ifndef GamesView_H
 #define GamesView_H
 
+// UNUSED :(
+
 class GamesView : public BaseView {
 public:
   GamesView(State *statePtr, Screen *screenPtr,

@@ -135,7 +135,7 @@ int SettingsView::runCoroutine() {
     if (!this->shouldRender && this->didSelect()) {
       this->shouldRender = true;
       this->handleSelect();
-      COROUTINE_YIELD();
+      COROUTINE_DELAY(10);
     }
 
     if (this->isInitialRender || this->shouldRender) {

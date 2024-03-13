@@ -12,13 +12,13 @@ int MenuView::runCoroutine() {
       case 0:
         this->setActiveView(STATE_VIEW_RADAR);
         break;
+      // case 1:
+      //   this->setActiveView(STATE_VIEW_GAMES);
+      //   break;
       case 1:
-        this->setActiveView(STATE_VIEW_GAMES);
-        break;
-      case 2:
         this->setActiveView(STATE_VIEW_LIGHTS);
         break;
-      case 3:
+      case 2:
         this->setActiveView(STATE_VIEW_SETTINGS);
         break;
       }
@@ -38,15 +38,15 @@ int MenuView::runCoroutine() {
         for (uint8_t i = 0; i < MENU_VIEW_ITEMS; i++) {
           String text;
           switch (i) {
-          case 3:
+          case 2:
             text = "Settings";
             break;
-          case 2:
+          case 1:
             text = "Lights";
             break;
-          case 1:
-            text = "Games";
-            break;
+          // case 1:
+          //   text = "Games";
+          //   break;
           default:
             text = "Radar";
             break;

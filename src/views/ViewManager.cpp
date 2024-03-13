@@ -46,9 +46,9 @@ void ViewManager::loop() {
     this->radarView.loop(isInitialRender);
     break;
 
-  case STATE_VIEW_GAMES:
-    this->gamesView.loop(isInitialRender);
-    break;
+    // case STATE_VIEW_GAMES:
+    //   this->gamesView.loop(isInitialRender);
+    //   break;
 
   case STATE_VIEW_LIGHTS:
     this->lightsView.loop(isInitialRender);
