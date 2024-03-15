@@ -6,8 +6,8 @@ Wattson is a character from the video game [Apex Legends](https://www.ea.com/gam
 
 ## Site Index
 
-<!-- - [Usage](./usage) -->
 - [3D Models](./models)
 - [Schematics](./schema)
 - [Media](./media)
 - [Parts Info](./parts)
+- [Arduino Source Code](https://github.com/zbauman3/wattson-heirloom)
