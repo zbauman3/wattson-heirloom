@@ -1,5 +1,12 @@
 # Media
 
+- [Media](#media)
+  - [Assembled](#assembled)
+  - [Assembly](#assembly)
+  - [Screens](#screens)
+  - [Stickers](#stickers)
+  - [Schematics](#schematics)
+
 ## Assembled
 
 <img src="./assets/media/angles/Side Back.jpeg" class="img-md" />
@@ -55,3 +62,14 @@
 <img src="./assets/media/screens/Settings > Overrid Plug.jpeg" class="img-md" />
 <img src="./assets/media/screens/Settings > Override Trigger.jpeg" class="img-md" />
 <img src="./assets/media/screens/Settings > Reset.jpeg" class="img-md" />
+
+## Stickers
+
+<img src="./assets/stickers/eye-of-the-storm.png" class="img-sm" />
+<img src="./assets/stickers/nessi.png" class="img-sm" />
+<img src="./assets/stickers/nikola-face.png" class="img-sm" />
+<img src="./assets/stickers/nikola-sleeping.png" class="img-sm" />
+
+## Schematics
+
+<img src="./assets/KiCad/schema.png" style="width: 100%;" />
