@@ -7,3 +7,5 @@ Wattson is a character from the video game [Apex Legends](https://www.ea.com/gam
 
 - [Parts Info](./parts)
 - [Media](./media)
+
+<img src="./assets/media/angles/Top.jpeg" style="width: 100%;" />

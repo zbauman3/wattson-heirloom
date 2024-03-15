@@ -32,7 +32,7 @@
 <img src="./assets/media/assembly/inside-4.jpeg" class="img-md" />
 <img src="./assets/media/assembly/inside-trigger.jpeg" class="img-md" />
 <img src="./assets/media/assembly/light-rods-assembled.jpeg" class="img-md" />
-<img src="./assets/media/assembly/light-rods-soldered.jpe" class="img-md" />
+<img src="./assets/media/assembly/light-rods-soldered.jpeg" class="img-md" />
 <video controls="controls" class="img-md" name="Light Rods Assembly">
   <source src="./assets/media/assembly/light-rods.mov">
 </video>
@@ -43,16 +43,15 @@
 
 ## Screens
 
-<img src="./assets/media/screens/Lights > Brightness.jpeg" class="img-md" />
-<img src="./assets/media/screens/Lights > Direction.jpeg" class="img-md" />
-<img src="./assets/media/screens/Lights > Menu.jpeg" class="img-md" />
-<img src="./assets/media/screens/Lights > Mode.jpeg" class="img-md" />
-<img src="./assets/media/screens/Lights > Speed.jpeg" class="img-md" />
-<img src="./assets/media/screens/Lights.jpeg" class="img-md" />
 <img src="./assets/media/screens/Menu.jpeg" class="img-md" />
 <img src="./assets/media/screens/Radar.jpeg" class="img-md" />
+<img src="./assets/media/screens/Lights.jpeg" class="img-md" />
+<img src="./assets/media/screens/Lights > Mode.jpeg" class="img-md" />
+<img src="./assets/media/screens/Lights > Brightness.jpeg" class="img-md" />
+<img src="./assets/media/screens/Lights > Speed.jpeg" class="img-md" />
+<img src="./assets/media/screens/Lights > Direction.jpeg" class="img-md" />
+<img src="./assets/media/screens/Settings.jpeg" class="img-md" />
+<img src="./assets/media/screens/Settings > Theme Color.jpeg" class="img-md" />
 <img src="./assets/media/screens/Settings > Overrid Plug.jpeg" class="img-md" />
 <img src="./assets/media/screens/Settings > Override Trigger.jpeg" class="img-md" />
 <img src="./assets/media/screens/Settings > Reset.jpeg" class="img-md" />
-<img src="./assets/media/screens/Settings > Theme Color.jpeg" class="img-md" />
-<img src="./assets/media/screens/Settings.jpeg" class="img-md" />
