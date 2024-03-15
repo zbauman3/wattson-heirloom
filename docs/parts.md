@@ -33,12 +33,15 @@ An I2C I/O expander. I likely could have used less inputs for the buttons, but t
 https://www.adafruit.com/product/732
 
 ## EEPROM (24LC32AT-I/SN)
+
 https://www.digikey.com/en/products/detail/microchip-technology/24LC32AT-I-SN/285049
 
 ## 6mm Switch (trigger)
+
 https://www.adafruit.com/product/367
 
 ## 12mm Switch (buttons)
+
 https://www.digikey.com/en/products/detail/omron-electronics-inc-emc-div/B3F-4055/31799
 
 ## Haptic Vibrator
@@ -46,6 +49,32 @@ https://www.digikey.com/en/products/detail/omron-electronics-inc-emc-div/B3F-405
 Placed in the grip, just under the batteries.
 
 https://www.adafruit.com/product/1201
+
+## 2-Axis Joystick
+
+https://www.adafruit.com/product/245
+
+## I2C Rotary Encoder Breakout
+
+In hind-sight, this was more difficult to work with than just a standard rotary encoder. Reading and clearing interrupts over I2C was a lot of unnecessary overhead.
+
+https://www.adafruit.com/product/4991
+
+## Rotary Encoder
+
+https://www.adafruit.com/product/377
+
+## 16mm Illuminated Latching Push Button
+
+https://www.adafruit.com/product/1442
+
+## 4 x AA Battery Holder with 2.1mm Plug
+
+https://www.adafruit.com/product/3784
+
+## 2.2" 18-bit color TFT LCD display
+
+https://www.adafruit.com/product/1480
 
 ## Other
 
